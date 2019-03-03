@@ -1,0 +1,35 @@
+{
+    "name": "steam-idle-manager",
+    "version": "1.0.0",
+    "description": "A Steam Group manager for idling games",
+    "main": "index.ts",
+    "scripts": {
+        "start": "ts-node index.ts",
+        "test": "jest"
+    },
+    "author": "Lewis Gibson <lewis-gibson@hotmail.com>",
+    "license": "GPL-3.0-or-later",
+    "dependencies": {
+        "@types/dotenv-safe": "^5.0.3",
+        "chalk": "^2.4.2",
+        "dotenv": "^6.2.0",
+        "dotenv-safe": "^6.1.0",
+        "fuzzysort": "^1.1.4",
+        "steam": "^1.4.0",
+        "steam-totp": "^2.1.0",
+        "steam-tradeoffer-manager": "^2.9.5",
+        "steam-user": "^4.5.0",
+        "steamcommunity": "^3.39.0",
+        "steamid": "^1.1.0",
+        "ts-node": "^8.0.2",
+        "typescript": "^3.3.3333",
+        "winston": "^3.2.1"
+    },
+    "devDependencies": {
+        "@types/jest": "^24.0.9",
+        "jest": "^24.1.0",
+        "prettier": "^1.16.4",
+        "ts-jest": "^24.0.0",
+        "tslint": "^5.13.1"
+    }
+}
