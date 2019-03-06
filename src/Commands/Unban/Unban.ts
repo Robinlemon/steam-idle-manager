@@ -1,16 +1,27 @@
 import BaseCommand, { ITriggerArgs } from '../BaseCommand';
-import { NotImplemented } from '../../Errors';
+import User from '../../Models/User';
 
 export default class Unban extends BaseCommand {
     constructor() {
-        super('unban', false, []);
+        super('unban', true, ['string']);
     }
 
-    public Trigger = ({
+    public Trigger = async ({
         SteamClient,
         SteamID64,
         Arguments,
-    }: ITriggerArgs): void => {
-        throw new NotImplemented();
+    }: ITriggerArgs): Promise<void> => {
+        const [ToUnban] = Arguments;
+
+        await User.findOneAndUpdate(
+            {
+                SteamID64: ToUnban,
+            },
+            {
+                Banned: true,
+            },
+        );
+
+        SteamClient.chatMessage(SteamID64, `User ${ToUnban} is now unbanned`);
     };
 }
