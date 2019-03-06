@@ -18,7 +18,7 @@ export default class Unban extends BaseCommand {
                 SteamID64: ToUnban,
             },
             {
-                Banned: true,
+                Banned: false,
             },
         );
 
