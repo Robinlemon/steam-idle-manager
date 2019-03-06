@@ -17,7 +17,7 @@ export default abstract class Command {
     constructor(Identifier: string, IsAdmin: boolean, ArgumentMap: string[]) {
         this.Identifier = Identifier;
         this.IsAdmin = IsAdmin;
-        this.ArgumentMap = this.ArgumentMap;
+        this.ArgumentMap = ArgumentMap;
     }
 
     public abstract Trigger = (Args: ITriggerArgs): void => {};

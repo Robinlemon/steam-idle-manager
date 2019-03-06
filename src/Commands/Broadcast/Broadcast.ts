@@ -1,6 +1,5 @@
 import BaseCommand, { ITriggerArgs } from '../BaseCommand';
 import { EFriendRelationship } from '../../SteamEnums';
-import Steam from 'steam';
 
 type Friend = [string, EFriendRelationship];
 type FriendsList = {
