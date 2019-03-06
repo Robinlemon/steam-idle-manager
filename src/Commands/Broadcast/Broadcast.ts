@@ -1,8 +1,9 @@
 import BaseCommand, { ITriggerArgs } from '../BaseCommand';
-import { EFriendRelationship } from '../../ESteamEnums';
+import { EFriendRelationship } from '../../SteamEnums';
+import Steam from 'steam';
 
-export type Friend = [string, EFriendRelationship];
-export type FriendsList = {
+type Friend = [string, EFriendRelationship];
+type FriendsList = {
     [steamid: string]: EFriendRelationship;
 };
 

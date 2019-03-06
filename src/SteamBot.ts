@@ -1,4 +1,4 @@
-import Logger, { Levels } from './CLogger';
+import Logger, { Levels } from './Logger';
 import { Level } from 'chalk';
 
 const SteamUser = require('steam-user');
