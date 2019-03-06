@@ -23,7 +23,7 @@ export default abstract class Command {
     public abstract Trigger = (Args: ITriggerArgs): void => {};
 
     public Validate = (Arguments: any): boolean => {
-        if (this.ArgumentMap.length !== Arguments) return false;
+        if (this.ArgumentMap.length !== Arguments.length) return false;
 
         for (let IDx in this.ArgumentMap) {
             const RequiredType = this.ArgumentMap[IDx];
