@@ -22,14 +22,15 @@ class User extends Typegoose {
     @prop({ required: true, default: [] })
     Tag: Tag[];
 
+    @prop()
+    get Tier(): ITier {
+        return TierResolver(this.GamesIdled);
+    }
+
     @instanceMethod
     UpdateInteraction(this: InstanceType<User>) {
         this.LastActive = Date.now();
         this.save();
-    }
-
-    get Tier(): ITier {
-        return TierResolver(this.GamesIdled);
     }
 }
 
