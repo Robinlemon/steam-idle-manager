@@ -1,5 +1,5 @@
 import BaseCommand from './Commands/BaseCommand';
-import { Broadcast, Tier, Ban, Unban } from './Commands/';
+import { Broadcast, Tier, Ban, Unban, SetGamesIdled } from './Commands/';
 import FuzzySort from 'fuzzysort';
 import Logger, { Levels } from './Logger';
 import User from './Models/User';
@@ -24,6 +24,7 @@ export default class CommandWrapper {
             new Tier(),
             new Ban(),
             new Unban(),
+            new SetGamesIdled(),
         ];
     }
 

@@ -1,16 +1,23 @@
 import BaseCommand, { ITriggerArgs } from '../BaseCommand';
-import { NotImplemented } from '../../Errors';
+import User from '../../Models/User';
 
 export default class Tier extends BaseCommand {
     constructor() {
         super('tier', false, []);
     }
 
-    public Trigger = ({
+    public Trigger = async ({
         SteamClient,
         SteamID64,
         Arguments,
-    }: ITriggerArgs): void => {
-        throw new NotImplemented();
+    }: ITriggerArgs): Promise<void> => {
+        const CurrentUser = await User.findOne({
+            SteamID64: SteamID64,
+        });
+
+        SteamClient.chatMessage(
+            SteamID64,
+            `You are tier: ${CurrentUser.Tier.Name}`,
+        );
     };
 }
