@@ -22,8 +22,8 @@ class User extends Typegoose {
     @prop({ required: true, default: [] })
     Tag: Tag[];
 
-    @prop()
-    get Tier(): ITier {
+    @instanceMethod
+    GetTier(this: InstanceType<User>): ITier {
         return TierResolver(this.GamesIdled);
     }
 

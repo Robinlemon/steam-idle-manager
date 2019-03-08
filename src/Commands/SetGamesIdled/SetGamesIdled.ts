@@ -13,14 +13,17 @@ export default class SetGamesIdled extends BaseCommand {
     }: ITriggerArgs): Promise<void> => {
         const [GamesIdled] = Arguments;
 
-        await User.findOneAndUpdate(
+        const CurrentUser = await User.findOneAndUpdate(
             {
                 SteamID64,
             },
             {
                 SetGamesIdled: GamesIdled,
             },
+            { new: true },
         );
+
+        await CurrentUser.save();
 
         SteamClient.chatMessage(
             SteamID64,

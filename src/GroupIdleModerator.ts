@@ -6,18 +6,19 @@ import User from './Models/User';
 import Steam from 'steam';
 import Mongoose from 'mongoose';
 import { MongoError } from 'mongodb';
-
-const StdOut = new Logger('Group Mod');
+import SteamResources from './SteamResources';
 
 export default class GroupIdleModerator extends SteamBot {
     private Admins: string[];
     private CommandDelimiter: string;
     private Commands: CommandManager;
+    private ResourceManager: SteamResources;
+    private Logger: Logger;
 
     constructor(Props: any) {
         super({
             ...Props,
-            Logger: new Logger('SteamBot'),
+            Logger: new Logger('SteamBot')
         });
 
         Mongoose.connect(
@@ -25,31 +26,35 @@ export default class GroupIdleModerator extends SteamBot {
             { useNewUrlParser: true },
             (Err: MongoError) => {
                 if (Err)
-                    return StdOut.log({
+                    return this.Logger.log({
                         level: Levels.ERROR,
-                        message: `${Err}`,
+                        message: `${Err}`
                     });
 
-                StdOut.log({
+                this.Logger.log({
                     level: Levels.DEBUG,
-                    message: 'Connected',
+                    message: 'Connected'
                 });
-            },
+            }
         );
 
+        this.Logger = new Logger(this.constructor.name);
         this.CommandDelimiter = Props.CommandDelimiter;
         this.Admins = Props.Admins.split(',');
         this.Commands = new CommandManager(
             this.Client,
             this.Admins,
-            this.CommandDelimiter,
+            this.CommandDelimiter
         );
 
-        StdOut.log({
+        this.ResourceManager = new SteamResources();
+        this.ResourceManager.Start(1000 * 60 * 30);
+
+        this.Logger.log({
             level: Levels.VERBOSE,
             message: `Found ${this.Admins.length} Admin${
                 this.Admins.length > 1 ? 's' : ''
-            }: ${this.Admins.join(', ')}`,
+            }: ${this.Admins.join(', ')}`
         });
 
         this.SetupEvents();
@@ -66,25 +71,25 @@ export default class GroupIdleModerator extends SteamBot {
 
     private onError = (Err: Error) => {
         if (Err)
-            StdOut.log({
+            this.Logger.log({
                 level: Levels.ERROR,
-                message: `${Err}`,
+                message: `${Err}`
             });
     };
 
     private onLoggedOn = () => {
-        StdOut.log({
+        this.Logger.log({
             level: Levels.INFO,
-            message: 'Logged on!',
+            message: 'Logged on!'
         });
     };
 
     private onWebSession = () => {
         this.Client.setPersona(Steam.EPersonaState.Online);
 
-        StdOut.log({
+        this.Logger.log({
             level: Levels.INFO,
-            message: 'Set Status to EPersonaState.Online',
+            message: 'Set Status to EPersonaState.Online'
         });
     };
 
@@ -94,11 +99,11 @@ export default class GroupIdleModerator extends SteamBot {
 
     private onFriendRelationship = (
         SteamID: string,
-        Relationship: EFriendRelationship,
+        Relationship: EFriendRelationship
     ) => {
-        StdOut.log({
+        this.Logger.log({
             level: Levels.INFO,
-            message: `Got Friend Relation ${SteamID} -> ${Relationship}`,
+            message: `Got Friend Relation ${SteamID} -> ${Relationship}`
         });
 
         if (Relationship === EFriendRelationship.RequestRecipient) {
@@ -107,26 +112,26 @@ export default class GroupIdleModerator extends SteamBot {
 
             User.findOneAndUpdate(
                 {
-                    SteamID64: SteamID,
+                    SteamID64: SteamID
                 },
-                { expire: new Date() },
+                {},
                 {
                     upsert: true,
                     new: true,
-                    setDefaultsOnInsert: true,
+                    setDefaultsOnInsert: true
                 },
                 (Err: MongoError, Result: InstanceType<any & typeof User>) => {
                     if (Err)
-                        return StdOut.log({
+                        return this.Logger.log({
                             level: Levels.ERROR,
-                            message: `${Err}`,
+                            message: `${Err}`
                         });
 
-                    StdOut.log({
+                    this.Logger.log({
                         level: Levels.DEBUG,
-                        message: Result.toString(),
+                        message: Result.toString()
                     });
-                },
+                }
             );
         }
     };

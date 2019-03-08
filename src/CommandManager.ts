@@ -14,17 +14,21 @@ export default class CommandWrapper {
     private CommandBundle: BaseCommand[];
     private Admins: string[];
     private CommandDelimiter: string;
+    private Logger: Logger;
 
     constructor(SteamClient: any, Admins: string[], CommandDelimiter: string) {
         this.SteamClient = SteamClient;
         this.Admins = Admins;
         this.CommandDelimiter = CommandDelimiter;
+
+        this.Logger = new Logger(this.constructor.name);
+
         this.CommandBundle = [
             new Broadcast(),
             new Tier(),
             new Ban(),
             new Unban(),
-            new SetGamesIdled(),
+            new SetGamesIdled()
         ];
     }
 
@@ -40,7 +44,7 @@ export default class CommandWrapper {
             : [];
 
         const CurrentUser = await User.findOne({
-            SteamID64: SteamID,
+            SteamID64: SteamID
         });
 
         await CurrentUser.UpdateInteraction();
@@ -53,26 +57,26 @@ export default class CommandWrapper {
     private RouteCommand(
         Identifier: string,
         SteamID64: string,
-        Arguments?: string[],
+        Arguments?: string[]
     ) {
         const CommandFound = this.CommandBundle.find(
-            (Command: BaseCommand) => Command.Identifier === Identifier,
+            (Command: BaseCommand) => Command.Identifier === Identifier
         );
 
         if (typeof CommandFound !== 'undefined') {
-            StdOut.log({
+            this.Logger.log({
                 level: Levels.DEBUG,
                 message: `${SteamID64.toString()} -> !${Identifier} ${Arguments.join(
-                    ' ',
-                )}`,
+                    ' '
+                )}`
             });
 
             if (!CommandFound.Validate(Arguments)) {
                 this.SteamClient.chatMessage(SteamID64, `Invalid Usage!`);
 
-                StdOut.log({
+                this.Logger.log({
                     level: Levels.DEBUG,
-                    message: `${SteamID64.toString()} -> Invalid Usage`,
+                    message: `${SteamID64.toString()} -> Invalid Usage`
                 });
 
                 return;
@@ -83,19 +87,19 @@ export default class CommandWrapper {
                     CommandFound.Trigger({
                         SteamClient: this.SteamClient,
                         SteamID64,
-                        Arguments,
+                        Arguments
                     });
                 } else {
                     this.SteamClient.chatMessage(
                         SteamID64,
-                        `This command is for admins only!`,
+                        `This command is for admins only!`
                     );
                 }
             } else {
                 CommandFound.Trigger({
                     SteamClient: this.SteamClient,
                     SteamID64,
-                    Arguments,
+                    Arguments
                 });
             }
         } else this.SuggestCommand(Identifier, SteamID64);
@@ -103,19 +107,19 @@ export default class CommandWrapper {
 
     private SuggestCommand(Identifier: string, SteamID64: string) {
         const PotentialCommands = FuzzySort.go(Identifier, this.CommandBundle, {
-            key: 'Identifier',
+            key: 'Identifier'
         })
             .filter((Result: { score: number }) => Result.score > -2000)
             .map(
                 CommandObj =>
-                    `✔ ${this.CommandDelimiter}${CommandObj.obj.Identifier}`,
+                    `✔ ${this.CommandDelimiter}${CommandObj.obj.Identifier}`
             );
 
         const Message = [
             '↓ ↓ ↓',
             '',
             '★ Did you mean: ★',
-            PotentialCommands.join('\n'),
+            PotentialCommands.join('\n')
         ];
 
         if (PotentialCommands.length > 0)
