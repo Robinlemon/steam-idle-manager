@@ -39,9 +39,9 @@ export default class SteamResourceManager {
         setInterval(this.PopulateSteamData, Interval);
     }
 
-    private GetResource = async (Address: string) => {
-        await Retry(
-            async Bail => {
+    private GetResource = (Address: string) =>
+        Retry(
+            async () => {
                 const Response = await Axios({
                     url: Address,
                     responseType: 'json'
@@ -50,10 +50,15 @@ export default class SteamResourceManager {
                 return Response.data;
             },
             {
-                retries: 100
+                retries: 100,
+                onRetry: (Err: Error) => {
+                    this.Logger.log({
+                        level: Levels.ERROR,
+                        message: `${Err}`
+                    });
+                }
             }
         );
-    };
 
     private PopulateSteamData = async () => {
         const AppDataPromise: Promise<any> = this.GetResource(
@@ -64,43 +69,37 @@ export default class SteamResourceManager {
             `http://api.steamcardexchange.net/GetBadgePrices.json`
         );
 
-        const [AppData, CardData] = await Promise.all<IAppData, ICardData>([
+        const [AppData, CardData]: [IAppData, ICardData] = await Promise.all([
             AppDataPromise,
             CardDataPromise
         ]);
 
-        AppData.applist.apps.forEach(CurrentAppObj => {
-            const { appid: AppID, name: Name } = CurrentAppObj;
-            const { Count, Normal, Foil, NormalStock, FoilStock } = CardData[
-                AppID.toString()
-            ];
+        try {
+            AppData.applist.apps.forEach(async CurrentAppObj => {
+                const { appid: AppID, name: Name } = CurrentAppObj;
+                const CurrentCardData = CardData[AppID.toString()];
 
-            App.findOneAndUpdate(
-                {
-                    AppID
-                },
-                {
-                    Name,
-                    Count,
-                    Normal,
-                    Foil,
-                    NormalStock,
-                    FoilStock
-                },
-                { upsert: true, new: true, setDefaultsOnInsert: true },
-                (Err: MongoError, Result: InstanceType<any & typeof App>) => {
-                    if (Err)
-                        return this.Logger.log({
-                            level: Levels.ERROR,
-                            message: `${Err}`
-                        });
+                await App.findOneAndUpdate(
+                    {
+                        AppID
+                    },
+                    {
+                        Name,
+                        ...(CurrentCardData && CurrentCardData)
+                    },
+                    { upsert: true, new: true, setDefaultsOnInsert: true }
+                );
 
-                    return this.Logger.log({
-                        level: Levels.VERBOSE,
-                        message: `Updated App ${AppID} - ${Name}`
-                    });
-                }
-            );
-        });
+                this.Logger.log({
+                    level: Levels.VERBOSE,
+                    message: `Updated App ${AppID} - ${Name}`
+                });
+            });
+        } catch (Err) {
+            this.Logger.log({
+                level: Levels.ERROR,
+                message: `${Err}`
+            });
+        }
     };
 }

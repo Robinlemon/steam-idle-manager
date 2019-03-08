@@ -47,13 +47,14 @@ export default class SteamBot {
 
         this.Community = new SteamCommunity();
         this.Client = new SteamUser(null, {
-            promptSteamGuardCode: false,
+            promptSteamGuardCode: false
         });
 
         this.TradeManager = new TradeOfferManager({
             steam: this.Client,
+            community: this.Community,
             domain: 'localhost',
-            language: 'en',
+            language: 'en'
         });
 
         this.SetupDefaultEvents();
@@ -66,7 +67,7 @@ export default class SteamBot {
             if (typeof this.StdOut !== 'undefined')
                 this.StdOut.log({
                     level: Levels.DEBUG,
-                    message: `${Err}`,
+                    message: `${Err}`
                 });
 
             if (Err.message === 'RateLimitExceeded') {
@@ -80,7 +81,7 @@ export default class SteamBot {
             if (typeof this.StdOut !== 'undefined')
                 this.StdOut.log({
                     level: Levels.DEBUG,
-                    message: `${EResult} -> ${Message}`,
+                    message: `${EResult} -> ${Message}`
                 });
         });
 
@@ -88,7 +89,7 @@ export default class SteamBot {
             if (typeof this.StdOut !== 'undefined')
                 this.StdOut.log({
                     level: Levels.DEBUG,
-                    message: `${Err}`,
+                    message: `${Err}`
                 });
 
             this.Client.webLogOn();
@@ -102,13 +103,12 @@ export default class SteamBot {
                 if (Err && typeof this.StdOut !== 'undefined')
                     this.StdOut.log({
                         level: Levels.DEBUG,
-                        message: `${Err}`,
+                        message: `${Err}`
                     });
 
-                this.Community.setCookies(this.Cookies);
                 this.Community.startConfirmationChecker(
                     this.ConfirmationCheckerDelay,
-                    this.IdentitySecret,
+                    this.IdentitySecret
                 );
             });
         });
@@ -118,6 +118,6 @@ export default class SteamBot {
         this.Client.logOn({
             accountName: this.Username,
             password: this.Password,
-            twoFactorCode: this.GetAuthCode(),
+            twoFactorCode: this.GetAuthCode()
         });
 }

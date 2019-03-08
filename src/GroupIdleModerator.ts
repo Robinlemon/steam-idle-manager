@@ -23,7 +23,7 @@ export default class GroupIdleModerator extends SteamBot {
 
         Mongoose.connect(
             Props.MongoConnectionString,
-            { useNewUrlParser: true },
+            { useNewUrlParser: true, autoReconnect: true },
             (Err: MongoError) => {
                 if (Err)
                     return this.Logger.log({
