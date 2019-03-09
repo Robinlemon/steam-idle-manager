@@ -8,7 +8,7 @@ export enum Levels {
     INFO = 'info',
     VERBOSE = 'verbose',
     DEBUG = 'debug',
-    SILLY = 'silly',
+    SILLY = 'silly'
 }
 
 export default class Logger {
@@ -20,14 +20,15 @@ export default class Logger {
         this.Logger = createLogger({
             level: Levels.SILLY,
             format: format.json(),
-            transports: [],
+            transports: [
+                new transports.Console({
+                    format: format.printf(this.FormatMessage)
+                }) //,
+                // new transports.File({
+                //     filename: `${this.Name ? this.Name : Date.now()}.log`
+                // })
+            ]
         });
-
-        this.Logger.add(
-            new transports.Console({
-                format: format.printf(this.FormatMessage),
-            }),
-        );
     }
 
     private FormatMessage = (Info: TransformableInfo): string => {
@@ -40,7 +41,7 @@ export default class Logger {
             ColorFunc(Info.level.toUpperCase().padEnd(7)) +
                 (this.Name !== null ? Chalk.gray(` [${this.Name}] `) : ''),
             Info.message,
-            Chalk.gray(JSON.stringify(Info.object, null, 2) || ''),
+            Chalk.gray(JSON.stringify(Info.object, null, 2) || '')
         ];
 
         return Message.join(' ').trim();
@@ -49,6 +50,6 @@ export default class Logger {
     public log = (Config: Winston.LogEntry) =>
         this.Logger.log({
             ...Config,
-            ...(this.Name !== null && { label: this.Name }),
+            ...(this.Name !== null && { label: this.Name })
         });
 }

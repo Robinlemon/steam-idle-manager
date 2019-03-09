@@ -5,7 +5,7 @@ import { EFriendRelationship } from './SteamEnums';
 import User from './Models/User';
 import Steam from 'steam';
 import Mongoose from 'mongoose';
-import { MongoError } from 'mongodb';
+import { MongoError, Mongos } from 'mongodb';
 import SteamResources from './SteamResources';
 
 export default class GroupIdleModerator extends SteamBot {
@@ -28,12 +28,12 @@ export default class GroupIdleModerator extends SteamBot {
                 if (Err)
                     return this.Logger.log({
                         level: Levels.ERROR,
-                        message: `${Err}`
+                        message: `${Err.stack}`
                     });
 
                 this.Logger.log({
                     level: Levels.DEBUG,
-                    message: 'Connected'
+                    message: 'Connected to MongoDB'
                 });
             }
         );
@@ -48,7 +48,7 @@ export default class GroupIdleModerator extends SteamBot {
         );
 
         this.ResourceManager = new SteamResources();
-        this.ResourceManager.Start(1000 * 60 * 30);
+        //this.ResourceManager.Start(1000 * 60 * 60 * 24); //24h
 
         this.Logger.log({
             level: Levels.VERBOSE,
@@ -73,7 +73,7 @@ export default class GroupIdleModerator extends SteamBot {
         if (Err)
             this.Logger.log({
                 level: Levels.ERROR,
-                message: `${Err}`
+                message: `${Err.stack}`
             });
     };
 
@@ -85,11 +85,19 @@ export default class GroupIdleModerator extends SteamBot {
     };
 
     private onWebSession = () => {
-        this.Client.setPersona(Steam.EPersonaState.Online);
+        this.Client.setPersona(
+            Steam.EPersonaState.Online,
+            `¡ IdleFreaks Distributor #1`
+        );
 
         this.Logger.log({
             level: Levels.INFO,
             message: 'Set Status to EPersonaState.Online'
+        });
+
+        this.Logger.log({
+            level: Levels.INFO,
+            message: `Set Name to ¡ IdleFreaks Distributor #1`
         });
     };
 
@@ -124,7 +132,7 @@ export default class GroupIdleModerator extends SteamBot {
                     if (Err)
                         return this.Logger.log({
                             level: Levels.ERROR,
-                            message: `${Err}`
+                            message: `${Err.stack}`
                         });
 
                     this.Logger.log({

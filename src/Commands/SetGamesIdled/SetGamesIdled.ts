@@ -9,25 +9,25 @@ export default class SetGamesIdled extends BaseCommand {
     public Trigger = async ({
         SteamClient,
         SteamID64,
-        Arguments,
+        Arguments
     }: ITriggerArgs): Promise<void> => {
         const [GamesIdled] = Arguments;
 
         const CurrentUser = await User.findOneAndUpdate(
             {
-                SteamID64,
+                SteamID64
             },
             {
-                SetGamesIdled: GamesIdled,
+                SetGamesIdled: GamesIdled
             },
-            { new: true },
+            { new: true }
         );
 
         await CurrentUser.save();
 
         SteamClient.chatMessage(
             SteamID64,
-            `Updated your games idled to ${GamesIdled}.`,
+            `Updated your games idled to ${GamesIdled}.`
         );
     };
 }

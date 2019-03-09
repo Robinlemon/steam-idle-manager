@@ -61,6 +61,11 @@ export default class SteamResourceManager {
         );
 
     private PopulateSteamData = async () => {
+        this.Logger.log({
+            level: Levels.VERBOSE,
+            message: `Fetching Steam App Data`
+        });
+
         const AppDataPromise: Promise<any> = this.GetResource(
             `http://api.steampowered.com/ISteamApps/GetAppList/v0002/?format=json`
         );
@@ -74,31 +79,37 @@ export default class SteamResourceManager {
             CardDataPromise
         ]);
 
+        const AppDocuments = AppData.applist.apps.map(CurrentAppObj => ({
+            updateOne: {
+                filter: {
+                    AppID: CurrentAppObj.appid
+                },
+                update: {
+                    Name: CurrentAppObj.name,
+                    ...(CardData[CurrentAppObj.appid.toString()] &&
+                        CardData[CurrentAppObj.appid.toString()])
+                },
+                upsert: true,
+                setDefaultsOnInsert: true
+            }
+        }));
+
+        this.Logger.log({
+            level: Levels.VERBOSE,
+            message: `Generated App Documents`
+        });
+
         try {
-            AppData.applist.apps.forEach(async CurrentAppObj => {
-                const { appid: AppID, name: Name } = CurrentAppObj;
-                const CurrentCardData = CardData[AppID.toString()];
+            const Results = await App.bulkWrite(AppDocuments);
 
-                await App.findOneAndUpdate(
-                    {
-                        AppID
-                    },
-                    {
-                        Name,
-                        ...(CurrentCardData && CurrentCardData)
-                    },
-                    { upsert: true, new: true, setDefaultsOnInsert: true }
-                );
-
-                this.Logger.log({
-                    level: Levels.VERBOSE,
-                    message: `Updated App ${AppID} - ${Name}`
-                });
+            this.Logger.log({
+                level: Levels.VERBOSE,
+                message: `Updated ${Results.modifiedCount} Apps`
             });
         } catch (Err) {
             this.Logger.log({
                 level: Levels.ERROR,
-                message: `${Err}`
+                message: `${Err.stack}`
             });
         }
     };

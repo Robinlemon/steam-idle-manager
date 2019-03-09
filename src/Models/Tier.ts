@@ -39,6 +39,8 @@ export const TierList = <ITier[]>[
 ];
 
 export default (GamesIdled: number): ITier =>
-    TierList.reduce((CurrentTier: ITier) => {
-        if (GamesIdled >= CurrentTier.GamesIdledRequirement) return CurrentTier;
+    TierList.reduce((CurrentRank: ITier, CurrentTier: ITier) => {
+        if (GamesIdled >= CurrentTier.GamesIdledRequirement)
+            CurrentRank = CurrentTier;
+        return CurrentRank;
     });

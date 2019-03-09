@@ -1,3 +1,5 @@
+import Logger from '../Logger';
+
 export interface ICommandProps {
     Identifier: string;
     IsAdmin: boolean;
@@ -13,6 +15,7 @@ export default abstract class Command {
     public Identifier: string;
     public IsAdmin: boolean;
     public ArgumentMap: string[];
+    public Logger: Logger;
 
     constructor(Identifier: string, IsAdmin: boolean, ArgumentMap: string[]) {
         this.Identifier = Identifier;

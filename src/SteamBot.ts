@@ -22,6 +22,7 @@ export default class SteamBot {
     private IdentitySecret: string;
     private SharedSecret: string;
     private StdOut: Logger;
+    private LoggedOn: boolean;
 
     private SessionID: any;
     private Cookies: any;
@@ -45,6 +46,8 @@ export default class SteamBot {
         this.StdOut = Props.Logger;
         this.Initialised = Date.now();
 
+        this.LoggedOn = false;
+
         this.Community = new SteamCommunity();
         this.Client = new SteamUser(null, {
             promptSteamGuardCode: false
@@ -67,7 +70,7 @@ export default class SteamBot {
             if (typeof this.StdOut !== 'undefined')
                 this.StdOut.log({
                     level: Levels.DEBUG,
-                    message: `${Err}`
+                    message: `${Err.stack}`
                 });
 
             if (Err.message === 'RateLimitExceeded') {
@@ -78,6 +81,8 @@ export default class SteamBot {
         });
 
         this.Client.on('disconnected', (EResult: number, Message: string) => {
+            this.LoggedOn = false;
+
             if (typeof this.StdOut !== 'undefined')
                 this.StdOut.log({
                     level: Levels.DEBUG,
@@ -89,10 +94,14 @@ export default class SteamBot {
             if (typeof this.StdOut !== 'undefined')
                 this.StdOut.log({
                     level: Levels.DEBUG,
-                    message: `${Err}`
+                    message: `${Err.stack}`
                 });
 
-            this.Client.webLogOn();
+            if (this.LoggedOn) this.Client.webLogOn();
+        });
+
+        this.Client.on('loggedOn', () => {
+            this.LoggedOn = true;
         });
 
         this.Client.on('webSession', (SessionID: any, Cookies: any) => {
@@ -103,7 +112,7 @@ export default class SteamBot {
                 if (Err && typeof this.StdOut !== 'undefined')
                     this.StdOut.log({
                         level: Levels.DEBUG,
-                        message: `${Err}`
+                        message: `${Err.stack}`
                     });
 
                 this.Community.startConfirmationChecker(

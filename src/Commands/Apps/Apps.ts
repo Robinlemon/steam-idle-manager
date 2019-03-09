@@ -1,10 +1,10 @@
 import BaseCommand, { ITriggerArgs } from '../BaseCommand';
-import User from '../../Models/User';
+import App from '../../Models/App';
 import Logger, { Levels } from '../../Logger';
 
-export default class Ban extends BaseCommand {
+export default class Apps extends BaseCommand {
     constructor() {
-        super('ban', true, ['string']);
+        super('apps', true, []);
         this.Logger = new Logger(this.constructor.name);
     }
 
@@ -13,19 +13,13 @@ export default class Ban extends BaseCommand {
         SteamID64,
         Arguments
     }: ITriggerArgs): Promise<void> => {
-        const [ToBan] = Arguments;
-
         try {
-            await User.findOneAndUpdate(
-                {
-                    SteamID64: ToBan
-                },
-                {
-                    Banned: true
-                }
-            );
+            const Documents = await App.count({});
 
-            SteamClient.chatMessage(SteamID64, `User ${ToBan} is now banned`);
+            SteamClient.chatMessage(
+                SteamID64,
+                `We have information for ${Documents} apps`
+            );
         } catch (Err) {
             this.Logger.log({
                 level: Levels.ERROR,
