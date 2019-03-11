@@ -11,13 +11,25 @@ export interface ITriggerArgs {
     Arguments?: string[];
 }
 
+export type ArgumentType = number | string;
+export type OptionalArgumentType = {
+    type: ArgumentType;
+    optional: boolean;
+};
+export type CompositeArgumentType = ArgumentType | OptionalArgumentType;
+export type ExtendedArgumentType = CompositeArgumentType | [ArgumentType];
+
 export default abstract class Command {
     public Identifier: string;
     public IsAdmin: boolean;
-    public ArgumentMap: any[];
+    public ArgumentMap: ExtendedArgumentType[];
     public Logger: Logger;
 
-    constructor(Identifier: string, IsAdmin: boolean, ArgumentMap: any[]) {
+    constructor(
+        Identifier: string,
+        IsAdmin: boolean,
+        ArgumentMap: ExtendedArgumentType[]
+    ) {
         this.Identifier = Identifier;
         this.IsAdmin = IsAdmin;
         this.ArgumentMap = ArgumentMap;
@@ -38,6 +50,10 @@ export default abstract class Command {
             if (Array.isArray(RequiredType)) {
                 HitInfiniteArgs = true;
                 InfiniteArgsType = (RequiredType as [any])[0];
+            } else if (
+                typeof RequiredType === 'object' &&
+                RequiredType.required
+            ) {
             }
 
             switch (RequiredType) {
@@ -53,8 +69,6 @@ export default abstract class Command {
                         return false;
 
                     break;
-
-                case Array:
             }
         }
 

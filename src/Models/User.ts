@@ -1,6 +1,10 @@
 import { prop, instanceMethod, Typegoose, InstanceType } from 'typegoose';
 import TierResolver, { ITier } from './Tier';
 
+export interface IOwe {
+    [AppID: number]: number;
+}
+
 class User extends Typegoose {
     constructor(...Args: any[]) {
         super();
@@ -20,6 +24,9 @@ class User extends Typegoose {
 
     @prop({ required: true, default: [] })
     Tag: string[];
+
+    @prop({ required: true, default: {} })
+    Owe: IOwe;
 
     @instanceMethod
     GetTier(this: InstanceType<User>): ITier {
