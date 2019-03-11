@@ -40,7 +40,7 @@ export default abstract class Command {
 
     public abstract Trigger = (Args: ITriggerArgs): void => {};
 
-    public Validate = (Arguments: any): boolean => {
+    public Validate = (Arguments: string[]): boolean => {
         let HitInfiniteArgs = false;
         let InfiniteArgsType;
 
@@ -64,11 +64,13 @@ export default abstract class Command {
                     break;
 
                 case Number:
-                    if (isNaN(DataGiven)) return false;
-
                     const Parsed = parseInt(DataGiven, 10);
 
-                    if (!isFinite(Parsed) || !Number.isSafeInteger(Parsed))
+                    if (
+                        isNaN(Parsed) ||
+                        !isFinite(Parsed) ||
+                        !Number.isSafeInteger(Parsed)
+                    )
                         return false;
 
                     break;

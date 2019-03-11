@@ -4,14 +4,14 @@ import Logger, { Levels } from '../../Logger';
 
 export default class RedeemAll extends BaseCommand {
     constructor() {
-        super('redeemall', false, []);
+        super('redeemall', '', false, []);
         this.Logger = new Logger(this.constructor.name);
     }
 
     public Trigger = async ({
         SteamClient,
         SteamID64,
-        Arguments,
+        Arguments
     }: ITriggerArgs): Promise<void> => {
         throw new NotImplemented();
     };

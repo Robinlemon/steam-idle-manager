@@ -4,7 +4,7 @@ import User from '../../Models/User';
 
 export default class RemoveTag extends BaseCommand {
     constructor() {
-        super('removetag', true, [String, [String]]);
+        super('removetag', '', true, [String, [String]]);
         this.Logger = new Logger(this.constructor.name);
     }
 

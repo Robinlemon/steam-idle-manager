@@ -1,13 +1,23 @@
 import BaseCommand from './Commands/BaseCommand';
 import {
     Broadcast,
-    Tier,
     Ban,
     Unban,
+    Tier,
     Apps,
-    SetGamesIdled,
     AddKey,
-    Stock
+    Stock,
+    AddTag,
+    RemoveTag,
+    Owe,
+    AllOwe,
+    AllIdled,
+    ListGames,
+    Compare,
+    Redeem,
+    RedeemAll,
+    Group,
+    Contact
 } from './Commands/';
 import FuzzySort from 'fuzzysort';
 import Logger, { Levels } from './Logger';
@@ -33,13 +43,23 @@ export default class CommandWrapper {
 
         this.CommandBundle = [
             new Broadcast(),
-            new Tier(),
             new Ban(),
             new Unban(),
+            new Tier(),
             new Apps(),
-            new SetGamesIdled(),
             new AddKey(),
-            new Stock()
+            new Stock(),
+            new AddTag(),
+            new RemoveTag(),
+            new Owe(),
+            new AllOwe(),
+            new AllIdled(),
+            new ListGames(),
+            new Compare(),
+            new Redeem(),
+            new RedeemAll(),
+            new Group(),
+            new Contact()
         ];
 
         this.Logger.log(`Command Manager Initialised`, Levels.VERBOSE);
@@ -52,7 +72,9 @@ export default class CommandWrapper {
             `Dynamically Generating Help Documentation...`,
             Levels.VERBOSE
         );
-        this.HelpMessage = this.CommandBundle.map(Command => ``).join('\n');
+        this.HelpMessage = this.CommandBundle.map(Command =>
+            this.DocumentCommand(Command)
+        ).join('\n');
         this.Logger.log(`Created Help Documentation`, Levels.VERBOSE);
     }
 
@@ -71,6 +93,15 @@ export default class CommandWrapper {
             SteamID64: SteamID
         });
 
+        if (CurrentUser === null) {
+            this.SteamClient.chatMessage(
+                SteamID,
+                `Internal Error, try adding me again!`
+            );
+            this.SteamClient.removeFriend(SteamID);
+            return;
+        }
+
         if (CurrentUser.Banned) {
             return this.SteamClient.chatMessage(SteamID, `You are banned.`);
         }
@@ -83,18 +114,20 @@ export default class CommandWrapper {
     }
 
     private DocumentCommand = (Command: BaseCommand) =>
-        `${Command.Identifier} -> ${Command.Description}`;
-
-    private HelpCommand(SteamID64: string) {
-        this.SteamClient.chatMessage(SteamID64, this.HelpMessage);
-    }
+        `!${Command.Identifier} ${Command.ArgumentMap.map(Arg => {
+            if (Array.isArray(Arg)) return `[arg1, arg2, ...]`;
+            else if (typeof Arg === 'object')
+                return `<${typeof Arg.type()}${Arg.optional && '?'}>`;
+            else return `<Arg>`;
+        }).join(' ')} -> ${Command.Description}`;
 
     private RouteCommand(
         Identifier: string,
         SteamID64: string,
         Arguments?: string[]
     ) {
-        if (Identifier === 'help') return this.HelpCommand(SteamID64);
+        if (Identifier === 'help')
+            return this.SteamClient.chatMessage(SteamID64, this.HelpMessage);
 
         const CommandFound = this.CommandBundle.find(
             (Command: BaseCommand) => Command.Identifier === Identifier

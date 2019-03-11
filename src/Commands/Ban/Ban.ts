@@ -4,7 +4,7 @@ import Logger, { Levels } from '../../Logger';
 
 export default class Ban extends BaseCommand {
     constructor() {
-        super('ban', true, [String]);
+        super('ban', '', true, [String]);
         this.Logger = new Logger(this.constructor.name);
     }
 

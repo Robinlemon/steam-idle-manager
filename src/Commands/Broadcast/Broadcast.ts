@@ -8,7 +8,7 @@ type FriendsList = {
 
 export default class BroadcastMessage extends BaseCommand {
     constructor() {
-        super('broadcast', true, [String]);
+        super('broadcast', '', true, [String]);
     }
 
     public Trigger = ({

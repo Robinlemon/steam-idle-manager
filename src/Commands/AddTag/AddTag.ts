@@ -4,7 +4,7 @@ import User from '../../Models/User';
 
 export default class AddTag extends BaseCommand {
     constructor() {
-        super('addtag', true, [String, [String]]);
+        super('addtag', '', true, [String, [String]]);
         this.Logger = new Logger(this.constructor.name);
     }
 

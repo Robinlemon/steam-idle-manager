@@ -4,7 +4,7 @@ import App from '../../Models/App';
 
 export default class Stock extends BaseCommand {
     constructor() {
-        super('stock', false, []);
+        super('stock', '', false, []);
         this.Logger = new Logger(this.constructor.name);
     }
 

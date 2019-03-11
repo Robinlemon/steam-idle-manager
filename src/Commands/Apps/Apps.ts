@@ -4,7 +4,7 @@ import Logger, { Levels } from '../../Logger';
 
 export default class Apps extends BaseCommand {
     constructor() {
-        super('apps', true, []);
+        super('apps', '', true, []);
         this.Logger = new Logger(this.constructor.name);
     }
 

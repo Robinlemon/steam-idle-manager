@@ -4,14 +4,14 @@ import Logger, { Levels } from '../../Logger';
 
 export default class Group extends BaseCommand {
     constructor() {
-        super('group', false, []);
+        super('group', '', false, []);
         this.Logger = new Logger(this.constructor.name);
     }
 
     public Trigger = async ({
         SteamClient,
         SteamID64,
-        Arguments,
+        Arguments
     }: ITriggerArgs): Promise<void> => {
         throw new NotImplemented();
     };

@@ -3,7 +3,7 @@ import User from '../../Models/User';
 
 export default class Unban extends BaseCommand {
     constructor() {
-        super('unban', true, [String]);
+        super('unban', '', true, [String]);
     }
 
     public Trigger = async ({
