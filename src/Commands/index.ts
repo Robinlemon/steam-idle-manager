@@ -6,3 +6,5 @@ export { default as Apps } from './Apps';
 export { default as SetGamesIdled } from './SetGamesIdled';
 export { default as AddKey } from './AddKey';
 export { default as Stock } from './Stock';
+export { default as AddTag } from './AddTag';
+export { default as RemoveTag } from './RemoveTag';

@@ -1,6 +1,5 @@
 import { prop, instanceMethod, Typegoose, InstanceType } from 'typegoose';
 import TierResolver, { ITier } from './Tier';
-import { Tag } from './Tag';
 
 class User extends Typegoose {
     constructor(...Args: any[]) {
@@ -20,7 +19,7 @@ class User extends Typegoose {
     LastActive: number;
 
     @prop({ required: true, default: [] })
-    Tag: Tag[];
+    Tag: string[];
 
     @instanceMethod
     GetTier(this: InstanceType<User>): ITier {
