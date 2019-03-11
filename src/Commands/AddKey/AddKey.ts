@@ -4,7 +4,7 @@ import App from '../../Models/App';
 
 export default class AddKey extends BaseCommand {
     constructor() {
-        super('addkey', true, [Number, [String]]);
+        super('addkey', '', true, [Number, [String]]);
         this.Logger = new Logger(this.constructor.name);
     }
 

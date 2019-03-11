@@ -11,7 +11,7 @@ export interface ITriggerArgs {
     Arguments?: string[];
 }
 
-export type ArgumentType = number | string;
+export type ArgumentType = NumberConstructor | StringConstructor;
 export type OptionalArgumentType = {
     type: ArgumentType;
     optional: boolean;
@@ -23,14 +23,17 @@ export default abstract class Command {
     public Identifier: string;
     public IsAdmin: boolean;
     public ArgumentMap: ExtendedArgumentType[];
+    public Description: string;
     public Logger: Logger;
 
     constructor(
         Identifier: string,
+        Description: string,
         IsAdmin: boolean,
         ArgumentMap: ExtendedArgumentType[]
     ) {
         this.Identifier = Identifier;
+        this.Description = Description;
         this.IsAdmin = IsAdmin;
         this.ArgumentMap = ArgumentMap;
     }

@@ -21,6 +21,7 @@ export default class CommandWrapper {
     private CommandBundle: BaseCommand[];
     private Admins: string[];
     private CommandDelimiter: string;
+    private HelpMessage: string;
     private Logger: Logger;
 
     constructor(SteamClient: any, Admins: string[], CommandDelimiter: string) {
@@ -42,11 +43,17 @@ export default class CommandWrapper {
         ];
 
         this.Logger.log(`Command Manager Initialised`, Levels.VERBOSE);
-
         this.Logger.log(
             `Found ${this.CommandBundle.length} Commands`,
             Levels.VERBOSE
         );
+
+        this.Logger.log(
+            `Dynamically Generating Help Documentation...`,
+            Levels.VERBOSE
+        );
+        this.HelpMessage = this.CommandBundle.map(Command => ``).join('\n');
+        this.Logger.log(`Created Help Documentation`, Levels.VERBOSE);
     }
 
     public async HandleInput(SteamID: string, Message: string) {
@@ -75,11 +82,20 @@ export default class CommandWrapper {
         else this.SuggestCommand(Command.toLowerCase(), SteamID);
     }
 
+    private DocumentCommand = (Command: BaseCommand) =>
+        `${Command.Identifier} -> ${Command.Description}`;
+
+    private HelpCommand(SteamID64: string) {
+        this.SteamClient.chatMessage(SteamID64, this.HelpMessage);
+    }
+
     private RouteCommand(
         Identifier: string,
         SteamID64: string,
         Arguments?: string[]
     ) {
+        if (Identifier === 'help') return this.HelpCommand(SteamID64);
+
         const CommandFound = this.CommandBundle.find(
             (Command: BaseCommand) => Command.Identifier === Identifier
         );
