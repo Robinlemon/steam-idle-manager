@@ -23,8 +23,14 @@ export default class ${DirName} extends BaseCommand {
 `;
 
 const Test = `\
-test('${DirName} Command', () => {
-    expect(true).toBeTruthy();
+import ${DirName} from './index';
+
+describe('${DirName} Command', () => {
+    const Instance = new ${DirName}();
+
+    test('Dummy', () => {
+        expect(true).toBeTruthy();
+    });
 });\
 `;
 
