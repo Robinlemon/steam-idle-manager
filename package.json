@@ -6,6 +6,7 @@
     "scripts": {
         "start": "node -r ts-node/register --no-deprecation index.ts",
         "test": "jest",
+        "coveralls": "jest --coverage && cat ./tests/coverage/lcov.info | coveralls",
         "cc": "node ./src/Commands/CreateCommand.build.js"
     },
     "author": "Lewis Gibson <lewis-gibson@hotmail.com>",
@@ -37,6 +38,7 @@
         "@types/jest": "^24.0.9",
         "@types/mongodb": "^3.1.20",
         "@types/mongoose": "^5.3.20",
+        "coveralls": "^3.0.3",
         "jest": "^24.1.0",
         "mongodb-memory-server": "^3.1.2",
         "prettier": "^1.16.4",
