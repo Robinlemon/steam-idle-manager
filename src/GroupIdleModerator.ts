@@ -64,16 +64,16 @@ export default class GroupIdleModerator extends SteamBot {
     };
 
     private SetGame = async (): Promise<void> => {
-        const Records = await App.find({
-            TotalKeys: { $gt: 0 }
-        });
+        // const Records = await App.find({
+        //     TotalKeys: { $gt: 0 }
+        // });
 
-        const QtyKeys = Records.reduce(
-            (CurrentQty, Record) => CurrentQty + Record.TotalKeys,
-            0
-        );
+        // const QtyKeys = Records.reduce(
+        //     (CurrentQty, Record) => CurrentQty + Record.TotalKeys,
+        //     0
+        // );
 
-        const GameString = `Distributing ${QtyKeys} Keys`;
+        const GameString = `Distributing CD Keys`;
 
         this.Client.gamesPlayed(GameString);
         this.Logger.log(`Set Game Played: ${GameString}`);
