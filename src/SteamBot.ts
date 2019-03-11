@@ -1,5 +1,4 @@
 import Logger, { Levels } from './Logger';
-import { Level } from 'chalk';
 
 const SteamUser = require('steam-user');
 const SteamTotp = require('steam-totp');
@@ -21,7 +20,7 @@ export default class SteamBot {
     private APIKey: string;
     private IdentitySecret: string;
     private SharedSecret: string;
-    private StdOut: Logger;
+    private InternalLogger: Logger;
     private LoggedOn: boolean;
 
     private SessionID: any;
@@ -43,9 +42,9 @@ export default class SteamBot {
         this.APIKey = Props.APIKey;
         this.IdentitySecret = Props.IdentitySecret;
         this.SharedSecret = Props.SharedSecret;
-        this.StdOut = Props.Logger;
-        this.Initialised = Date.now();
 
+        this.InternalLogger = new Logger(this.constructor.name);
+        this.Initialised = Date.now();
         this.LoggedOn = false;
 
         this.Community = new SteamCommunity();
@@ -67,37 +66,27 @@ export default class SteamBot {
 
     private SetupDefaultEvents() {
         this.Client.on('error', (Err: Error) => {
-            if (typeof this.StdOut !== 'undefined')
-                this.StdOut.log({
-                    level: Levels.DEBUG,
-                    message: `${Err.stack}`
-                });
+            if (typeof Err !== 'undefined') {
+                this.InternalLogger.log(Err.stack, Levels.DEBUG);
 
-            if (Err.message === 'RateLimitExceeded') {
-                if (this.LoginInterval < 24 * 60 * 60 * 1000)
-                    this.LoginInterval += this.LoginIntervalCumulativeCost;
-                return setTimeout(this.Login, this.LoginInterval);
+                if (Err.message === 'RateLimitExceeded') {
+                    if (this.LoginInterval < 24 * 60 * 60 * 1000)
+                        this.LoginInterval += this.LoginIntervalCumulativeCost;
+                    return setTimeout(this.Login, this.LoginInterval);
+                }
             }
         });
 
         this.Client.on('disconnected', (EResult: number, Message: string) => {
             this.LoggedOn = false;
-
-            if (typeof this.StdOut !== 'undefined')
-                this.StdOut.log({
-                    level: Levels.DEBUG,
-                    message: `${EResult} -> ${Message}`
-                });
+            this.InternalLogger.log(`${EResult} -> ${Message}`, Levels.DEBUG);
         });
 
         this.Community.on('sessionExpired', (Err: Error) => {
-            if (typeof this.StdOut !== 'undefined')
-                this.StdOut.log({
-                    level: Levels.DEBUG,
-                    message: `${Err.stack}`
-                });
-
-            if (this.LoggedOn) this.Client.webLogOn();
+            if (typeof Err !== 'undefined') {
+                this.InternalLogger.log(Err.stack, Levels.DEBUG);
+                if (this.LoggedOn) this.Client.webLogOn();
+            }
         });
 
         this.Client.on('loggedOn', () => {
@@ -109,11 +98,8 @@ export default class SteamBot {
             this.Cookies = Cookies;
 
             this.TradeManager.setCookies(this.Cookies, (Err: Error) => {
-                if (Err && typeof this.StdOut !== 'undefined')
-                    this.StdOut.log({
-                        level: Levels.DEBUG,
-                        message: `${Err.stack}`
-                    });
+                if (typeof Err !== 'undefined')
+                    this.InternalLogger.log(Err.stack, Levels.DEBUG);
 
                 this.Community.startConfirmationChecker(
                     this.ConfirmationCheckerDelay,

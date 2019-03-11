@@ -31,6 +31,7 @@ export default class SteamResourceManager {
 
     constructor() {
         this.Logger = new Logger(this.constructor.name);
+        this.Logger.log(`Steam Resource Manager Initialised`, Levels.VERBOSE);
     }
 
     public Start(Interval: number) {
@@ -52,19 +53,13 @@ export default class SteamResourceManager {
             {
                 retries: 100,
                 onRetry: (Err: Error) => {
-                    this.Logger.log({
-                        level: Levels.ERROR,
-                        message: `${Err}`
-                    });
+                    this.Logger.log(Err.stack, Levels.ERROR);
                 }
             }
         );
 
     private PopulateSteamData = async () => {
-        this.Logger.log({
-            level: Levels.VERBOSE,
-            message: `Fetching Steam App Data`
-        });
+        this.Logger.log(`Fetching Steam App Data`, Levels.VERBOSE);
 
         const AppDataPromise: Promise<any> = this.GetResource(
             `http://api.steampowered.com/ISteamApps/GetAppList/v0002/?format=json`
@@ -94,23 +89,17 @@ export default class SteamResourceManager {
             }
         }));
 
-        this.Logger.log({
-            level: Levels.VERBOSE,
-            message: `Generated App Documents`
-        });
+        this.Logger.log(`Generated App Documents`, Levels.VERBOSE);
 
         try {
             const Results = await App.bulkWrite(AppDocuments);
 
-            this.Logger.log({
-                level: Levels.VERBOSE,
-                message: `Updated ${Results.modifiedCount} Apps`
-            });
+            this.Logger.log(
+                `Updated ${Results.modifiedCount} Apps`,
+                Levels.VERBOSE
+            );
         } catch (Err) {
-            this.Logger.log({
-                level: Levels.ERROR,
-                message: `${Err.stack}`
-            });
+            this.Logger.log(Err.stack, Levels.ERROR);
         }
     };
 }

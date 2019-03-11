@@ -21,10 +21,7 @@ export default class Apps extends BaseCommand {
                 `We have information for ${Documents} apps`
             );
         } catch (Err) {
-            this.Logger.log({
-                level: Levels.ERROR,
-                message: `${Err.stack}`
-            });
+            this.Logger.log(Err.stack, Levels.ERROR);
         }
     };
 }

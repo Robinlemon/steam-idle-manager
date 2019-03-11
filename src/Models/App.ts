@@ -11,20 +11,26 @@ class App extends Typegoose {
     @prop({ required: true })
     Name: string;
 
-    @prop({ required: true })
-    Count: number;
+    @prop({ required: true, default: [] })
+    Keys: string[];
 
-    @prop({ required: true })
-    Normal: number;
+    @prop({ required: true, default: 0 })
+    TotalKeys: number;
 
-    @prop({ required: true })
-    Foil: number;
+    @prop({})
+    Count?: number;
 
-    @prop({ required: true })
-    NormalStock: number;
+    @prop({})
+    Normal?: number;
 
-    @prop({ required: true })
-    FoilStock: number;
+    @prop({})
+    Foil?: number;
+
+    @prop({})
+    NormalStock?: number;
+
+    @prop({})
+    FoilStock?: number;
 }
 
 export default new App().getModelForClass(App);

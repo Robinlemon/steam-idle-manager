@@ -3,7 +3,7 @@ import User from '../../Models/User';
 
 export default class SetGamesIdled extends BaseCommand {
     constructor() {
-        super('setgamesidled', true, ['number']);
+        super('setgamesidled', true, [Number]);
     }
 
     public Trigger = async ({
@@ -18,7 +18,7 @@ export default class SetGamesIdled extends BaseCommand {
                 SteamID64
             },
             {
-                SetGamesIdled: GamesIdled
+                GamesIdled: GamesIdled
             },
             { new: true }
         );

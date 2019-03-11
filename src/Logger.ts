@@ -47,9 +47,10 @@ export default class Logger {
         return Message.join(' ').trim();
     };
 
-    public log = (Config: Winston.LogEntry) =>
+    public log = (Message: string, Level: Levels = Levels.INFO) =>
         this.Logger.log({
-            ...Config,
+            message: Message,
+            level: Level,
             ...(this.Name !== null && { label: this.Name })
         });
 }

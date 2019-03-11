@@ -3,23 +3,23 @@ import User from '../../Models/User';
 
 export default class Unban extends BaseCommand {
     constructor() {
-        super('unban', true, ['string']);
+        super('unban', true, [String]);
     }
 
     public Trigger = async ({
         SteamClient,
         SteamID64,
-        Arguments,
+        Arguments
     }: ITriggerArgs): Promise<void> => {
         const [ToUnban] = Arguments;
 
         await User.findOneAndUpdate(
             {
-                SteamID64: ToUnban,
+                SteamID64: ToUnban
             },
             {
-                Banned: false,
-            },
+                Banned: false
+            }
         );
 
         SteamClient.chatMessage(SteamID64, `User ${ToUnban} is now unbanned`);

@@ -14,10 +14,10 @@ export interface ITriggerArgs {
 export default abstract class Command {
     public Identifier: string;
     public IsAdmin: boolean;
-    public ArgumentMap: string[];
+    public ArgumentMap: any[];
     public Logger: Logger;
 
-    constructor(Identifier: string, IsAdmin: boolean, ArgumentMap: string[]) {
+    constructor(Identifier: string, IsAdmin: boolean, ArgumentMap: any[]) {
         this.Identifier = Identifier;
         this.IsAdmin = IsAdmin;
         this.ArgumentMap = ArgumentMap;
@@ -26,17 +26,25 @@ export default abstract class Command {
     public abstract Trigger = (Args: ITriggerArgs): void => {};
 
     public Validate = (Arguments: any): boolean => {
-        if (this.ArgumentMap.length !== Arguments.length) return false;
+        let HitInfiniteArgs = false;
+        let InfiniteArgsType;
 
         for (let IDx in this.ArgumentMap) {
-            const RequiredType = this.ArgumentMap[IDx];
+            const RequiredType: any = HitInfiniteArgs
+                ? InfiniteArgsType
+                : this.ArgumentMap[IDx];
             const DataGiven = Arguments[IDx];
 
+            if (Array.isArray(RequiredType)) {
+                HitInfiniteArgs = true;
+                InfiniteArgsType = (RequiredType as [any])[0];
+            }
+
             switch (RequiredType) {
-                case 'string':
+                case String:
                     break;
 
-                case 'number':
+                case Number:
                     if (isNaN(DataGiven)) return false;
 
                     const Parsed = parseInt(DataGiven, 10);
@@ -45,6 +53,8 @@ export default abstract class Command {
                         return false;
 
                     break;
+
+                case Array:
             }
         }
 

@@ -4,7 +4,7 @@ import Logger, { Levels } from '../../Logger';
 
 export default class Ban extends BaseCommand {
     constructor() {
-        super('ban', true, ['string']);
+        super('ban', true, [String]);
         this.Logger = new Logger(this.constructor.name);
     }
 
@@ -27,10 +27,7 @@ export default class Ban extends BaseCommand {
 
             SteamClient.chatMessage(SteamID64, `User ${ToBan} is now banned`);
         } catch (Err) {
-            this.Logger.log({
-                level: Levels.ERROR,
-                message: `${Err.stack}`
-            });
+            this.Logger.log(Err.stack, Levels.ERROR);
         }
     };
 }

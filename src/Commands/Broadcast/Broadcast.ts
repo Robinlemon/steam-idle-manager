@@ -8,13 +8,13 @@ type FriendsList = {
 
 export default class BroadcastMessage extends BaseCommand {
     constructor() {
-        super('broadcast', true, ['string']);
+        super('broadcast', true, [String]);
     }
 
     public Trigger = ({
         SteamClient,
         SteamID64,
-        Arguments,
+        Arguments
     }: ITriggerArgs): void => {
         const [Message] = Arguments;
 
@@ -26,11 +26,11 @@ export default class BroadcastMessage extends BaseCommand {
                     Data.push(FriendSteamID64);
                 return Data;
             },
-            [],
+            []
         );
 
         ActualFriends.forEach((FriendSteamID64: string) =>
-            SteamClient.chatMessage(FriendSteamID64, Message),
+            SteamClient.chatMessage(FriendSteamID64, Message)
         );
     };
 }

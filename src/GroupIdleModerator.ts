@@ -3,9 +3,10 @@ import Logger, { Levels } from './Logger';
 import CommandManager from './CommandManager';
 import { EFriendRelationship } from './SteamEnums';
 import User from './Models/User';
+import App from './Models/App';
 import Steam from 'steam';
 import Mongoose from 'mongoose';
-import { MongoError, Mongos } from 'mongodb';
+import { MongoError } from 'mongodb';
 import SteamResources from './SteamResources';
 
 export default class GroupIdleModerator extends SteamBot {
@@ -17,24 +18,15 @@ export default class GroupIdleModerator extends SteamBot {
 
     constructor(Props: any) {
         super({
-            ...Props,
-            Logger: new Logger('SteamBot')
+            ...Props
         });
 
         Mongoose.connect(
             Props.MongoConnectionString,
             { useNewUrlParser: true, autoReconnect: true },
             (Err: MongoError) => {
-                if (Err)
-                    return this.Logger.log({
-                        level: Levels.ERROR,
-                        message: `${Err.stack}`
-                    });
-
-                this.Logger.log({
-                    level: Levels.DEBUG,
-                    message: 'Connected to MongoDB'
-                });
+                if (Err) return this.Logger.log(`${Err.stack}`, Levels.ERROR);
+                this.Logger.log('Connected to MongoDB', Levels.DEBUG);
             }
         );
 
@@ -50,14 +42,9 @@ export default class GroupIdleModerator extends SteamBot {
         this.ResourceManager = new SteamResources();
         //this.ResourceManager.Start(1000 * 60 * 60 * 24); //24h
 
-        this.Logger.log({
-            level: Levels.VERBOSE,
-            message: `Found ${this.Admins.length} Admin${
-                this.Admins.length > 1 ? 's' : ''
-            }: ${this.Admins.join(', ')}`
-        });
-
         this.SetupEvents();
+
+        this.Logger.log('Attempting to connect to Steam...', Levels.VERBOSE);
         this.Login();
     }
 
@@ -67,80 +54,78 @@ export default class GroupIdleModerator extends SteamBot {
         this.Client.on('webSession', this.onWebSession);
         this.Client.on('friendMessage', this.onFriendMessage);
         this.Client.on('friendRelationship', this.onFriendRelationship);
+
+        this.Logger.log('Steam Event Listeners Initialised', Levels.VERBOSE);
     }
 
+    private SetName = (Name: string): void => {
+        this.Client.setPersona(Steam.EPersonaState.Online, Name);
+        this.Logger.log(`Set name to ${Name}`);
+    };
+
+    private SetGame = async (): Promise<void> => {
+        const Records = await App.find({
+            TotalKeys: { $gt: 0 }
+        });
+
+        const QtyKeys = Records.reduce(
+            (CurrentQty, Record) => CurrentQty + Record.TotalKeys,
+            0
+        );
+
+        const GameString = `Distributing ${QtyKeys} Keys`;
+
+        this.Client.gamesPlayed(GameString);
+        this.Logger.log(`Set Game Played: ${GameString}`);
+    };
+
     private onError = (Err: Error) => {
-        if (Err)
-            this.Logger.log({
-                level: Levels.ERROR,
-                message: `${Err.stack}`
-            });
+        if (Err) this.Logger.log(Err.stack, Levels.ERROR);
     };
 
     private onLoggedOn = () => {
-        this.Logger.log({
-            level: Levels.INFO,
-            message: 'Logged on!'
-        });
+        this.Logger.log('Successfully logged in to Steam');
     };
 
     private onWebSession = () => {
-        this.Client.setPersona(
-            Steam.EPersonaState.Online,
-            `¡ IdleFreaks Distributor #1`
-        );
+        this.Logger.log('Got WebSession, going Online');
 
-        this.Logger.log({
-            level: Levels.INFO,
-            message: 'Set Status to EPersonaState.Online'
-        });
+        this.Logger.log('Setting Name...');
+        this.SetName(`¡ IdleFreaks Distributor`);
 
-        this.Logger.log({
-            level: Levels.INFO,
-            message: `Set Name to ¡ IdleFreaks Distributor #1`
-        });
+        this.Logger.log('Setting Game...');
+        this.SetGame();
     };
 
     private onFriendMessage = (SteamID: string, Message: string) => {
         this.Commands.HandleInput(SteamID, Message);
     };
 
-    private onFriendRelationship = (
+    private onFriendRelationship = async (
         SteamID: string,
         Relationship: EFriendRelationship
     ) => {
-        this.Logger.log({
-            level: Levels.INFO,
-            message: `Got Friend Relation ${SteamID} -> ${Relationship}`
-        });
+        this.Logger.log(`Got Friend Relation ${SteamID} -> ${Relationship}`);
 
         if (Relationship === EFriendRelationship.RequestRecipient) {
             this.Client.addFriend(SteamID);
             this.Client.chatMessage(SteamID, `Yo Whatup`);
 
-            User.findOneAndUpdate(
-                {
-                    SteamID64: SteamID
-                },
-                {},
-                {
-                    upsert: true,
-                    new: true,
-                    setDefaultsOnInsert: true
-                },
-                (Err: MongoError, Result: InstanceType<any & typeof User>) => {
-                    if (Err)
-                        return this.Logger.log({
-                            level: Levels.ERROR,
-                            message: `${Err.stack}`
-                        });
-
-                    this.Logger.log({
-                        level: Levels.DEBUG,
-                        message: Result.toString()
-                    });
-                }
-            );
+            try {
+                await User.findOne(
+                    {
+                        SteamID64: SteamID
+                    },
+                    {},
+                    {
+                        upsert: true,
+                        new: true,
+                        setDefaultsOnInsert: true
+                    }
+                );
+            } catch (Err) {
+                this.Logger.log(Err.stack, Levels.ERROR);
+            }
         }
     };
 }

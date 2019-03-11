@@ -4,9 +4,10 @@ import {
     Tier,
     Ban,
     Unban,
-    SetGamesIdled,
     Apps,
-    App
+    SetGamesIdled,
+    AddKey,
+    Stock
 } from './Commands/';
 import FuzzySort from 'fuzzysort';
 import Logger, { Levels } from './Logger';
@@ -34,10 +35,18 @@ export default class CommandWrapper {
             new Tier(),
             new Ban(),
             new Unban(),
-            new SetGamesIdled(),
             new Apps(),
-            new App()
+            new SetGamesIdled(),
+            new AddKey(),
+            new Stock()
         ];
+
+        this.Logger.log(`Command Manager Initialised`, Levels.VERBOSE);
+
+        this.Logger.log(
+            `Found ${this.CommandBundle.length} Commands`,
+            Levels.VERBOSE
+        );
     }
 
     public async HandleInput(SteamID: string, Message: string) {
@@ -76,20 +85,20 @@ export default class CommandWrapper {
         );
 
         if (typeof CommandFound !== 'undefined') {
-            this.Logger.log({
-                level: Levels.DEBUG,
-                message: `${SteamID64.toString()} -> !${Identifier} ${Arguments.join(
+            this.Logger.log(
+                `${SteamID64.toString()} -> !${Identifier} ${Arguments.join(
                     ' '
-                )}`
-            });
+                )}`,
+                Levels.DEBUG
+            );
 
             if (!CommandFound.Validate(Arguments)) {
                 this.SteamClient.chatMessage(SteamID64, `Invalid Usage!`);
 
-                this.Logger.log({
-                    level: Levels.DEBUG,
-                    message: `${SteamID64.toString()} -> Invalid Usage`
-                });
+                this.Logger.log(
+                    `${SteamID64.toString()} -> Invalid Usage`,
+                    Levels.DEBUG
+                );
 
                 return;
             }
