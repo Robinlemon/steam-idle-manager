@@ -50,7 +50,7 @@ export default class CommandWrapper {
     }
 
     public async HandleInput(SteamID: string, Message: string) {
-        const Split: string[] = Message.split(' ');
+        const Split: string[] = Message.split(/[ ,]+/);
         const Delimiter: string = this.CommandDelimiter;
         const IsCommand: boolean = Message.charAt(0) === Delimiter;
         const Command: string = Split[0]
