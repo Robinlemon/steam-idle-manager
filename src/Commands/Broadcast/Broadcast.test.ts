@@ -30,7 +30,7 @@ describe('Broadcast Command', () => {
     });
 
     test('Should have one argument of type string', () => {
-        const Args = ['string'];
+        const Args = [String];
 
         expect(Instance.ArgumentMap).toEqual(expect.arrayContaining(Args));
         expect(Instance.ArgumentMap).toHaveLength(Args.length);
