@@ -1,3 +1,9 @@
-it('Dummy Test: true', () => {
-    expect(true).toBeTruthy();
+import Tier from './index';
+
+describe('Tier Command', () => {
+    const Instance = new Tier();
+
+    test('Dummy', () => {
+        expect(true).toBeTruthy();
+    });
 });

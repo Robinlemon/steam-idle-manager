@@ -1,5 +1,9 @@
 import Ban from './index';
 
-test('Ban Command', () => {
-    expect(true).toBeTruthy();
+describe('Ban Command', () => {
+    const Instance = new Ban();
+
+    test('Dummy', () => {
+        expect(true).toBeTruthy();
+    });
 });

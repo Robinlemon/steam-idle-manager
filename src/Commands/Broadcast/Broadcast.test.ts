@@ -46,22 +46,22 @@ describe('Broadcast Command', () => {
                     return Data;
                 },
                 {
-                    [RandomSteamID()]: EFriendRelationship.Blocked,
-                },
+                    [RandomSteamID()]: EFriendRelationship.Blocked
+                }
             ),
-            chatMessage: jest.fn(),
+            chatMessage: jest.fn()
         };
         const Message = 'testing';
 
         Instance.Trigger({
             SteamClient: MockSteamClient,
             SteamID64: '',
-            Arguments: [Message],
+            Arguments: [Message]
         });
 
         test('It should only message friends', () => {
             expect(MockSteamClient.chatMessage.mock.calls.length).toBe(
-                Friends.length,
+                Friends.length
             );
         });
 
@@ -70,7 +70,7 @@ describe('Broadcast Command', () => {
                 (ArgumentMap: any[], IDx: number) => {
                     expect(Friends).toContain(ArgumentMap[0]);
                     expect(ArgumentMap[1]).toBe(Message);
-                },
+                }
             );
         });
     });
