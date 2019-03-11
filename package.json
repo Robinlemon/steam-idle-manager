@@ -6,7 +6,7 @@
     "scripts": {
         "start": "node -r ts-node/register --no-deprecation index.ts",
         "test": "jest",
-        "coveralls": "jest --coverage && cat ./tests/coverage/lcov.info | coveralls",
+        "coveralls": "jest --coverage && cat ./coverage/lcov.info | coveralls",
         "cc": "node ./src/Commands/CreateCommand.build.js"
     },
     "author": "Lewis Gibson <lewis-gibson@hotmail.com>",
