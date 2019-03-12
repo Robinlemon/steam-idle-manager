@@ -22,19 +22,24 @@ import {
 import FuzzySort from 'fuzzysort';
 import Logger, { Levels } from './Logger';
 import User from './Models/User';
+import SteamUser from 'steam-user';
 
 /**
  *  @todo Add semantic types for commands
  */
 export default class CommandWrapper {
-    private SteamClient: any;
+    private SteamClient: SteamUser;
     private CommandBundle: BaseCommand[];
     private Admins: string[];
     private CommandDelimiter: string;
     private HelpMessage: string;
     private Logger: Logger;
 
-    constructor(SteamClient: any, Admins: string[], CommandDelimiter: string) {
+    constructor(
+        SteamClient: SteamUser,
+        Admins: string[],
+        CommandDelimiter: string
+    ) {
         this.SteamClient = SteamClient;
         this.Admins = Admins;
         this.CommandDelimiter = CommandDelimiter;

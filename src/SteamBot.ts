@@ -1,6 +1,6 @@
 import Logger, { Levels } from './Logger';
 
-const SteamUser = require('steam-user');
+import SteamUser from 'steam-user';
 const SteamTotp = require('steam-totp');
 const SteamCommunity = require('steamcommunity');
 const TradeOfferManager = require('steam-tradeoffer-manager');

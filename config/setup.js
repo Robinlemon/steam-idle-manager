@@ -1,15 +1,13 @@
 const path = require('path');
 const fs = require('fs');
-const { MongoMemoryServer } = require('mongodb-memory-server');
-
+const MongodbMemoryServer = require('mongodb-memory-server');
 const globalConfigPath = path.join(__dirname, 'globalConfig.json');
-const mongod = new MongoMemoryServer({
+
+const mongod = new MongodbMemoryServer.default({
     autoStart: false
 });
 
 module.exports = async () => {
-    console.log('a'.repeat(1500));
-
     if (!mongod.isRunning) {
         await mongod.start();
     }
@@ -21,7 +19,9 @@ module.exports = async () => {
 
     // Write global config to disk because all tests run in different contexts.
     fs.writeFileSync(globalConfigPath, JSON.stringify(mongoConfig));
+    console.log('Config is written');
 
     // Set reference to mongod in order to close the server during teardown.
     global.__MONGOD__ = mongod;
+    process.env.MONGO_URL = mongoConfig.mongoUri;
 };
