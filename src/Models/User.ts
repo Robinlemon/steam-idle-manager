@@ -1,12 +1,13 @@
-import { prop, instanceMethod, Typegoose, InstanceType } from 'typegoose';
+import { prop, instanceMethod, Typegoose, InstanceType, Ref } from 'typegoose';
+import AppModel, { App } from './App';
 import TierResolver, { ITier } from './Tier';
 
-export interface IHistory {
+interface IHistory {
     AppID: number;
     Count: number;
 }
 
-export interface IOwe {
+interface IOwe {
     AppID: number;
     InstancesTaken: number;
     TotalCardsRequired: number;
@@ -14,10 +15,6 @@ export interface IOwe {
 }
 
 class User extends Typegoose {
-    constructor(...Args: any[]) {
-        super();
-    }
-
     @prop({ required: true })
     SteamID64: string;
 
@@ -38,6 +35,9 @@ class User extends Typegoose {
 
     @prop({ required: true, default: [] })
     Owe: IOwe[];
+
+    @prop({ required: true, default: false })
+    DoesOwe: boolean;
 
     @instanceMethod
     GetTier(this: InstanceType<User>): ITier {

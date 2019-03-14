@@ -1,10 +1,10 @@
 import BaseCommand, { ITriggerArgs } from '../BaseCommand';
-import { NotImplemented } from '../../Errors';
 import Logger, { Levels } from '../../Logger';
+import User from '../../Models/User';
 
 export default class AllOwe extends BaseCommand {
     constructor() {
-        super('allowe', '', false, []);
+        super('allowe', '', true, []);
         this.Logger = new Logger(this.constructor.name);
     }
 
@@ -13,6 +13,12 @@ export default class AllOwe extends BaseCommand {
         SteamID64,
         Arguments
     }: ITriggerArgs): Promise<void> => {
-        throw new NotImplemented();
+        const Records = await User.find({
+            DoesOwe: true
+        });
+
+        const Message = Records.map(({ SteamID64 }) => SteamID64).join('\n');
+
+        SteamClient.chatMessage(SteamID64, Message);
     };
 }

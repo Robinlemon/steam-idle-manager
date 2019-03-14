@@ -1,6 +1,7 @@
 import BaseCommand, { ITriggerArgs } from '../BaseCommand';
 import { NotImplemented } from '../../Errors';
 import Logger, { Levels } from '../../Logger';
+import App from '../../Models/App';
 
 export default class ListGames extends BaseCommand {
     constructor() {
@@ -13,6 +14,16 @@ export default class ListGames extends BaseCommand {
         SteamID64,
         Arguments
     }: ITriggerArgs): Promise<void> => {
-        throw new NotImplemented();
+        const MyAppInfo = await App.find({
+            TotalKeys: {
+                $gt: 0
+            }
+        });
+
+        const Message = MyAppInfo.map(
+            AppObj => `(${AppObj.AppID}) ${AppObj.Name}`
+        ).join('\n');
+
+        SteamClient.chatMessage(SteamID64, Message);
     };
 }

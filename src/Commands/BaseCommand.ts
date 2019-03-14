@@ -1,4 +1,6 @@
 import Logger from '../Logger';
+import SteamUser from 'steam-user';
+import SteamAPIManager from '../SteamAPIManager';
 
 export interface ICommandProps {
     Identifier: string;
@@ -6,8 +8,9 @@ export interface ICommandProps {
 }
 
 export interface ITriggerArgs {
-    SteamClient: any;
+    SteamClient: any /*SteamUser*/;
     SteamID64: string;
+    SteamAPIManager: SteamAPIManager;
     Arguments?: string[];
 }
 
@@ -29,8 +32,8 @@ export default abstract class Command {
     constructor(
         Identifier: string,
         Description: string,
-        IsAdmin: boolean,
-        ArgumentMap: ExtendedArgumentType[]
+        IsAdmin: boolean = false,
+        ArgumentMap: ExtendedArgumentType[] = []
     ) {
         this.Identifier = Identifier;
         this.Description = Description;

@@ -15,13 +15,13 @@ export interface IProps {
 }
 
 export default class SteamBot {
-    private Username: string;
-    private Password: string;
-    private APIKey: string;
+    public Username: string;
+    public Password: string;
+    public APIKey: string;
     private IdentitySecret: string;
     private SharedSecret: string;
     private InternalLogger: Logger;
-    private LoggedOn: boolean;
+    public LoggedOn: boolean;
 
     private SessionID: any;
     private Cookies: any;

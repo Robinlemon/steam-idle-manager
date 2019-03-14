@@ -13,6 +13,6 @@ export default class Group extends BaseCommand {
         SteamID64,
         Arguments
     }: ITriggerArgs): Promise<void> => {
-        throw new NotImplemented();
+        SteamClient.chatMessage(SteamID64, 'group msg');
     };
 }

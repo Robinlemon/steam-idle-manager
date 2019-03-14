@@ -17,32 +17,39 @@ import {
     Redeem,
     RedeemAll,
     Group,
-    Contact
+    Contact,
+    PrintRawUserRecord,
+    UpdateUserInstance
 } from './Commands/';
 import FuzzySort from 'fuzzysort';
 import Logger, { Levels } from './Logger';
 import User from './Models/User';
 import SteamUser from 'steam-user';
+import SteamAPIManager from './SteamAPIManager';
 
 /**
  *  @todo Add semantic types for commands
  */
 export default class CommandWrapper {
-    private SteamClient: SteamUser;
+    private SteamClient: any /*SteamUser*/;
     private CommandBundle: BaseCommand[];
     private Admins: string[];
     private CommandDelimiter: string;
     private HelpMessage: string;
+    private AdminHelpMessage: string;
     private Logger: Logger;
+    private SteamAPIManager: SteamAPIManager;
 
     constructor(
-        SteamClient: SteamUser,
+        SteamClient: any /*SteamUser*/,
         Admins: string[],
-        CommandDelimiter: string
+        CommandDelimiter: string,
+        SteamAPIManager: SteamAPIManager
     ) {
         this.SteamClient = SteamClient;
         this.Admins = Admins;
         this.CommandDelimiter = CommandDelimiter;
+        this.SteamAPIManager = SteamAPIManager;
 
         this.Logger = new Logger(this.constructor.name);
 
@@ -64,7 +71,9 @@ export default class CommandWrapper {
             new Redeem(),
             new RedeemAll(),
             new Group(),
-            new Contact()
+            new Contact(),
+            new PrintRawUserRecord(),
+            new UpdateUserInstance()
         ];
 
         this.Logger.log(`Command Manager Initialised`, Levels.VERBOSE);
@@ -77,9 +86,17 @@ export default class CommandWrapper {
             `Dynamically Generating Help Documentation...`,
             Levels.VERBOSE
         );
+
         this.HelpMessage = this.CommandBundle.map(Command =>
             this.DocumentCommand(Command)
+        )
+            .filter(x => x)
+            .join('\n');
+
+        this.AdminHelpMessage = this.CommandBundle.map(Command =>
+            this.DocumentCommand(Command, true)
         ).join('\n');
+
         this.Logger.log(`Created Help Documentation`, Levels.VERBOSE);
     }
 
@@ -118,13 +135,18 @@ export default class CommandWrapper {
         else this.SuggestCommand(Command.toLowerCase(), SteamID);
     }
 
-    private DocumentCommand = (Command: BaseCommand) =>
-        `!${Command.Identifier} ${Command.ArgumentMap.map(Arg => {
-            if (Array.isArray(Arg)) return `[arg1, arg2, ...]`;
-            else if (typeof Arg === 'object')
-                return `<${typeof Arg.type()}${Arg.optional && '?'}>`;
-            else return `<Arg>`;
-        }).join(' ')} -> ${Command.Description}`;
+    private DocumentCommand = (
+        Command: BaseCommand,
+        IsAdmin: boolean = false
+    ) =>
+        (IsAdmin && Command.IsAdmin) || (!IsAdmin && !Command.IsAdmin)
+            ? `!${Command.Identifier} ${Command.ArgumentMap.map(Arg => {
+                  if (Array.isArray(Arg)) return `[arg1, arg2, ...]`;
+                  else if (typeof Arg === 'object')
+                      return `<${typeof Arg.type()}${Arg.optional && '?'}>`;
+                  else return `<Arg>`;
+              }).join(' ')} -> ${Command.Description}`
+            : null;
 
     private RouteCommand(
         Identifier: string,
@@ -162,7 +184,8 @@ export default class CommandWrapper {
                     CommandFound.Trigger({
                         SteamClient: this.SteamClient,
                         SteamID64,
-                        Arguments
+                        Arguments,
+                        SteamAPIManager: this.SteamAPIManager
                     });
                 } else {
                     this.SteamClient.chatMessage(
@@ -174,7 +197,8 @@ export default class CommandWrapper {
                 CommandFound.Trigger({
                     SteamClient: this.SteamClient,
                     SteamID64,
-                    Arguments
+                    Arguments,
+                    SteamAPIManager: this.SteamAPIManager
                 });
             }
         } else this.SuggestCommand(Identifier, SteamID64);

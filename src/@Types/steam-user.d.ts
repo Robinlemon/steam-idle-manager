@@ -1,4 +1,16 @@
 declare module 'steam-user' {
+    enum EFriendRelationship {
+        Blocked = 0,
+        Friend = 1,
+        Ignored = 2,
+        IgnoredFriend = 3,
+        Max = 4,
+        None = 5,
+        RequestInitiator = 6,
+        RequestRecipient = 7,
+        SuggestedFriend = 8
+    }
+
     export = SteamUser;
     
     class SteamUser {
@@ -21,6 +33,10 @@ declare module 'steam-user' {
         chatMessage(recipient: any, message: any, type?: any): void;
 
         chatMsg(recipient: any, message: any, type: any): void;
+
+        static myFriends: {
+            [key: string]: EFriendRelationship
+        }
 
         chatTyping(recipient: any): void;
 
@@ -1386,27 +1402,6 @@ declare module 'steam-user' {
             RequestingFriendship: number;
             RequestingInfo: number;
             Suggested: number;
-        };
-
-        static EFriendRelationship: {
-            '0': string;
-            '1': string;
-            '2': string;
-            '3': string;
-            '4': string;
-            '5': string;
-            '6': string;
-            '7': string;
-            '8': string;
-            Blocked: number;
-            Friend: number;
-            Ignored: number;
-            IgnoredFriend: number;
-            Max: number;
-            None: number;
-            RequestInitiator: number;
-            RequestRecipient: number;
-            SuggestedFriend: number;
         };
 
         static EGameSearchAction: {

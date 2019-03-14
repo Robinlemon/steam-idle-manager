@@ -8,12 +8,14 @@ import Steam from 'steam';
 import Mongoose from 'mongoose';
 import { MongoError } from 'mongodb';
 import SteamResources from './SteamResources';
+import SteamAPIManager from './SteamAPIManager';
 
 export default class GroupIdleModerator extends SteamBot {
     private Admins: string[];
     private CommandDelimiter: string;
     private Commands: CommandManager;
     private ResourceManager: SteamResources;
+    private SteamAPIManager: SteamAPIManager;
     private Logger: Logger;
 
     constructor(Props: any) {
@@ -31,12 +33,16 @@ export default class GroupIdleModerator extends SteamBot {
         );
 
         this.Logger = new Logger(this.constructor.name);
+        this.SteamAPIManager = new SteamAPIManager(this.APIKey);
+
         this.CommandDelimiter = Props.CommandDelimiter;
         this.Admins = Props.Admins.split(',');
+
         this.Commands = new CommandManager(
             this.Client,
             this.Admins,
-            this.CommandDelimiter
+            this.CommandDelimiter,
+            this.SteamAPIManager
         );
 
         this.ResourceManager = new SteamResources();

@@ -1,6 +1,6 @@
 import { prop, Typegoose } from 'typegoose';
 
-class App extends Typegoose {
+export class App extends Typegoose {
     constructor(...Args: any[]) {
         super();
     }
