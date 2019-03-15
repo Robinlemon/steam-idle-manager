@@ -1,9 +1,12 @@
 import BaseCommand, { ITriggerArgs } from '../BaseCommand';
 import User from '../../Models/User';
+import LanguageDecoder from '../../LanguageDecoder';
 
 export default class Tier extends BaseCommand {
-    constructor() {
-        super('tier', '', false, []);
+    constructor(LanguageDecoder: LanguageDecoder) {
+        super('tier', LanguageDecoder);
+
+        this.Description = this.InterpolateString('TierDescription');
     }
 
     public Trigger = async ({

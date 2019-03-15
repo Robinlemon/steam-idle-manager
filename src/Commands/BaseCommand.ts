@@ -1,6 +1,7 @@
 import Logger from '../Logger';
 import SteamUser from 'steam-user';
 import SteamAPIManager from '../SteamAPIManager';
+import LanguageDecoder, { ENamespaces } from '../LanguageDecoder';
 
 export interface ICommandProps {
     Identifier: string;
@@ -29,19 +30,41 @@ export default abstract class Command {
     public Description: string;
     public Logger: Logger;
 
+    private LanguageDecoder: LanguageDecoder;
+    private InterpolationRegex = /\$\d+/g;
+
     constructor(
         Identifier: string,
-        Description: string,
+        LanguageDecoder: LanguageDecoder,
         IsAdmin: boolean = false,
         ArgumentMap: ExtendedArgumentType[] = []
     ) {
         this.Identifier = Identifier;
-        this.Description = Description;
+        this.LanguageDecoder = LanguageDecoder;
         this.IsAdmin = IsAdmin;
         this.ArgumentMap = ArgumentMap;
     }
 
     public abstract Trigger = (Args: ITriggerArgs): void => {};
+
+    public InterpolateString = (
+        Namespace: string,
+        Args: any[] = []
+    ): string => {
+        const StandardMessage = this.LanguageDecoder.GetString(
+            Namespace as ENamespaces
+        );
+
+        if (StandardMessage.match(this.InterpolationRegex).length === 0)
+            return StandardMessage;
+        else
+            return StandardMessage.replace(this.InterpolationRegex, Match => {
+                const IDx = +Match.substr(1);
+
+                if (Args.length <= IDx) return Args[IDx - 1];
+                else return null;
+            });
+    };
 
     public Validate = (Arguments: string[]): boolean => {
         let HitInfiniteArgs = false;

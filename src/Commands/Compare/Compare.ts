@@ -1,11 +1,14 @@
 import BaseCommand, { ITriggerArgs } from '../BaseCommand';
 import Logger, { Levels } from '../../Logger';
 import App from '../../Models/App';
+import LanguageDecoder from '../../LanguageDecoder';
 
 export default class Compare extends BaseCommand {
-    constructor() {
-        super('compare', '', false, []);
+    constructor(LanguageDecoder: LanguageDecoder) {
+        super('compare', LanguageDecoder);
+
         this.Logger = new Logger(this.constructor.name);
+        this.Description = this.InterpolateString('CompareDescription');
     }
 
     public Trigger = async ({

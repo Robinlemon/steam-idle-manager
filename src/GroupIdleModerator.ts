@@ -9,6 +9,7 @@ import Mongoose from 'mongoose';
 import { MongoError } from 'mongodb';
 import SteamResources from './SteamResources';
 import SteamAPIManager from './SteamAPIManager';
+import LanguageDecoder from './LanguageDecoder';
 
 export default class GroupIdleModerator extends SteamBot {
     private Admins: string[];
@@ -16,6 +17,7 @@ export default class GroupIdleModerator extends SteamBot {
     private Commands: CommandManager;
     private ResourceManager: SteamResources;
     private SteamAPIManager: SteamAPIManager;
+    private LanguageDecoder: LanguageDecoder;
     private Logger: Logger;
 
     constructor(Props: any) {
@@ -33,7 +35,10 @@ export default class GroupIdleModerator extends SteamBot {
         );
 
         this.Logger = new Logger(this.constructor.name);
+        this.ResourceManager = new SteamResources();
         this.SteamAPIManager = new SteamAPIManager(this.APIKey);
+        this.LanguageDecoder = new LanguageDecoder();
+        this.LanguageDecoder.SetLanguage('English');
 
         this.CommandDelimiter = Props.CommandDelimiter;
         this.Admins = Props.Admins.split(',');
@@ -42,10 +47,10 @@ export default class GroupIdleModerator extends SteamBot {
             this.Client,
             this.Admins,
             this.CommandDelimiter,
-            this.SteamAPIManager
+            this.SteamAPIManager,
+            this.LanguageDecoder
         );
 
-        this.ResourceManager = new SteamResources();
         //this.ResourceManager.Start(1000 * 60 * 60 * 24); //24h
 
         this.SetupEvents();

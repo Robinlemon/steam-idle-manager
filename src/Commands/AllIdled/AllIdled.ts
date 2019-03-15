@@ -1,16 +1,14 @@
 import BaseCommand, { ITriggerArgs } from '../BaseCommand';
 import Logger, { Levels } from '../../Logger';
 import User from '../../Models/User';
+import LanguageDecoder from '../../LanguageDecoder';
 
 export default class AllIdled extends BaseCommand {
-    constructor() {
-        super(
-            'allidled',
-            'Gives you a list of all the SteamIDs that has idled games and returned cards',
-            true,
-            []
-        );
+    constructor(LanguageDecoder: LanguageDecoder) {
+        super('allidled', LanguageDecoder, true, []);
+
         this.Logger = new Logger(this.constructor.name);
+        this.Description = this.InterpolateString('AddIdledDescription');
     }
 
     public Trigger = async ({

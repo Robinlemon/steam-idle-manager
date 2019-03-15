@@ -1,11 +1,14 @@
 import BaseCommand, { ITriggerArgs } from '../BaseCommand';
 import User from '../../Models/User';
 import Logger, { Levels } from '../../Logger';
+import LanguageDecoder from '../../LanguageDecoder';
 
 export default class Ban extends BaseCommand {
-    constructor() {
-        super('ban', '', true, [String]);
+    constructor(LanguageDecoder: LanguageDecoder) {
+        super('ban', LanguageDecoder, true, [String]);
+
         this.Logger = new Logger(this.constructor.name);
+        this.Description = this.InterpolateString('BanDescription');
     }
 
     public Trigger = async ({

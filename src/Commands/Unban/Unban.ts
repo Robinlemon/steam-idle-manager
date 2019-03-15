@@ -1,9 +1,12 @@
 import BaseCommand, { ITriggerArgs } from '../BaseCommand';
 import User from '../../Models/User';
+import LanguageDecoder from '../../LanguageDecoder';
 
 export default class Unban extends BaseCommand {
-    constructor() {
-        super('unban', '', true, [String]);
+    constructor(LanguageDecoder: LanguageDecoder) {
+        super('unban', LanguageDecoder, true, [String]);
+
+        this.Description = this.InterpolateString('UnbanDescription');
     }
 
     public Trigger = async ({

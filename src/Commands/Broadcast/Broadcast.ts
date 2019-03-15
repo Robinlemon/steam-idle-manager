@@ -1,5 +1,6 @@
 import BaseCommand, { ITriggerArgs } from '../BaseCommand';
 import { EFriendRelationship } from '../../SteamEnums';
+import LanguageDecoder from '../../LanguageDecoder';
 
 type Friend = [string, EFriendRelationship];
 type FriendsList = {
@@ -7,8 +8,10 @@ type FriendsList = {
 };
 
 export default class BroadcastMessage extends BaseCommand {
-    constructor() {
-        super('broadcast', '', true, [String]);
+    constructor(LanguageDecoder: LanguageDecoder) {
+        super('broadcast', LanguageDecoder, true, [String]);
+
+        this.Description = this.InterpolateString('BroadcastDescription');
     }
 
     public Trigger = ({

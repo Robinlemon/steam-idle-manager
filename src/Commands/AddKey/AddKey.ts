@@ -1,11 +1,14 @@
 import BaseCommand, { ITriggerArgs } from '../BaseCommand';
+import LanguageDecoder from '../../LanguageDecoder';
 import Logger, { Levels } from '../../Logger';
 import App from '../../Models/App';
 
 export default class AddKey extends BaseCommand {
-    constructor() {
-        super('addkey', '', true, [Number, [String]]);
+    constructor(LanguageDecoder: LanguageDecoder) {
+        super('addkey', LanguageDecoder, true, [Number, [String]]);
+
         this.Logger = new Logger(this.constructor.name);
+        this.Description = this.InterpolateString('AddKeyDescription');
     }
 
     public Trigger = async ({
@@ -35,12 +38,13 @@ export default class AddKey extends BaseCommand {
                 }
             );
 
-            const Message = [
-                `Added a key to ${Document.Name}`,
-                `${Document.Name} now has ${Document.Keys.length} keys`
-            ];
+            const Message = this.InterpolateString('AddKeyResponse', [
+                Document.Name,
+                Document.Name,
+                Document.Keys.length
+            ]);
 
-            SteamClient.chatMessage(SteamID64, Message.join('\n'));
+            SteamClient.chatMessage(SteamID64, Message);
         } catch (Err) {
             this.Logger.log(Err.stack, Levels.ERROR);
         }

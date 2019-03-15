@@ -3,9 +3,11 @@ import App from '../../Models/App';
 import Logger, { Levels } from '../../Logger';
 
 export default class Apps extends BaseCommand {
-    constructor() {
-        super('apps', '', true, []);
+    constructor(LanguageDecoder: LanguageDecoder) {
+        super('apps', LanguageDecoder, true);
+
         this.Logger = new Logger(this.constructor.name);
+        this.Description = this.InterpolateString('AppsDescription');
     }
 
     public Trigger = async ({

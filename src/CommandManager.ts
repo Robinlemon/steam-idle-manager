@@ -18,18 +18,15 @@ import {
     RedeemAll,
     Group,
     Contact,
-    PrintRawUserRecord,
-    UpdateUserInstance
+    PrintRaw
 } from './Commands/';
 import FuzzySort from 'fuzzysort';
 import Logger, { Levels } from './Logger';
 import User from './Models/User';
 import SteamUser from 'steam-user';
 import SteamAPIManager from './SteamAPIManager';
+import LanguageDecoder from './LanguageDecoder';
 
-/**
- *  @todo Add semantic types for commands
- */
 export default class CommandWrapper {
     private SteamClient: any /*SteamUser*/;
     private CommandBundle: BaseCommand[];
@@ -39,42 +36,44 @@ export default class CommandWrapper {
     private AdminHelpMessage: string;
     private Logger: Logger;
     private SteamAPIManager: SteamAPIManager;
+    private LanguageDecoder: LanguageDecoder;
 
     constructor(
         SteamClient: any /*SteamUser*/,
         Admins: string[],
         CommandDelimiter: string,
-        SteamAPIManager: SteamAPIManager
+        SteamAPIManager: SteamAPIManager,
+        LanguageDecoder: LanguageDecoder
     ) {
         this.SteamClient = SteamClient;
         this.Admins = Admins;
         this.CommandDelimiter = CommandDelimiter;
         this.SteamAPIManager = SteamAPIManager;
+        this.LanguageDecoder = LanguageDecoder;
 
         this.Logger = new Logger(this.constructor.name);
 
         this.CommandBundle = [
-            new Broadcast(),
-            new Ban(),
-            new Unban(),
-            new Tier(),
-            new Apps(),
-            new AddKey(),
-            new Stock(),
-            new AddTag(),
-            new RemoveTag(),
-            new Owe(),
-            new AllOwe(),
-            new AllIdled(),
-            new ListGames(),
-            new Compare(),
-            new Redeem(),
-            new RedeemAll(),
-            new Group(),
-            new Contact(),
-            new PrintRawUserRecord(),
-            new UpdateUserInstance()
-        ];
+            Broadcast,
+            Ban,
+            Unban,
+            Tier,
+            Apps,
+            AddKey,
+            Stock,
+            AddTag,
+            RemoveTag,
+            Owe,
+            AllOwe,
+            AllIdled,
+            ListGames,
+            Compare,
+            Redeem,
+            RedeemAll,
+            Group,
+            Contact,
+            PrintRaw
+        ].map((Ref: any) => new Ref(this.LanguageDecoder));
 
         this.Logger.log(`Command Manager Initialised`, Levels.VERBOSE);
         this.Logger.log(
@@ -185,7 +184,8 @@ export default class CommandWrapper {
                         SteamClient: this.SteamClient,
                         SteamID64,
                         Arguments,
-                        SteamAPIManager: this.SteamAPIManager
+                        SteamAPIManager: this.SteamAPIManager,
+                        LanguageDecoder: this.LanguageDecoder
                     });
                 } else {
                     this.SteamClient.chatMessage(
@@ -198,7 +198,8 @@ export default class CommandWrapper {
                     SteamClient: this.SteamClient,
                     SteamID64,
                     Arguments,
-                    SteamAPIManager: this.SteamAPIManager
+                    SteamAPIManager: this.SteamAPIManager,
+                    LanguageDecoder: this.LanguageDecoder
                 });
             }
         } else this.SuggestCommand(Identifier, SteamID64);

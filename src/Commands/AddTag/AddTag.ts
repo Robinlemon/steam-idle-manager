@@ -1,11 +1,14 @@
 import BaseCommand, { ITriggerArgs } from '../BaseCommand';
 import Logger, { Levels } from '../../Logger';
 import User from '../../Models/User';
+import LanguageDecoder from '../../LanguageDecoder';
 
 export default class AddTag extends BaseCommand {
-    constructor() {
-        super('addtag', '', true, [String, [String]]);
+    constructor(LanguageDecoder: LanguageDecoder) {
+        super('addtag', LanguageDecoder, true, [String, [String]]);
+
         this.Logger = new Logger(this.constructor.name);
+        this.Description = this.InterpolateString('AddTagDescription');
     }
 
     public Trigger = async ({

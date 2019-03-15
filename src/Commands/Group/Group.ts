@@ -1,11 +1,14 @@
 import BaseCommand, { ITriggerArgs } from '../BaseCommand';
 import { NotImplemented } from '../../Errors';
 import Logger, { Levels } from '../../Logger';
+import LanguageDecoder from '../../LanguageDecoder';
 
 export default class Group extends BaseCommand {
-    constructor() {
-        super('group', '', false, []);
+    constructor(LanguageDecoder: LanguageDecoder) {
+        super('group', LanguageDecoder);
+
         this.Logger = new Logger(this.constructor.name);
+        this.Description = this.InterpolateString('GroupDescription');
     }
 
     public Trigger = async ({

@@ -1,11 +1,14 @@
 import BaseCommand, { ITriggerArgs } from '../BaseCommand';
 import Logger, { Levels } from '../../Logger';
 import User from '../../Models/User';
+import LanguageDecoder from '../../LanguageDecoder';
 
 export default class RemoveTag extends BaseCommand {
-    constructor() {
-        super('removetag', '', true, [String, [String]]);
+    constructor(LanguageDecoder: LanguageDecoder) {
+        super('removetag', LanguageDecoder, true, [String, [String]]);
+
         this.Logger = new Logger(this.constructor.name);
+        this.Description = this.InterpolateString('RemoveTagDescription');
     }
 
     public Trigger = async ({

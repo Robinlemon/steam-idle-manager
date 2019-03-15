@@ -1,13 +1,15 @@
 import BaseCommand, { ITriggerArgs } from '../BaseCommand';
 import Logger, { Levels } from '../../Logger';
-import { InstanceType } from 'typegoose';
 import User from '../../Models/User';
 import AppModel from '../../Models/App';
+import LanguageDecoder from '../../LanguageDecoder';
 
 export default class Owe extends BaseCommand {
-    constructor() {
-        super('owe', '');
+    constructor(LanguageDecoder: LanguageDecoder) {
+        super('owe', LanguageDecoder);
+
         this.Logger = new Logger(this.constructor.name);
+        this.Description = this.InterpolateString('OweDescription');
     }
 
     public Trigger = async ({

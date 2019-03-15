@@ -1,16 +1,14 @@
 import BaseCommand, { ITriggerArgs } from '../BaseCommand';
 import Logger, { Levels } from '../../Logger';
 import User from '../../Models/User';
+import LanguageDecoder from '../../LanguageDecoder';
 
-export default class PrintRawUserRecord extends BaseCommand {
-    constructor() {
-        super(
-            'printrawuserrecord',
-            'Prints the raw JSON of a User model',
-            true,
-            [String]
-        );
+export default class PrintRaw extends BaseCommand {
+    constructor(LanguageDecoder: LanguageDecoder) {
+        super('printraw', LanguageDecoder, true, [String]);
+
         this.Logger = new Logger(this.constructor.name);
+        this.Description = this.InterpolateString('PrintRawDescription');
     }
 
     public Trigger = async ({

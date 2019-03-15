@@ -1,11 +1,14 @@
 import BaseCommand, { ITriggerArgs } from '../BaseCommand';
 import Logger, { Levels } from '../../Logger';
 import App from '../../Models/App';
+import LanguageDecoder from '../../LanguageDecoder';
 
 export default class Stock extends BaseCommand {
-    constructor() {
-        super('stock', '', false, []);
+    constructor(LanguageDecoder: LanguageDecoder) {
+        super('stock', LanguageDecoder);
+
         this.Logger = new Logger(this.constructor.name);
+        this.Description = this.InterpolateString('StockDescription');
     }
 
     public Trigger = async ({
@@ -14,21 +17,17 @@ export default class Stock extends BaseCommand {
         Arguments
     }: ITriggerArgs): Promise<void> => {
         try {
-            const Records = await App.find({
-                TotalKeys: { $gt: 0 }
+            const MyAppInfo = await App.find({
+                TotalKeys: {
+                    $gt: 0
+                }
             });
 
-            if (Records.length === 0)
-                return SteamClient.chatMessage(
-                    SteamID64,
-                    `We dont have any keys in stock.`
-                );
+            const Message = MyAppInfo.map(
+                AppObj => `(${AppObj.AppID}) ${AppObj.Name}`
+            ).join('\n');
 
-            const Message = Records.map(
-                Record => `${Record.Name}: ${Record.TotalKeys}`
-            );
-
-            SteamClient.chatMessage(SteamID64, Message.join('\n'));
+            SteamClient.chatMessage(SteamID64, Message);
         } catch (Err) {
             this.Logger.log(Err.stack, Levels.ERROR);
         }
