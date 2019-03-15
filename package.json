@@ -4,7 +4,7 @@
     "description": "A Steam Group manager for idling games",
     "main": "index.ts",
     "scripts": {
-        "start": "node -r ts-node/register --no-deprecation index.ts",
+        "start": "node -r ts-node/register --no-warnings index.ts",
         "test": "jest --verbose --coverage",
         "coveralls": "jest --coverage --maxWorkers=2 && cat ./coverage/lcov.info | coveralls",
         "cc": "node ./src/Commands/CreateCommand.build.js"

@@ -22,12 +22,19 @@ export default interface INamespaceMap {
 
     CompareDescription: string;
     CompareResponse: string;
+    CompareResponseIter: string;
+    CompareResponseZero: string;
+
+    ContactDescription: string;
+    ContactResponse: string;
 
     GroupDescription: string;
     GroupResponse: string;
 
     OweDescription: string;
     OweResponse: string;
+    OweResponseIter: string;
+    OweResponseZero: string;
 
     PrintRawDescription: string;
     PrintRawResponse: string;
@@ -49,4 +56,6 @@ export default interface INamespaceMap {
 
     UnbanDescription: string;
     UnbanResponse: string;
+
+    UserModelInvalid: string;
 }

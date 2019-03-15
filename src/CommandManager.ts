@@ -12,7 +12,6 @@ import {
     Owe,
     AllOwe,
     AllIdled,
-    ListGames,
     Compare,
     Redeem,
     RedeemAll,
@@ -27,8 +26,13 @@ import SteamUser from 'steam-user';
 import SteamAPIManager from './SteamAPIManager';
 import LanguageDecoder from './LanguageDecoder';
 
+interface ClassDefinition<T> extends Function {
+    new (...args: any[]): T;
+}
+
 export default class CommandWrapper {
     private SteamClient: any /*SteamUser*/;
+    private CommandClasses: ClassDefinition<BaseCommand>[];
     private CommandBundle: BaseCommand[];
     private Admins: string[];
     private CommandDelimiter: string;
@@ -53,7 +57,7 @@ export default class CommandWrapper {
 
         this.Logger = new Logger(this.constructor.name);
 
-        this.CommandBundle = [
+        this.CommandClasses = [
             Broadcast,
             Ban,
             Unban,
@@ -66,16 +70,26 @@ export default class CommandWrapper {
             Owe,
             AllOwe,
             AllIdled,
-            ListGames,
             Compare,
             Redeem,
             RedeemAll,
             Group,
             Contact,
             PrintRaw
-        ].map((Ref: any) => new Ref(this.LanguageDecoder));
+        ];
 
         this.Logger.log(`Command Manager Initialised`, Levels.VERBOSE);
+    }
+
+    public RegisterClasses() {
+        this.Logger.log(`Registering Classes`, Levels.VERBOSE);
+        this.CommandBundle = this.CommandClasses.map(
+            (Ref: any) => new Ref(this.LanguageDecoder)
+        );
+        this.PostRegister();
+    }
+
+    private PostRegister() {
         this.Logger.log(
             `Found ${this.CommandBundle.length} Commands`,
             Levels.VERBOSE
@@ -147,13 +161,21 @@ export default class CommandWrapper {
               }).join(' ')} -> ${Command.Description}`
             : null;
 
+    public IsAdmin = (SteamID64: string) =>
+        this.Admins.includes(SteamID64.toString());
+
     private RouteCommand(
         Identifier: string,
         SteamID64: string,
         Arguments?: string[]
     ) {
         if (Identifier === 'help')
-            return this.SteamClient.chatMessage(SteamID64, this.HelpMessage);
+            return this.SteamClient.chatMessage(
+                SteamID64,
+                this.IsAdmin(SteamID64)
+                    ? this.AdminHelpMessage
+                    : this.HelpMessage
+            );
 
         const CommandFound = this.CommandBundle.find(
             (Command: BaseCommand) => Command.Identifier === Identifier
@@ -184,8 +206,7 @@ export default class CommandWrapper {
                         SteamClient: this.SteamClient,
                         SteamID64,
                         Arguments,
-                        SteamAPIManager: this.SteamAPIManager,
-                        LanguageDecoder: this.LanguageDecoder
+                        SteamAPIManager: this.SteamAPIManager
                     });
                 } else {
                     this.SteamClient.chatMessage(
@@ -198,8 +219,7 @@ export default class CommandWrapper {
                     SteamClient: this.SteamClient,
                     SteamID64,
                     Arguments,
-                    SteamAPIManager: this.SteamAPIManager,
-                    LanguageDecoder: this.LanguageDecoder
+                    SteamAPIManager: this.SteamAPIManager
                 });
             }
         } else this.SuggestCommand(Identifier, SteamID64);

@@ -24,8 +24,8 @@ export default class AllIdled extends BaseCommand {
             }
         });
 
-        const Message = Records.map(
-            ({ SteamID64, GamesIdled }) => `${SteamID64} -> ${GamesIdled}`
+        const Message = Records.map(({ SteamID64, GamesIdled }) =>
+            this.InterpolateString('AddIdledResponse', [SteamID64, GamesIdled])
         ).join('\n');
 
         SteamClient.chatMessage(SteamID64, Message);

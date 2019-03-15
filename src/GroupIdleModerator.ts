@@ -38,7 +38,6 @@ export default class GroupIdleModerator extends SteamBot {
         this.ResourceManager = new SteamResources();
         this.SteamAPIManager = new SteamAPIManager(this.APIKey);
         this.LanguageDecoder = new LanguageDecoder();
-        this.LanguageDecoder.SetLanguage('English');
 
         this.CommandDelimiter = Props.CommandDelimiter;
         this.Admins = Props.Admins.split(',');
@@ -51,8 +50,14 @@ export default class GroupIdleModerator extends SteamBot {
             this.LanguageDecoder
         );
 
-        //this.ResourceManager.Start(1000 * 60 * 60 * 24); //24h
+        this.Initialise();
+    }
 
+    private async Initialise() {
+        await Promise.all([this.LanguageDecoder.GetInternalPromise()]);
+
+        //this.ResourceManager.Start(1000 * 60 * 60 * 24); //24h
+        this.Commands.RegisterClasses();
         this.SetupEvents();
 
         this.Logger.log('Attempting to connect to Steam...', Levels.VERBOSE);

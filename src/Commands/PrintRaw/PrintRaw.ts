@@ -22,11 +22,16 @@ export default class PrintRaw extends BaseCommand {
             SteamID64: SteamIDOfUser
         });
 
-        if (Record === null) {
-            SteamClient.chatMessage(SteamID64, 'User does not exist.');
-            return;
-        }
+        if (Record === null)
+            return SteamClient.chatMessage(
+                SteamID64,
+                this.InterpolateString('UserModelInvalid')
+            );
 
-        SteamClient.chatMessage(SteamID64, JSON.stringify(Record, null, 0));
+        const Message = this.InterpolateString('PrintRawResponse', [
+            JSON.stringify(Record, null, 0)
+        ]);
+
+        SteamClient.chatMessage(SteamID64, Message);
     };
 }

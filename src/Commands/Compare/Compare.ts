@@ -36,20 +36,19 @@ export default class Compare extends BaseCommand {
             AppObj => !TheirAppIDs.includes(AppObj.AppID)
         );
 
-        if (ApplicableGames.length > 0)
-            SteamClient.chatMessage(
-                SteamID64,
-                ApplicableGames.map(
-                    AppObj =>
-                        `You are eligible for the following games:\n> ${
-                            AppObj.Name
-                        }`
-                ).join('\n')
-            );
-        else
-            SteamClient.chatMessage(
-                SteamID64,
-                `Sorry we dont have any games available for you.`
-            );
+        if (ApplicableGames.length > 0) {
+            const Message = [
+                this.InterpolateString('CompareResponse'),
+                ...ApplicableGames.map(AppObj =>
+                    this.InterpolateString('CompareResponseIter', [AppObj.Name])
+                )
+            ].join('\n');
+
+            SteamClient.chatMessage(SteamID64, Message);
+        } else {
+            const Message = this.InterpolateString('CompareResponseZero');
+
+            SteamClient.chatMessage(SteamID64, Message);
+        }
     };
 }

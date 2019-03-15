@@ -55,7 +55,7 @@ export default abstract class Command {
             Namespace as ENamespaces
         );
 
-        if (StandardMessage.match(this.InterpolationRegex).length === 0)
+        if (StandardMessage.match(this.InterpolationRegex) === null)
             return StandardMessage;
         else
             return StandardMessage.replace(this.InterpolationRegex, Match => {

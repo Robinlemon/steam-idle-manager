@@ -19,7 +19,7 @@ export default class BroadcastMessage extends BaseCommand {
         SteamID64,
         Arguments
     }: ITriggerArgs): void => {
-        const [Message] = Arguments;
+        const [MessageToSend] = Arguments;
 
         const Friends: FriendsList = SteamClient.myFriends;
         const AsPairs: Friend[] = Object.entries(Friends);
@@ -33,7 +33,13 @@ export default class BroadcastMessage extends BaseCommand {
         );
 
         ActualFriends.forEach((FriendSteamID64: string) =>
-            SteamClient.chatMessage(FriendSteamID64, Message)
+            SteamClient.chatMessage(FriendSteamID64, MessageToSend)
         );
+
+        const Message = this.InterpolateString('BroadcastResponse', [
+            MessageToSend
+        ]);
+
+        SteamClient.chatMessage(SteamID64, Message);
     };
 }

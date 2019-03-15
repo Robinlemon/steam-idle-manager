@@ -32,10 +32,12 @@ export default class AddTag extends BaseCommand {
                 }
             );
 
-            SteamClient.chatMessage(
-                SteamID64,
-                `Gave ${Tags.length} Tags to ${SteamID}`
-            );
+            const Message = this.InterpolateString('AddTagResponse', [
+                Tags.length,
+                SteamID
+            ]);
+
+            SteamClient.chatMessage(SteamID64, Message);
         } catch (Err) {
             this.Logger.log(Err.stack, Levels.ERROR);
         }

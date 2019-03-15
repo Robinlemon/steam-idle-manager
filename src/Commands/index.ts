@@ -10,7 +10,6 @@ export { default as RemoveTag } from './RemoveTag';
 export { default as Owe } from './Owe';
 export { default as AllOwe } from './AllOwe';
 export { default as AllIdled } from './AllIdled';
-export { default as ListGames } from './ListGames';
 export { default as Compare } from './Compare';
 export { default as Redeem } from './Redeem';
 export { default as RedeemAll } from './RedeemAll';

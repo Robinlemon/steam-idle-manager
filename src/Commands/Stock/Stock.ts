@@ -23,8 +23,11 @@ export default class Stock extends BaseCommand {
                 }
             });
 
-            const Message = MyAppInfo.map(
-                AppObj => `(${AppObj.AppID}) ${AppObj.Name}`
+            const Message = MyAppInfo.map(AppObj =>
+                this.InterpolateString('StockResponse', [
+                    AppObj.AppID,
+                    AppObj.Name
+                ])
             ).join('\n');
 
             SteamClient.chatMessage(SteamID64, Message);

@@ -23,14 +23,18 @@ export default class Owe extends BaseCommand {
 
         if (UserRecord === null || UserRecord.Owe === null) {
             this.Logger.log(`${SteamID64} User Obj doesnt exist`, Levels.ERROR);
-            SteamClient.chatMessage(SteamID64, 'Try readding me');
-            return;
+
+            return SteamClient.chatMessage(
+                SteamID64,
+                this.InterpolateString('UserModelInvalid')
+            );
         }
 
-        if (UserRecord.Owe.length === 0) {
-            SteamClient.chatMessage(SteamID64, `You don't owe anything :`);
-            return;
-        }
+        if (UserRecord.Owe.length === 0)
+            return SteamClient.chatMessage(
+                SteamID64,
+                this.InterpolateString('OweResponseZero')
+            );
 
         const AppIDsToGetGameInfoFor = UserRecord.Owe.map(
             OweObj => OweObj.AppID
@@ -47,15 +51,17 @@ export default class Owe extends BaseCommand {
             return Data;
         }, {});
 
-        const Message = UserRecord.Owe.map(
-            ({ AppID, TotalCardsRequired, CardsGiven }) => {
-                const GameName = KeyToRecordMap[AppID];
-                const Difference = TotalCardsRequired - CardsGiven;
+        const Message = [
+            this.InterpolateString('OweResponse'),
+            ...UserRecord.Owe.map(({ AppID, TotalCardsRequired, CardsGiven }) =>
+                this.InterpolateString('OweResponseIter', [
+                    KeyToRecordMap[AppID],
+                    AppID,
+                    TotalCardsRequired - CardsGiven
+                ])
+            )
+        ].join('\n');
 
-                return `${GameName} (${AppID}): ${Difference}`;
-            }
-        );
-
-        SteamClient.chatMessage(SteamID64, `You owe:\n${Message.join('\n')}`);
+        SteamClient.chatMessage(SteamID64, Message);
     };
 }

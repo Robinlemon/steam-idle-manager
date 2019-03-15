@@ -28,7 +28,9 @@ export default class Ban extends BaseCommand {
                 }
             );
 
-            SteamClient.chatMessage(SteamID64, `User ${ToBan} is now banned`);
+            const Message = this.InterpolateString('BanResponse', [ToBan]);
+
+            SteamClient.chatMessage(SteamID64, Message);
         } catch (Err) {
             this.Logger.log(Err.stack, Levels.ERROR);
         }

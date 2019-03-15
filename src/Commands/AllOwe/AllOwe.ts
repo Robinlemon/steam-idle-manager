@@ -20,7 +20,9 @@ export default class AllOwe extends BaseCommand {
             DoesOwe: true
         });
 
-        const Message = Records.map(({ SteamID64 }) => SteamID64).join('\n');
+        const Message = Records.map(({ SteamID64 }) =>
+            this.InterpolateString('AddOweResponse', [SteamID64])
+        ).join('\n');
 
         SteamClient.chatMessage(SteamID64, Message);
     };

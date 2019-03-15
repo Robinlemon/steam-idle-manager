@@ -10,30 +10,52 @@ export default class LanguageDecoder {
     private LanguageData: INamespaceMap;
     private Logger: Logger;
 
+    private InternalPromise: Promise<void>;
+    private ResolveInternalPromise: () => void;
+
     constructor() {
         this.Logger = new Logger(this.constructor.name);
 
+        this.InternalPromise = new Promise(Resolve => {
+            this.ResolveInternalPromise = Resolve;
+        });
+
         this.Logger.log(`Loading locale files...`, Levels.VERBOSE);
-        this.LoadLanguage('English.json');
+        this.LoadLanguage('English');
     }
+
+    public GetInternalPromise = () => this.InternalPromise;
 
     public GetString(Namespace: ENamespaces) {
-        if (Namespace in this.LanguageData) return this.LanguageData[Namespace];
-        else return this.FailSafeString;
+        this.Logger.log(`Retrieving ${Namespace}`, Levels.SILLY);
+
+        if (Object.keys(this.LanguageData).includes(Namespace))
+            return this.LanguageData[Namespace];
+        else {
+            this.Logger.log(
+                `Namespace \`${Namespace}\` doesn't exist`,
+                Levels.WARN
+            );
+
+            return this.FailSafeString;
+        }
     }
 
-    private async LoadLanguage(Path: string): Promise<void> {
-        const LanguageName = Path.split('.')[0];
-        const FileData = await fsPromises.readFile(Path);
-
+    private async LoadLanguage(LanguageName: string): Promise<void> {
         try {
-            this.LanguageData = JSON.parse(FileData.toString());
+            this.LanguageData = (await import(`./Locale/${LanguageName}.ts`))[
+                'default'
+            ];
+
+            this.Logger.log(JSON.stringify(this.LanguageData, null, 2));
             this.Logger.log(`Loaded ${LanguageName} Locale`, Levels.VERBOSE);
         } catch {
             this.Logger.log(
-                new Error(`Malformed JSON structure for ${LanguageName}`).stack,
+                new Error(`Error parsing ${LanguageName} locale`).stack,
                 Levels.ERROR
             );
         }
+
+        this.ResolveInternalPromise();
     }
 }
