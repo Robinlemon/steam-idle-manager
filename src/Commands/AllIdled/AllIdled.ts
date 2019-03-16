@@ -8,7 +8,7 @@ export default class AllIdled extends BaseCommand {
         super('allidled', LanguageDecoder, true, []);
 
         this.Logger = new Logger(this.constructor.name);
-        this.Description = this.InterpolateString('AddIdledDescription');
+        this.Description = this.InterpolateString('AllIdledDescription');
     }
 
     public Trigger = async ({
@@ -25,7 +25,7 @@ export default class AllIdled extends BaseCommand {
         });
 
         const Message = Records.map(({ SteamID64, GamesIdled }) =>
-            this.InterpolateString('AddIdledResponse', [SteamID64, GamesIdled])
+            this.InterpolateString('AllIdledResponse', [SteamID64, GamesIdled])
         ).join('\n');
 
         SteamClient.chatMessage(SteamID64, Message);

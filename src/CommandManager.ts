@@ -100,15 +100,15 @@ export default class CommandWrapper {
             Levels.VERBOSE
         );
 
-        this.HelpMessage = this.CommandBundle.map(Command =>
-            this.DocumentCommand(Command)
-        )
-            .filter(x => x)
-            .join('\n');
-
-        this.AdminHelpMessage = this.CommandBundle.map(Command =>
-            this.DocumentCommand(Command, true)
+        this.AdminHelpMessage = this.CommandBundle.map(
+            this.DocumentCommand
         ).join('\n');
+
+        this.HelpMessage = this.CommandBundle.filter(
+            Command => Command.IsAdmin === false
+        )
+            .map(this.DocumentCommand)
+            .join('\n');
 
         this.Logger.log(`Created Help Documentation`, Levels.VERBOSE);
     }
@@ -148,18 +148,13 @@ export default class CommandWrapper {
         else this.SuggestCommand(Command.toLowerCase(), SteamID);
     }
 
-    private DocumentCommand = (
-        Command: BaseCommand,
-        IsAdmin: boolean = false
-    ) =>
-        (IsAdmin && Command.IsAdmin) || (!IsAdmin && !Command.IsAdmin)
-            ? `!${Command.Identifier} ${Command.ArgumentMap.map(Arg => {
-                  if (Array.isArray(Arg)) return `[arg1, arg2, ...]`;
-                  else if (typeof Arg === 'object')
-                      return `<${typeof Arg.type()}${Arg.optional && '?'}>`;
-                  else return `<Arg>`;
-              }).join(' ')} -> ${Command.Description}`
-            : null;
+    private DocumentCommand = (Command: BaseCommand) =>
+        `!${Command.Identifier} ${Command.ArgumentMap.map(Arg => {
+            if (Array.isArray(Arg)) return `[arg1, arg2, ...]`;
+            else if (typeof Arg === 'object')
+                return `<${typeof Arg.type()}${Arg.optional && '?'}>`;
+            else return `<Arg>`;
+        }).join(' ')} -> ${Command.Description}`;
 
     public IsAdmin = (SteamID64: string) =>
         this.Admins.includes(SteamID64.toString());

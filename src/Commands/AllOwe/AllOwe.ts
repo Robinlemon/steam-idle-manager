@@ -8,7 +8,7 @@ export default class AllOwe extends BaseCommand {
         super('allowe', LanguageDecoder, true);
 
         this.Logger = new Logger(this.constructor.name);
-        this.Description = this.InterpolateString('AddOweDescription');
+        this.Description = this.InterpolateString('AllOweDescription');
     }
 
     public Trigger = async ({
@@ -21,7 +21,7 @@ export default class AllOwe extends BaseCommand {
         });
 
         const Message = Records.map(({ SteamID64 }) =>
-            this.InterpolateString('AddOweResponse', [SteamID64])
+            this.InterpolateString('AllOweResponse', [SteamID64])
         ).join('\n');
 
         SteamClient.chatMessage(SteamID64, Message);

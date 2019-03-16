@@ -1,10 +1,6 @@
 import { prop, Typegoose } from 'typegoose';
 
 export class App extends Typegoose {
-    constructor(...Args: any[]) {
-        super();
-    }
-
     @prop({ required: true })
     AppID: number;
 
