@@ -65,7 +65,6 @@ export default class LanguageDecoder {
                 'default'
             ];
 
-            this.Logger.log(JSON.stringify(this.LanguageData, null, 2));
             this.Logger.log(`Loaded ${LanguageName} Locale`, Levels.VERBOSE);
         } catch {
             this.Logger.log(

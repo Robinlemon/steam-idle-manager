@@ -25,6 +25,7 @@ import User from './Models/User';
 import SteamUser from 'steam-user';
 import SteamAPIManager from './SteamAPIManager';
 import LanguageDecoder from './LanguageDecoder';
+import Command from './Commands/BaseCommand';
 
 interface ClassDefinition<T> extends Function {
     new (...args: any[]): T;
@@ -204,10 +205,12 @@ export default class CommandWrapper {
                         SteamAPIManager: this.SteamAPIManager
                     });
                 } else {
-                    this.SteamClient.chatMessage(
-                        SteamID64,
-                        `This command is for admins only!`
-                    );
+                    //Pretend it doesnt exist
+                    return this.SuggestCommand(Identifier, SteamID64);
+                    // this.SteamClient.chatMessage(
+                    //     SteamID64,
+                    //     `This command is for admins only!`
+                    // );
                 }
             } else {
                 CommandFound.Trigger({
@@ -225,6 +228,10 @@ export default class CommandWrapper {
             key: 'Identifier'
         })
             .filter((Result: { score: number }) => Result.score > -2000)
+            .filter(
+                CommandObj =>
+                    +CommandObj.obj.IsAdmin <= +this.IsAdmin(SteamID64)
+            )
             .map(
                 CommandObj =>
                     `✔ ${this.CommandDelimiter}${CommandObj.obj.Identifier}`

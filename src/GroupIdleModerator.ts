@@ -56,7 +56,7 @@ export default class GroupIdleModerator extends SteamBot {
     private async Initialise() {
         await Promise.all([this.LanguageDecoder.GetInternalPromise()]);
 
-        //this.ResourceManager.Start(1000 * 60 * 60 * 24); //24h
+        this.ResourceManager.Start(1000 * 60 * 60 * 24); //24h
         this.Commands.RegisterClasses();
         this.SetupEvents();
 
@@ -118,7 +118,7 @@ export default class GroupIdleModerator extends SteamBot {
         this.Commands.HandleInput(SteamID, Message);
     };
 
-    private onFriendRelationship = async (
+    private onFriendRelationship = (
         SteamID: string,
         Relationship: EFriendRelationship
     ) => {
@@ -129,7 +129,8 @@ export default class GroupIdleModerator extends SteamBot {
                     if (Err) return this.Logger.log(Err.stack, Levels.ERROR);
 
                     const Message = this.LanguageDecoder.InterpolateString(
-                        'SteamWelcome'
+                        'SteamWelcome',
+                        [PersonaName]
                     );
 
                     this.Client.chatMessage(SteamID, Message);
