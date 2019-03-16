@@ -1,6 +1,10 @@
 import INamespaceMap from './INamespaces';
 
 const Data: INamespaceMap = {
+    SteamName: '¡ IdleFreaks Distributor |> $1',
+    SteamGame: 'Distributing CD Keys',
+    SteamWelcome: 'Welcome $1!\n>Use !help to get started',
+
     AddKeyDescription:
         'Adds the given key to the given game, to add multiple keys separe them by comma (,).',
     AddKeyResponse: 'Added a key to $1\n$2 now has $3 keys.',

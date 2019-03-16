@@ -1,4 +1,8 @@
 export default interface INamespaceMap {
+    SteamName: string;
+    SteamGame: string;
+    SteamWelcome: string;
+
     AddKeyDescription: string;
     AddKeyResponse: string;
 

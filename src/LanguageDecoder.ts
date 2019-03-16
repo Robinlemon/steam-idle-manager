@@ -12,6 +12,7 @@ export default class LanguageDecoder {
 
     private InternalPromise: Promise<void>;
     private ResolveInternalPromise: () => void;
+    private InterpolationRegex = /\$\d+/g;
 
     constructor() {
         this.Logger = new Logger(this.constructor.name);
@@ -26,7 +27,7 @@ export default class LanguageDecoder {
 
     public GetInternalPromise = () => this.InternalPromise;
 
-    public GetString(Namespace: ENamespaces) {
+    private GetString(Namespace: ENamespaces) {
         this.Logger.log(`Retrieving ${Namespace}`, Levels.SILLY);
 
         if (Object.keys(this.LanguageData).includes(Namespace))
@@ -40,6 +41,23 @@ export default class LanguageDecoder {
             return this.FailSafeString;
         }
     }
+
+    public InterpolateString = (
+        Namespace: string,
+        Args: any[] = []
+    ): string => {
+        const StandardMessage = this.GetString(Namespace as ENamespaces);
+
+        if (StandardMessage.match(this.InterpolationRegex) === null)
+            return StandardMessage;
+        else
+            return StandardMessage.replace(this.InterpolationRegex, Match => {
+                const IDx = +Match.substr(1);
+
+                if (Args.length <= IDx) return Args[IDx - 1];
+                else return null;
+            });
+    };
 
     private async LoadLanguage(LanguageName: string): Promise<void> {
         try {

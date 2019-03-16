@@ -18,7 +18,10 @@ export default class Logger {
     constructor(Name?: string) {
         this.Name = Name;
         this.Logger = createLogger({
-            level: Levels.SILLY,
+            level:
+                process.env.NODE_ENV === 'production'
+                    ? Levels.INFO
+                    : Levels.DEBUG,
             format: format.json(),
             transports: [
                 new transports.Console({

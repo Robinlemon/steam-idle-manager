@@ -1,4 +1,4 @@
-import Logger from '../Logger';
+import Logger, { Levels } from '../Logger';
 import SteamUser from 'steam-user';
 import SteamAPIManager from '../SteamAPIManager';
 import LanguageDecoder, { ENamespaces } from '../LanguageDecoder';
@@ -31,7 +31,6 @@ export default abstract class Command {
     public Logger: Logger;
 
     private LanguageDecoder: LanguageDecoder;
-    private InterpolationRegex = /\$\d+/g;
 
     constructor(
         Identifier: string,
@@ -47,23 +46,8 @@ export default abstract class Command {
 
     public abstract Trigger = (Args: ITriggerArgs): void => {};
 
-    public InterpolateString = (
-        Namespace: string,
-        Args: any[] = []
-    ): string => {
-        const StandardMessage = this.LanguageDecoder.GetString(
-            Namespace as ENamespaces
-        );
-
-        if (StandardMessage.match(this.InterpolationRegex) === null)
-            return StandardMessage;
-        else
-            return StandardMessage.replace(this.InterpolationRegex, Match => {
-                const IDx = +Match.substr(1);
-
-                if (Args.length <= IDx) return Args[IDx - 1];
-                else return null;
-            });
+    public InterpolateString = (Namespace: string, Args?: any[]) => {
+        return this.LanguageDecoder.InterpolateString(Namespace, Args);
     };
 
     public Validate = (Arguments: string[]): boolean => {
