@@ -3,7 +3,7 @@ import DotEnvSafe from 'dotenv-safe';
 import Logger, { Levels } from './src/Logger';
 import GroupIdleModerator from './src/GroupIdleModerator';
 
-const GlobalLogger = new Logger('Global Exception Tracer');
+const GlobalLogger = new Logger('GlobalExceptionTracer');
 const { parsed }: DotenvConfigOutput = DotEnvSafe.config();
 new GroupIdleModerator(parsed);
 
