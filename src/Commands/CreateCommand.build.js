@@ -26,15 +26,17 @@ const Test = `\
 import ${DirName} from './index';
 import LanguageDecoder from '../../LanguageDecoder';
 
-const LanguageDecoderInstance = new LanguageDecoder();
+let LanguageDecoderInstance: LanguageDecoder;
+let Instance: ${DirName};
 
 beforeAll(async () => {
+    LanguageDecoderInstance = new LanguageDecoder();
     await LanguageDecoderInstance.GetInternalPromise();
+
+    Instance = new ${DirName}(LanguageDecoderInstance);
 });
 
 describe('${DirName} Command', () => {
-    const Instance = new ${DirName}();
-
     test('It should be admin only', () => {
         expect(Instance.IsAdmin).toBeTruthy();
     });
@@ -44,15 +46,13 @@ describe('${DirName} Command', () => {
     });
 
     test('It should have the correct arguments', () => {
-        const Args = [];
+        const Args: any[] = [String];
 
         expect(Instance.ArgumentMap).toEqual(expect.arrayContaining(Args));
         expect(Instance.ArgumentMap).toHaveLength(Args.length);
     });
 
-    describe('It should trigger', () => {
-
-    });
+    describe('It should trigger', () => {});
 });\
 `;
 
