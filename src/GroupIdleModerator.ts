@@ -5,11 +5,10 @@ import { EFriendRelationship } from './SteamEnums';
 import User from './Models/User';
 import App from './Models/App';
 import Steam from 'steam';
-import Mongoose from 'mongoose';
-import { MongoError } from 'mongodb';
 import SteamResources from './SteamResources';
 import SteamAPIManager from './SteamAPIManager';
 import LanguageDecoder from './LanguageDecoder';
+import MongooseConnection from './MongooseConnection';
 
 export default class GroupIdleModerator extends SteamBot {
     private Admins: string[];
@@ -18,6 +17,7 @@ export default class GroupIdleModerator extends SteamBot {
     private ResourceManager: SteamResources;
     private SteamAPIManager: SteamAPIManager;
     private LanguageDecoder: LanguageDecoder;
+    private MongooseConnection: MongooseConnection;
     private Logger: Logger;
 
     constructor(Props: any) {
@@ -25,19 +25,13 @@ export default class GroupIdleModerator extends SteamBot {
             ...Props
         });
 
-        Mongoose.connect(
-            Props.MongoConnectionString,
-            { useNewUrlParser: true, autoReconnect: true },
-            (Err: MongoError) => {
-                if (Err) return this.Logger.log(Err.stack, Levels.ERROR);
-                this.Logger.log('Connected to MongoDB', Levels.INFO);
-            }
-        );
-
         this.Logger = new Logger(this.constructor.name);
         this.ResourceManager = new SteamResources();
         this.SteamAPIManager = new SteamAPIManager(this.APIKey);
         this.LanguageDecoder = new LanguageDecoder();
+        this.MongooseConnection = new MongooseConnection(
+            Props.MongoConnectionString
+        );
 
         this.CommandDelimiter = Props.CommandDelimiter;
         this.Admins = Props.Admins.split(',');
@@ -54,9 +48,12 @@ export default class GroupIdleModerator extends SteamBot {
     }
 
     private async Initialise() {
-        await Promise.all([this.LanguageDecoder.GetInternalPromise()]);
+        await Promise.all([
+            this.LanguageDecoder.GetInternalPromise(),
+            this.MongooseConnection.Initialise()
+        ]);
 
-        this.ResourceManager.Start(1000 * 60 * 60 * 24); //24h
+        //this.ResourceManager.Start(1000 * 60 * 60 * 24); //24h
         this.Commands.RegisterClasses();
         this.SetupEvents();
 

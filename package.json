@@ -5,7 +5,7 @@
     "main": "index.ts",
     "scripts": {
         "start": "node -r ts-node/register --no-warnings index.ts",
-        "test": "jest --verbose --coverage",
+        "test": "jest --verbose",
         "coveralls": "jest --coverage --maxWorkers=2 && cat ./coverage/lcov.info | coveralls",
         "cc": "node ./src/Commands/CreateCommand.build.js"
     },
@@ -44,5 +44,12 @@
         "prettier": "^1.16.4",
         "ts-jest": "^24.0.0",
         "tslint": "^5.13.1"
+    },
+    "jest": {
+        "roots": [
+            "<rootDir>/src"
+        ],
+        "testEnvironment": "node",
+        "preset": "ts-jest"
     }
 }

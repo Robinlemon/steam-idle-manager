@@ -46,7 +46,7 @@ const Data: INamespaceMap = {
     OweResponseIter: '$1 ($2): $3',
     OweResponseZero: "You don't owe anything!",
 
-    PrintRawDescription: '[DEBUG] Prints the raw JSOn of a User model',
+    PrintRawDescription: 'Prints the raw JSON of a User model',
     PrintRawResponse: 'InstanceType<User> -> $1',
 
     RedeemDescription: 'Responds with a game key',
@@ -56,7 +56,7 @@ const Data: INamespaceMap = {
         'Responds with all game keys applicable to your account and tier',
     RedeemAllResponse: '',
 
-    RemoveTagDescription: 'Removes a Tag from a User model',
+    RemoveTagDescription: 'Removes a tag from a user',
     RemoveTagResponse: '',
 
     StockDescription: 'Retrieves a list of all games we have keys for',
@@ -65,9 +65,10 @@ const Data: INamespaceMap = {
     TierDescription: 'Responds with your current tier',
     TierResponse: '',
 
-    UnbanDescription: 'Unban a particular User',
+    UnbanDescription: 'Unban a particular user.',
     UnbanResponse: '',
 
+    UserModelNotFound: "We don't have a record for this user.",
     UserModelInvalid: "You don't exist in our system. Try re-adding me!"
 };
 

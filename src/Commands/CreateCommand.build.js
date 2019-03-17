@@ -24,12 +24,34 @@ export default class ${DirName} extends BaseCommand {
 
 const Test = `\
 import ${DirName} from './index';
+import LanguageDecoder from '../../LanguageDecoder';
+
+const LanguageDecoderInstance = new LanguageDecoder();
+
+beforeAll(async () => {
+    await LanguageDecoderInstance.GetInternalPromise();
+});
 
 describe('${DirName} Command', () => {
     const Instance = new ${DirName}();
 
-    test('Dummy', () => {
-        expect(true).toBeTruthy();
+    test('It should be admin only', () => {
+        expect(Instance.IsAdmin).toBeTruthy();
+    });
+
+    test('It should have the !${DirName.toLowerCase()} identifier', () => {
+        expect(Instance.Identifier).toBe('${DirName.toLowerCase()}');
+    });
+
+    test('It should have the correct arguments', () => {
+        const Args = [];
+
+        expect(Instance.ArgumentMap).toEqual(expect.arrayContaining(Args));
+        expect(Instance.ArgumentMap).toHaveLength(Args.length);
+    });
+
+    describe('It should trigger', () => {
+
     });
 });\
 `;

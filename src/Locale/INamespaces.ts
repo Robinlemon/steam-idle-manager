@@ -61,5 +61,6 @@ export default interface INamespaceMap {
     UnbanDescription: string;
     UnbanResponse: string;
 
+    UserModelNotFound: string;
     UserModelInvalid: string;
 }

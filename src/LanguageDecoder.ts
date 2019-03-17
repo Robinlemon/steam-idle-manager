@@ -21,7 +21,6 @@ export default class LanguageDecoder {
             this.ResolveInternalPromise = Resolve;
         });
 
-        this.Logger.log(`Loading locale files...`, Levels.VERBOSE);
         this.LoadLanguage('English');
     }
 
@@ -65,14 +64,12 @@ export default class LanguageDecoder {
                 'default'
             ];
 
-            this.Logger.log(`Loaded ${LanguageName} Locale`, Levels.VERBOSE);
+            this.ResolveInternalPromise();
         } catch {
             this.Logger.log(
                 new Error(`Error parsing ${LanguageName} locale`).stack,
                 Levels.ERROR
             );
         }
-
-        this.ResolveInternalPromise();
     }
 }
