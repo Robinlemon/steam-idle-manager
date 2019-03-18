@@ -25,7 +25,7 @@ import User from './Models/User';
 import SteamUser from 'steam-user';
 import SteamAPIManager from './SteamAPIManager';
 import LanguageDecoder from './LanguageDecoder';
-import Command from './Commands/BaseCommand';
+import Command, { ArgumentType } from './Commands/BaseCommand';
 
 interface ClassDefinition<T> extends Function {
     new (...args: any[]): T;
@@ -149,13 +149,29 @@ export default class CommandWrapper {
         else this.SuggestCommand(Command.toLowerCase(), SteamID);
     }
 
-    private DocumentCommand = (Command: BaseCommand) =>
-        `!${Command.Identifier} ${Command.ArgumentMap.map(Arg => {
-            if (Array.isArray(Arg)) return `[arg1, arg2, ...]`;
-            else if (typeof Arg === 'object')
-                return `<${typeof Arg.type()}${Arg.optional && '?'}>`;
-            else return `<Arg>`;
-        }).join(' ')} -> ${Command.Description}`;
+    private DocumentCommand = (Command: BaseCommand) => {
+        const Arguments = Command.ArgumentMap.map(Arg => {
+            const IsCurried = Array.isArray(Arg);
+            const {
+                name: CommandName,
+                type: ParamType,
+                optional: IsOptional = false
+            } = IsCurried ? (Arg as [ArgumentType])[0] : (Arg as ArgumentType);
+
+            const Format = [
+                IsCurried ? '[' : '',
+                '<',
+                CommandName,
+                IsOptional ? '?' : '',
+                '>',
+                IsCurried ? ']' : ''
+            ].join('');
+
+            return Format;
+        }).join(' ');
+
+        return `!${Command.Identifier} ${Arguments} -> ${Command.Description}`;
+    };
 
     public IsAdmin = (SteamID64: string) =>
         this.Admins.includes(SteamID64.toString());

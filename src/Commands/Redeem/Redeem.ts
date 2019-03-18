@@ -5,7 +5,9 @@ import LanguageDecoder from '../../LanguageDecoder';
 
 export default class Redeem extends BaseCommand {
     constructor(LanguageDecoder: LanguageDecoder) {
-        super('redeem', LanguageDecoder);
+        super('redeem', LanguageDecoder, false, [
+            { type: String, name: 'AppID|Game Name' }
+        ]);
 
         this.Logger = new Logger(this.constructor.name);
         this.Description = this.InterpolateString('RedeemDescription');

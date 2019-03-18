@@ -5,7 +5,7 @@ import LanguageDecoder from '../../LanguageDecoder';
 
 export default class AllIdled extends BaseCommand {
     constructor(LanguageDecoder: LanguageDecoder) {
-        super('allidled', LanguageDecoder, true, []);
+        super('allidled', LanguageDecoder, true);
 
         this.Logger = new Logger(this.constructor.name);
         this.Description = this.InterpolateString('AllIdledDescription');

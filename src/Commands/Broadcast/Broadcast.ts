@@ -10,7 +10,9 @@ type FriendsList = {
 
 export default class BroadcastMessage extends BaseCommand {
     constructor(LanguageDecoder: LanguageDecoder) {
-        super('broadcast', LanguageDecoder, true, [String]);
+        super('broadcast', LanguageDecoder, true, [
+            { type: String, name: 'Message' }
+        ]);
 
         this.Logger = new Logger(this.constructor.name);
         this.Description = this.InterpolateString('BroadcastDescription');

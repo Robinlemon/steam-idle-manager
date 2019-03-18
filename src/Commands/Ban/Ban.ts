@@ -5,7 +5,9 @@ import LanguageDecoder from '../../LanguageDecoder';
 
 export default class Ban extends BaseCommand {
     constructor(LanguageDecoder: LanguageDecoder) {
-        super('ban', LanguageDecoder, true, [String]);
+        super('ban', LanguageDecoder, true, [
+            { type: String, name: 'SteamID' }
+        ]);
 
         this.Logger = new Logger(this.constructor.name);
         this.Description = this.InterpolateString('BanDescription');

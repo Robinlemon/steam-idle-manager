@@ -5,7 +5,9 @@ import LanguageDecoder from '../../LanguageDecoder';
 
 export default class PrintRaw extends BaseCommand {
     constructor(LanguageDecoder: LanguageDecoder) {
-        super('printraw', LanguageDecoder, true, [String]);
+        super('printraw', LanguageDecoder, true, [
+            { type: String, name: 'SteamID' }
+        ]);
 
         this.Logger = new Logger(this.constructor.name);
         this.Description = this.InterpolateString('PrintRawDescription');

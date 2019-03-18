@@ -5,7 +5,15 @@ import App from '../../Models/App';
 
 export default class AddKey extends BaseCommand {
     constructor(LanguageDecoder: LanguageDecoder) {
-        super('addkey', LanguageDecoder, true, [Number, [String]]);
+        super('addkey', LanguageDecoder, true, [
+            { type: Number, name: 'AppID' },
+            [
+                {
+                    type: String,
+                    name: 'CD Keys'
+                }
+            ]
+        ]);
 
         this.Logger = new Logger(this.constructor.name);
         this.Description = this.InterpolateString('AddKeyDescription');

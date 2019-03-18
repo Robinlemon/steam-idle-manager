@@ -4,7 +4,9 @@ import LanguageDecoder from '../../LanguageDecoder';
 
 export default class Tier extends BaseCommand {
     constructor(LanguageDecoder: LanguageDecoder) {
-        super('tier', LanguageDecoder);
+        super('tier', LanguageDecoder, false, [
+            { type: String, name: 'SteamID', optional: true }
+        ]);
 
         this.Description = this.InterpolateString('TierDescription');
     }

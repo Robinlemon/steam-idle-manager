@@ -4,7 +4,9 @@ import LanguageDecoder from '../../LanguageDecoder';
 
 export default class Unban extends BaseCommand {
     constructor(LanguageDecoder: LanguageDecoder) {
-        super('unban', LanguageDecoder, true, [String]);
+        super('unban', LanguageDecoder, true, [
+            { type: String, name: 'SteamID' }
+        ]);
 
         this.Description = this.InterpolateString('UnbanDescription');
     }

@@ -15,13 +15,12 @@ export interface ITriggerArgs {
     Arguments?: string[];
 }
 
-export type ArgumentType = NumberConstructor | StringConstructor;
-export type OptionalArgumentType = {
-    type: ArgumentType;
-    optional: boolean;
+export type ArgumentType = {
+    type: NumberConstructor | StringConstructor;
+    name: string;
+    optional?: boolean;
 };
-export type CompositeArgumentType = ArgumentType | OptionalArgumentType;
-export type ExtendedArgumentType = CompositeArgumentType | [ArgumentType];
+export type ExtendedArgumentType = ArgumentType | [ArgumentType];
 
 export default abstract class Command {
     public Identifier: string;
