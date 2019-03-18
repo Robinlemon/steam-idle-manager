@@ -208,7 +208,13 @@ export default class CommandWrapper {
 
         const CommandStrings = DebugInclusive.map(
             ({ Identifier, Arguments, Description }) =>
-                `!${Identifier} ${Arguments} -> ${Description}`
+                `!${Identifier} ${
+                    Identifier === 'help'
+                        ? IsAnAdmin
+                            ? Arguments + ' '
+                            : ''
+                        : Arguments
+                }-> ${Description}`
         );
 
         const Readable = CommandStrings.join('\n');
