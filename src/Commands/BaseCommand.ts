@@ -16,9 +16,10 @@ export interface ITriggerArgs {
 }
 
 export type ArgumentType = {
-    type: NumberConstructor | StringConstructor;
+    type: NumberConstructor | StringConstructor | 'expression';
     name: string;
     optional?: boolean;
+    linuxStyle?: boolean;
 };
 export type ExtendedArgumentType = ArgumentType | [ArgumentType];
 
@@ -27,6 +28,7 @@ export default abstract class Command {
     public IsAdmin: boolean;
     public ArgumentMap: ExtendedArgumentType[];
     public Description: string;
+    public IsDebug: boolean;
     public Logger: Logger;
 
     private LanguageDecoder: LanguageDecoder;
@@ -35,12 +37,14 @@ export default abstract class Command {
         Identifier: string,
         LanguageDecoder: LanguageDecoder,
         IsAdmin: boolean = false,
-        ArgumentMap: ExtendedArgumentType[] = []
+        ArgumentMap: ExtendedArgumentType[] = [],
+        IsDebug: boolean = false
     ) {
         this.Identifier = Identifier;
         this.LanguageDecoder = LanguageDecoder;
         this.IsAdmin = IsAdmin;
         this.ArgumentMap = ArgumentMap;
+        this.IsDebug = IsDebug;
     }
 
     public abstract Trigger = (Args: ITriggerArgs): void => {};
@@ -69,6 +73,9 @@ export default abstract class Command {
             }
 
             switch (RequiredType) {
+                case 'expression':
+                    break;
+
                 case String:
                     break;
 

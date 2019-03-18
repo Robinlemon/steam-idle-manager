@@ -26,9 +26,19 @@ import SteamUser from 'steam-user';
 import SteamAPIManager from './SteamAPIManager';
 import LanguageDecoder from './LanguageDecoder';
 import Command, { ArgumentType } from './Commands/BaseCommand';
+import HelpCommand from './Commands/HelpCommand';
+import { Level } from 'chalk';
 
 interface ClassDefinition<T> extends Function {
     new (...args: any[]): T;
+}
+
+interface HelpBuilderBlock {
+    Identifier: string;
+    Description: string;
+    Arguments: string;
+    IsDebug: boolean;
+    IsAdmin: boolean;
 }
 
 export default class CommandWrapper {
@@ -37,8 +47,7 @@ export default class CommandWrapper {
     private CommandBundle: BaseCommand[];
     private Admins: string[];
     private CommandDelimiter: string;
-    private HelpMessage: string;
-    private AdminHelpMessage: string;
+    private HelpBuilder: HelpBuilderBlock[];
     private Logger: Logger;
     private SteamAPIManager: SteamAPIManager;
     private LanguageDecoder: LanguageDecoder;
@@ -59,6 +68,7 @@ export default class CommandWrapper {
         this.Logger = new Logger(this.constructor.name);
 
         this.CommandClasses = [
+            HelpCommand,
             Broadcast,
             Ban,
             Unban,
@@ -101,15 +111,7 @@ export default class CommandWrapper {
             Levels.VERBOSE
         );
 
-        this.AdminHelpMessage = this.CommandBundle.map(
-            this.DocumentCommand
-        ).join('\n');
-
-        this.HelpMessage = this.CommandBundle.filter(
-            Command => Command.IsAdmin === false
-        )
-            .map(this.DocumentCommand)
-            .join('\n');
+        this.HelpBuilder = this.CommandBundle.map(this.DocumentCommand);
 
         this.Logger.log(`Created Help Documentation`, Levels.VERBOSE);
     }
@@ -153,28 +155,65 @@ export default class CommandWrapper {
         const Arguments = Command.ArgumentMap.map(Arg => {
             const IsCurried = Array.isArray(Arg);
             const {
-                name: CommandName,
+                name: ArgName,
                 type: ParamType,
-                optional: IsOptional = false
+                optional: IsOptional = false,
+                linuxStyle: LinuxStyle = false
             } = IsCurried ? (Arg as [ArgumentType])[0] : (Arg as ArgumentType);
 
-            const Format = [
-                IsCurried ? '[' : '',
-                '<',
-                CommandName,
-                IsOptional ? '?' : '',
-                '>',
-                IsCurried ? ']' : ''
-            ].join('');
-
-            return Format;
+            if (LinuxStyle)
+                return [
+                    '<',
+                    ArgName.split('|')
+                        .map(k => `${k}?`)
+                        .join('|'),
+                    '>'
+                ].join('');
+            else
+                return [
+                    IsCurried ? '[' : '',
+                    '<',
+                    ArgName,
+                    IsOptional ? '?' : '',
+                    '>',
+                    IsCurried ? ']' : ''
+                ].join('');
         }).join(' ');
 
-        return `!${Command.Identifier} ${Arguments} -> ${Command.Description}`;
+        return {
+            Identifier: Command.Identifier,
+            Description: Command.Description,
+            Arguments: Arguments,
+            IsDebug: Command.IsDebug,
+            IsAdmin: Command.IsAdmin
+        } as HelpBuilderBlock;
     };
 
     public IsAdmin = (SteamID64: string) =>
         this.Admins.includes(SteamID64.toString());
+
+    private HelpCommand(SteamID64: string, Arguments: string[] = []) {
+        const IsAnAdmin = this.IsAdmin(SteamID64);
+
+        const Args = Arguments.join('');
+        const ShowDebug = Args.includes('a');
+
+        const AdminInclusive = this.HelpBuilder.filter(
+            CommandBlock => +CommandBlock.IsAdmin <= +IsAnAdmin
+        );
+
+        const DebugInclusive = AdminInclusive.filter(
+            CommandBlock => +CommandBlock.IsDebug <= +ShowDebug
+        );
+
+        const CommandStrings = DebugInclusive.map(
+            ({ Identifier, Arguments, Description }) =>
+                `!${Identifier} ${Arguments} -> ${Description}`
+        );
+
+        const Readable = CommandStrings.join('\n');
+        this.SteamClient.chatMessage(SteamID64, Readable);
+    }
 
     private RouteCommand(
         Identifier: string,
@@ -182,12 +221,7 @@ export default class CommandWrapper {
         Arguments?: string[]
     ) {
         if (Identifier === 'help')
-            return this.SteamClient.chatMessage(
-                SteamID64,
-                this.IsAdmin(SteamID64)
-                    ? this.AdminHelpMessage
-                    : this.HelpMessage
-            );
+            return this.HelpCommand(SteamID64, Arguments);
 
         const CommandFound = this.CommandBundle.find(
             (Command: BaseCommand) => Command.Identifier === Identifier

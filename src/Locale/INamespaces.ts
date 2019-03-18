@@ -3,6 +3,8 @@ export default interface INamespaceMap {
     SteamGame: string;
     SteamWelcome: string;
 
+    HelpDescription: string;
+
     AddKeyDescription: string;
     AddKeyResponse: string;
 
