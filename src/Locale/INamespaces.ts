@@ -7,6 +7,8 @@ export default interface INamespaceMap {
 
     AddKeyDescription: string;
     AddKeyResponse: string;
+    AddKeyResponseOne: string;
+    AddKeyResponseMany: string;
 
     AddTagDescription: string;
     AddTagResponse: string;

@@ -35,10 +35,12 @@ export default class RemoveTag extends BaseCommand {
                 }
             );
 
-            SteamClient.chatMessage(
-                SteamID64,
-                `Revoked ${Tags.length} Tags from ${SteamID}`
-            );
+            const Message = this.InterpolateString('RemoveTagResponse', [
+                Tags.length,
+                SteamID
+            ]);
+
+            SteamClient.chatMessage(SteamID64, Message);
         } catch (Err) {
             this.Logger.log(Err.stack, Levels.ERROR);
         }

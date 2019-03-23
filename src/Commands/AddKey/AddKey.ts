@@ -46,7 +46,12 @@ export default class AddKey extends BaseCommand {
                 }
             );
 
+            const IsMany = Keys.length > 1;
+            const InterpMessage = this.InterpolateString(
+                IsMany ? 'AddKeyResponseMany' : 'AddKeyResponseOne'
+            );
             const Message = this.InterpolateString('AddKeyResponse', [
+                InterpMessage,
                 Document.Name,
                 Document.Name,
                 Document.Keys.length

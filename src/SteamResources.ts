@@ -80,9 +80,8 @@ export default class SteamResourceManager {
                     AppID: CurrentAppObj.appid
                 },
                 update: {
-                    Name: CurrentAppObj.name,
-                    ...(CardData[CurrentAppObj.appid.toString()] &&
-                        CardData[CurrentAppObj.appid.toString()])
+                    AppID: CurrentAppObj.appid,
+                    Name: CurrentAppObj.name
                 },
                 upsert: true,
                 setDefaultsOnInsert: true

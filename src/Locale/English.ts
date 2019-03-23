@@ -9,23 +9,25 @@ const Data: INamespaceMap = {
 
     AddKeyDescription:
         'Adds the given key to the given game, to add multiple keys separe them by comma (,).',
-    AddKeyResponse: 'Added a key to $1\n$2 now has $3 keys.',
+    AddKeyResponse: 'Added $1 to $2\n$3 now has $4 keys.',
+    AddKeyResponseOne: 'a key',
+    AddKeyResponseMany: 'keys',
 
-    AddTagDescription: 'Appends a Tag to a User model',
-    AddTagResponse: 'Gave $1 Tags to $2',
+    AddTagDescription: 'Appends a tag to a user',
+    AddTagResponse: 'Gave $1 tags to $2',
 
     AllIdledDescription:
-        'Responds with a list of Users that have returned cards',
+        'Responds with a list of users that have returned cards',
     AllIdledResponse: '$1 -> $2',
 
-    AllOweDescription: 'Responds with a list of User models that owe cards',
+    AllOweDescription: 'Responds with a list of users that owe cards',
     AllOweResponse: '$1',
 
     AppsDescription:
         'Responds with how many applications we have information stored for',
     AppsResponse: 'We have information for $1 apps',
 
-    BanDescription: 'Bans a particular User',
+    BanDescription: 'Bans a particular user',
     BanResponse: 'User $1 is now banned',
 
     BroadcastDescription: 'Sends a message to all friends',
@@ -48,7 +50,7 @@ const Data: INamespaceMap = {
     OweResponseIter: '$1 ($2): $3',
     OweResponseZero: "You don't owe anything!",
 
-    PrintRawDescription: 'Prints the raw JSON of a User model',
+    PrintRawDescription: 'Generate a JSON dump of a user',
     PrintRawResponse: 'InstanceType<User> -> $1',
 
     RedeemDescription: 'Responds with a game key',
@@ -59,16 +61,16 @@ const Data: INamespaceMap = {
     RedeemAllResponse: '',
 
     RemoveTagDescription: 'Removes a tag from a user',
-    RemoveTagResponse: '',
+    RemoveTagResponse: 'Removed $1 tags from $2',
 
     StockDescription: 'Retrieves a list of all games we have keys for',
     StockResponse: '($1) $2',
 
     TierDescription: 'Responds with your current tier',
-    TierResponse: '',
+    TierResponse: 'You are tier: ',
 
     UnbanDescription: 'Unban a particular user.',
-    UnbanResponse: '',
+    UnbanResponse: '$1 is now unbanned',
 
     UserModelNotFound: "We don't have a record for this user.",
     UserModelInvalid: "You don't exist in our system. Try re-adding me!"

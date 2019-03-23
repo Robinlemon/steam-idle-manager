@@ -31,7 +31,7 @@ export default class PrintRaw extends BaseCommand {
         if (Record === null)
             return SteamClient.chatMessage(
                 SteamID64,
-                this.InterpolateString('UserModelInvalid')
+                this.InterpolateString('UserModelNotFound')
             );
 
         const Message = this.InterpolateString('PrintRawResponse', [

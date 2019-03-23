@@ -27,6 +27,8 @@ export default class Unban extends BaseCommand {
             }
         );
 
-        SteamClient.chatMessage(SteamID64, `User ${ToUnban} is now unbanned`);
+        const Message = this.InterpolateString('UnbanResponse', [ToUnban]);
+
+        SteamClient.chatMessage(SteamID64, Message);
     };
 }

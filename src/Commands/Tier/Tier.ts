@@ -20,9 +20,10 @@ export default class Tier extends BaseCommand {
             SteamID64: SteamID64
         });
 
-        SteamClient.chatMessage(
-            SteamID64,
-            `You are tier: ${CurrentUser.GetTier().Name}`
-        );
+        const Message = this.InterpolateString('TierResponse', [
+            CurrentUser.GetTier().Name
+        ]);
+
+        SteamClient.chatMessage(SteamID64, Message);
     };
 }
