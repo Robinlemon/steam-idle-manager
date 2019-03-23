@@ -9,6 +9,7 @@ import SteamResources from './SteamResources';
 import SteamAPIManager from './SteamAPIManager';
 import LanguageDecoder from './LanguageDecoder';
 import MongooseConnection from './MongooseConnection';
+import { stringLiteral } from '@babel/types';
 
 export default class GroupIdleModerator extends SteamBot {
     private Admins: string[];
@@ -18,6 +19,7 @@ export default class GroupIdleModerator extends SteamBot {
     private SteamAPIManager: SteamAPIManager;
     private LanguageDecoder: LanguageDecoder;
     private MongooseConnection: MongooseConnection;
+    private GroupID: string;
     private Logger: Logger;
 
     constructor(Props: any) {
@@ -27,7 +29,7 @@ export default class GroupIdleModerator extends SteamBot {
 
         this.Logger = new Logger(this.constructor.name);
         this.ResourceManager = new SteamResources();
-        this.SteamAPIManager = new SteamAPIManager(this.APIKey);
+        this.SteamAPIManager = new SteamAPIManager(this.APIKey, this.Community);
         this.LanguageDecoder = new LanguageDecoder();
         this.MongooseConnection = new MongooseConnection(
             Props.MongoConnectionString
@@ -35,6 +37,7 @@ export default class GroupIdleModerator extends SteamBot {
 
         this.CommandDelimiter = Props.CommandDelimiter;
         this.Admins = Props.Admins.split(',');
+        this.GroupID = Props.GroupID;
 
         this.Commands = new CommandManager(
             this.Client,
@@ -67,6 +70,7 @@ export default class GroupIdleModerator extends SteamBot {
         this.Client.on('webSession', this.onWebSession);
         this.Client.on('friendMessage', this.onFriendMessage);
         this.Client.on('friendRelationship', this.onFriendRelationship);
+        this.Client.on('friendsList', this.onFriendsList);
 
         this.Logger.log('Steam event listeners initialised', Levels.VERBOSE);
     }
@@ -111,15 +115,48 @@ export default class GroupIdleModerator extends SteamBot {
         this.SetGame();
     };
 
+    private onFriendsList = async (): Promise<void> => {
+        const OnlyFriends = Object.entries(this.Client.myFriends)
+            .filter(
+                ([SteamID64, Relationship]: [string, EFriendRelationship]) =>
+                    Relationship === EFriendRelationship.Friend
+            )
+            .map(
+                ([SteamID64, Relationship]: [string, EFriendRelationship]) =>
+                    SteamID64
+            );
+
+        const MemberMap = await this.SteamAPIManager.GetGroupMembershipStatuses(
+            OnlyFriends,
+            this.GroupID
+        );
+
+        const ToRemove = Object.entries(MemberMap)
+            .filter(([SteamID, IsMember]) => IsMember === false)
+            .map(([SteamID, IsMember]) => SteamID);
+
+        ToRemove.forEach(SteamID => this.Client.removeFriend(SteamID));
+    };
+
     private onFriendMessage = (SteamID: string, Message: string) => {
         this.Commands.HandleInput(SteamID, Message);
     };
 
-    private onFriendRelationship = (
+    private onFriendRelationship = async (
         SteamID: string,
         Relationship: EFriendRelationship
-    ) => {
-        if (Relationship === EFriendRelationship.RequestRecipient)
+    ): Promise<void> => {
+        if (Relationship === EFriendRelationship.RequestRecipient) {
+            const IsInGroup = await this.SteamAPIManager.IsInGroup(
+                SteamID,
+                this.GroupID
+            );
+
+            if (IsInGroup === false) {
+                this.Client.removeFriend(SteamID);
+                return;
+            }
+
             this.Client.addFriend(
                 SteamID,
                 async (Err: Error, PersonaName: string) => {
@@ -151,5 +188,6 @@ export default class GroupIdleModerator extends SteamBot {
                     }
                 }
             );
+        }
     };
 }
