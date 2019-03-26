@@ -1,6 +1,6 @@
 {
     "name": "steam-idle-manager",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "A Steam Group manager for idling games",
     "main": "index.ts",
     "scripts": {
