@@ -35,10 +35,11 @@ export default class AddTag extends BaseCommand {
                 }
             );
 
-            const Message = this.InterpolateString('AddTagResponse', [
-                Tags.length,
-                SteamID
-            ]);
+            const Count = Tags.length;
+            const Message = this.InterpolateString(
+                'AddTagResponse' + (Count > 1 ? 'Many' : 'One'),
+                [Count.toString(), SteamID]
+            );
 
             SteamClient.chatMessage(SteamID64, Message);
         } catch (Err) {

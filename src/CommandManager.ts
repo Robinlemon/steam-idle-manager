@@ -17,7 +17,8 @@ import {
     RedeemAll,
     Group,
     Contact,
-    PrintRaw
+    PrintRaw,
+    ClearUsers
 } from './Commands/';
 import FuzzySort from 'fuzzysort';
 import Logger, { Levels } from './Logger';
@@ -26,7 +27,6 @@ const SteamUser = require('steam-user');
 import SteamAPIManager from './SteamAPIManager';
 import LanguageDecoder from './LanguageDecoder';
 import Command, { ArgumentType } from './Commands/BaseCommand';
-import HelpCommand from './Commands/HelpCommand';
 
 interface ClassDefinition<T> extends Function {
     new (...args: any[]): T;
@@ -67,7 +67,6 @@ export default class CommandWrapper {
         this.Logger = new Logger(this.constructor.name);
 
         this.CommandClasses = [
-            HelpCommand,
             Broadcast,
             Ban,
             Unban,
@@ -85,7 +84,8 @@ export default class CommandWrapper {
             RedeemAll,
             Group,
             Contact,
-            PrintRaw
+            PrintRaw,
+            ClearUsers
         ];
 
         this.Logger.log(`Command Manager Initialised`, Levels.VERBOSE);

@@ -29,7 +29,7 @@ export default class RemoveTag extends BaseCommand {
                 {
                     $pull: {
                         Tags: {
-                            $each: Tags
+                            $in: Tags
                         }
                     }
                 }

@@ -5,9 +5,7 @@ import Logger, { Levels } from '../../Logger';
 
 export default class Tier extends BaseCommand {
     constructor(LanguageDecoder: LanguageDecoder) {
-        super('tier', LanguageDecoder, false, [
-            { type: String, name: 'SteamID', optional: true }
-        ]);
+        super('tier', LanguageDecoder, false);
 
         this.Logger = new Logger(this.constructor.name);
         this.Description = this.InterpolateString('TierDescription');
@@ -23,8 +21,12 @@ export default class Tier extends BaseCommand {
         });
 
         const Tier = CurrentUser.GetTier();
-        const Message = this.InterpolateString('TierResponse', [Tier.Name]);
-        this.Logger.log(Tier, Levels.WARN);
+        const Tags = CurrentUser.Tags.join(' ');
+
+        const Message = this.InterpolateString('TierResponse', [
+            Tier.Name,
+            Tags
+        ]);
 
         SteamClient.chatMessage(SteamID64, Message);
     };

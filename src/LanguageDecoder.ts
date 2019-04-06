@@ -1,6 +1,5 @@
 import Logger, { Levels } from './Logger';
 import INamespaceMap from './Locale/INamespaces';
-import { promises as fsPromises } from 'fs';
 
 export type ENamespaces = keyof INamespaceMap;
 
@@ -12,7 +11,7 @@ export default class LanguageDecoder {
 
     private InternalPromise: Promise<void>;
     private ResolveInternalPromise: () => void;
-    private InterpolationRegex = /\$\d+/g;
+    private InterpolationRegex = /\$\d+/gm;
 
     constructor() {
         this.Logger = new Logger(this.constructor.name);
@@ -53,7 +52,7 @@ export default class LanguageDecoder {
             return StandardMessage.replace(this.InterpolationRegex, Match => {
                 const IDx = +Match.substr(1);
 
-                if (Args.length <= IDx) return Args[IDx - 1];
+                if (Args.length >= IDx) return Args[IDx - 1];
                 else return null;
             });
     };

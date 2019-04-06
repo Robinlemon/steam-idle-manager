@@ -27,7 +27,7 @@ class User extends Typegoose {
     LastActive: number;
 
     @prop({ required: true, default: [] })
-    Tag: string[];
+    Tags: string[];
 
     @prop({ required: true, default: [] })
     History: IHistory[];

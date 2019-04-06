@@ -16,3 +16,4 @@ export { default as RedeemAll } from './RedeemAll';
 export { default as Group } from './Group';
 export { default as Contact } from './Contact';
 export { default as PrintRaw } from './PrintRaw';
+export { default as ClearUsers } from './ClearUsers';

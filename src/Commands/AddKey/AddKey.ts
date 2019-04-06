@@ -33,7 +33,7 @@ export default class AddKey extends BaseCommand {
                 },
                 {
                     $inc: {
-                        TotalKeys: 1
+                        TotalKeys: Keys.length
                     },
                     $push: {
                         Keys: {
@@ -48,7 +48,8 @@ export default class AddKey extends BaseCommand {
 
             const IsMany = Keys.length > 1;
             const InterpMessage = this.InterpolateString(
-                IsMany ? 'AddKeyResponseMany' : 'AddKeyResponseOne'
+                IsMany ? 'AddKeyResponseMany' : 'AddKeyResponseOne',
+                [Keys.length]
             );
             const Message = this.InterpolateString('AddKeyResponse', [
                 InterpMessage,

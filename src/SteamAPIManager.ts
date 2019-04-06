@@ -98,7 +98,11 @@ export default class SteamAPIManager {
                         return;
                     }
 
-                    Resolve(Members.includes(SteamID64.toString()));
+                    const IsMember = Members.map(SteamID =>
+                        SteamID.toString()
+                    ).includes(SteamID64.toString());
+
+                    Resolve(IsMember);
                 }
             );
         });

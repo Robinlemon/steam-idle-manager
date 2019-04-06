@@ -66,10 +66,6 @@ export default abstract class Command {
             if (Array.isArray(RequiredType)) {
                 HitInfiniteArgs = true;
                 InfiniteArgsType = (RequiredType as [any])[0];
-            } else if (
-                typeof RequiredType === 'object' &&
-                RequiredType.required
-            ) {
             }
 
             switch (RequiredType) {

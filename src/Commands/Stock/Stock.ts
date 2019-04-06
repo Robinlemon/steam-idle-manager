@@ -26,7 +26,8 @@ export default class Stock extends BaseCommand {
             const Message = MyAppInfo.map(AppObj =>
                 this.InterpolateString('StockResponse', [
                     AppObj.AppID,
-                    AppObj.Name
+                    AppObj.Name,
+                    MyAppInfo[0].TotalKeys
                 ])
             ).join('\n');
 

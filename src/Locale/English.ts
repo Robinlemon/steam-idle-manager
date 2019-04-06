@@ -9,12 +9,13 @@ const Data: INamespaceMap = {
 
     AddKeyDescription:
         'Adds the given key to the given game, to add multiple keys separe them by comma (,).',
-    AddKeyResponse: 'Added $1 to $2\n$3 now has $4 keys.',
+    AddKeyResponse: 'Added $1 to $2\n\n$3 now has $4 keys.',
     AddKeyResponseOne: 'a key',
-    AddKeyResponseMany: 'keys',
+    AddKeyResponseMany: '$1 keys',
 
     AddTagDescription: 'Appends a tag to a user',
-    AddTagResponse: 'Gave $1 tags to $2',
+    AddTagResponseOne: 'Gave $1 tag to $2',
+    AddTagResponseMany: 'Gave $1 tags to $2',
 
     AllIdledDescription:
         'Responds with a list of users that have returned cards',
@@ -32,7 +33,10 @@ const Data: INamespaceMap = {
     BanMetaResponse: 'You have been banned.',
 
     BroadcastDescription: 'Sends a message to all friends',
-    BroadcastResponse: 'Successfully broadcast:\n$1',
+    BroadcastResponse: 'Successfully broadcast: $1',
+
+    ClearUsersDescription: 'Wipes the database of all users',
+    ClearUsersResponse: 'Purged $1 users',
 
     CompareDescription:
         'Responds with a list of game keys I have that you are eligible to use',
@@ -55,23 +59,30 @@ const Data: INamespaceMap = {
     PrintRawResponse: 'InstanceType<User> -> $1',
 
     RedeemDescription: 'Responds with a game key',
-    RedeemResponse: '',
+    RedeemResponse: 'You have successfully redeemed a copy:\n$1',
+    RedeemNoStock: 'We do not have any stock of this game.',
+    RedeemResponseNoMatch: "We don't have any games you can redeem.",
+    RedeemResponseNotEligible: 'You are not eligible to redeem any more games.',
 
     RedeemAllDescription:
         'Responds with all game keys applicable to your account and tier',
-    RedeemAllResponse: '',
+    RedeemAllResponse: '$1 Games Redeemed: ',
+    RedeemAllResponseIter: '($1) $2: $3',
 
     RemoveTagDescription: 'Removes a tag from a user',
     RemoveTagResponse: 'Removed $1 tags from $2',
 
     StockDescription: 'Retrieves a list of all games we have keys for',
-    StockResponse: '($1) $2',
+    StockResponse: '($1) $2: $3',
 
     TierDescription: 'Responds with your current tier',
-    TierResponse: 'You are tier: $1',
+    TierTagDecorator: '[$1]',
+    TierResponse: 'You are tier: $1\nTags: $2',
 
     UnbanDescription: 'Unban a particular user.',
     UnbanResponse: '$1 is now unbanned',
+
+    GenericError: 'An error occured.',
 
     UserModelNotFound: "We don't have a record for this user.",
     UserModelInvalid: "You don't exist in our system. Try re-adding me!"

@@ -11,7 +11,8 @@ export default interface INamespaceMap {
     AddKeyResponseMany: string;
 
     AddTagDescription: string;
-    AddTagResponse: string;
+    AddTagResponseOne: string;
+    AddTagResponseMany: string;
 
     AllIdledDescription: string;
     AllIdledResponse: string;
@@ -28,6 +29,9 @@ export default interface INamespaceMap {
 
     BroadcastDescription: string;
     BroadcastResponse: string;
+
+    ClearUsersDescription: string;
+    ClearUsersResponse: string;
 
     CompareDescription: string;
     CompareResponse: string;
@@ -50,9 +54,13 @@ export default interface INamespaceMap {
 
     RedeemDescription: string;
     RedeemResponse: string;
+    RedeemNoStock: string;
+    RedeemResponseNoMatch: string;
+    RedeemResponseNotEligible: string;
 
     RedeemAllDescription: string;
     RedeemAllResponse: string;
+    RedeemAllResponseIter: string;
 
     RemoveTagDescription: string;
     RemoveTagResponse: string;
@@ -61,10 +69,13 @@ export default interface INamespaceMap {
     StockResponse: string;
 
     TierDescription: string;
+    TierTagDecorator: string;
     TierResponse: string;
 
     UnbanDescription: string;
     UnbanResponse: string;
+
+    GenericError: string;
 
     UserModelNotFound: string;
     UserModelInvalid: string;

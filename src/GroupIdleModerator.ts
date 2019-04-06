@@ -148,6 +148,12 @@ export default class GroupIdleModerator extends SteamBot {
     };
 
     private onFriendMessage = (SteamID: string, Message: string) => {
+        const Rels = Object.keys(this.Client.myFriends);
+
+        if (Rels.includes(SteamID.toString()) === false) return;
+        if (this.Client.myFriends[SteamID] !== EFriendRelationship.Friend)
+            return;
+
         this.Commands.HandleInput(SteamID, Message);
     };
 
@@ -160,8 +166,6 @@ export default class GroupIdleModerator extends SteamBot {
                 SteamID,
                 this.GroupID
             );
-
-            this.Logger.log(IsInGroup.toString(), Levels.WARN);
 
             if (IsInGroup === false) {
                 this.Client.removeFriend(SteamID);
