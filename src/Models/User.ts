@@ -1,5 +1,4 @@
-import { prop, instanceMethod, Typegoose, InstanceType, Ref } from 'typegoose';
-import AppModel, { App } from './App';
+import { prop, instanceMethod, Typegoose, InstanceType } from 'typegoose';
 import TierResolver, { ITier } from './Tier';
 
 interface IHistory {

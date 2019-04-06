@@ -24,6 +24,7 @@ export default interface INamespaceMap {
 
     BanDescription: string;
     BanResponse: string;
+    BanMetaResponse: string;
 
     BroadcastDescription: string;
     BroadcastResponse: string;

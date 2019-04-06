@@ -29,6 +29,7 @@ const Data: INamespaceMap = {
 
     BanDescription: 'Bans a particular user',
     BanResponse: 'User $1 is now banned',
+    BanMetaResponse: 'You have been banned.',
 
     BroadcastDescription: 'Sends a message to all friends',
     BroadcastResponse: 'Successfully broadcast:\n$1',

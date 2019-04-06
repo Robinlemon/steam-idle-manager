@@ -22,12 +22,11 @@ import {
 import FuzzySort from 'fuzzysort';
 import Logger, { Levels } from './Logger';
 import User from './Models/User';
-import SteamUser from 'steam-user';
+const SteamUser = require('steam-user');
 import SteamAPIManager from './SteamAPIManager';
 import LanguageDecoder from './LanguageDecoder';
 import Command, { ArgumentType } from './Commands/BaseCommand';
 import HelpCommand from './Commands/HelpCommand';
-import { Level } from 'chalk';
 
 interface ClassDefinition<T> extends Function {
     new (...args: any[]): T;
@@ -141,7 +140,10 @@ export default class CommandWrapper {
         }
 
         if (CurrentUser.Banned) {
-            return this.SteamClient.chatMessage(SteamID, `You are banned.`);
+            return this.SteamClient.chatMessage(
+                SteamID,
+                this.LanguageDecoder.InterpolateString('BanMetaResponse')
+            );
         }
 
         await CurrentUser.UpdateInteraction();

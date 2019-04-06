@@ -1,5 +1,5 @@
 import Logger, { Levels } from '../Logger';
-import SteamUser from 'steam-user';
+const SteamUser = require('steam-user');
 import SteamAPIManager from '../SteamAPIManager';
 import LanguageDecoder, { ENamespaces } from '../LanguageDecoder';
 
