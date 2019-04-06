@@ -9,7 +9,6 @@ import SteamResources from './SteamResources';
 import SteamAPIManager from './SteamAPIManager';
 import LanguageDecoder from './LanguageDecoder';
 import MongooseConnection from './MongooseConnection';
-import { stringLiteral } from '@babel/types';
 
 export default class GroupIdleModerator extends SteamBot {
     private Admins: string[];
@@ -101,7 +100,7 @@ export default class GroupIdleModerator extends SteamBot {
     };
 
     private onError = (Err: Error) => {
-        if (Err) this.Logger.log(Err.stack, Levels.ERROR);
+        if (Err) this.Logger.log(Err, Levels.ERROR);
     };
 
     private onLoggedOn = () => {
@@ -110,6 +109,12 @@ export default class GroupIdleModerator extends SteamBot {
 
     private onWebSession = () => {
         this.Logger.log('Got websession -> going online');
+
+        this.Admins.forEach(Admin => this.Client.addFriend(Admin));
+        this.Community.getSteamGroup(this.GroupID, (Err: Error, Group: any) => {
+            if (Err) return this.Logger.log(Err, Levels.ERROR);
+            else Group.join();
+        });
 
         this.SetName();
         this.SetGame();
@@ -132,7 +137,11 @@ export default class GroupIdleModerator extends SteamBot {
         );
 
         const ToRemove = Object.entries(MemberMap)
-            .filter(([SteamID, IsMember]) => IsMember === false)
+            .filter(
+                ([SteamID, IsMember]) =>
+                    this.Admins.includes(SteamID.toString()) === false &&
+                    IsMember === false
+            )
             .map(([SteamID, IsMember]) => SteamID);
 
         ToRemove.forEach(SteamID => this.Client.removeFriend(SteamID));
@@ -151,6 +160,8 @@ export default class GroupIdleModerator extends SteamBot {
                 SteamID,
                 this.GroupID
             );
+
+            this.Logger.log(IsInGroup.toString(), Levels.WARN);
 
             if (IsInGroup === false) {
                 this.Client.removeFriend(SteamID);

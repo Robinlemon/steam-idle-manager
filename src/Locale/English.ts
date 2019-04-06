@@ -67,7 +67,7 @@ const Data: INamespaceMap = {
     StockResponse: '($1) $2',
 
     TierDescription: 'Responds with your current tier',
-    TierResponse: 'You are tier: ',
+    TierResponse: 'You are tier: $1',
 
     UnbanDescription: 'Unban a particular user.',
     UnbanResponse: '$1 is now unbanned',

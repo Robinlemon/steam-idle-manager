@@ -51,9 +51,10 @@ export default class SteamAPIManager {
                 GroupID64,
                 (Err: Error | null, Members: string[]) => {
                     if (Err) {
-                        this.Logger.log(Err.stack, Levels.ERROR);
+                        this.Logger.log(Err, Levels.ERROR);
                         this.Logger.log(
-                            `Couldn't fetch group members for ${GroupID64}`
+                            `Couldn't fetch group members for ${GroupID64}`,
+                            Levels.WARN
                         );
 
                         Resolve({});

@@ -1,6 +1,7 @@
 import BaseCommand, { ITriggerArgs } from '../BaseCommand';
 import User from '../../Models/User';
 import LanguageDecoder from '../../LanguageDecoder';
+import Logger, { Levels } from '../../Logger';
 
 export default class Tier extends BaseCommand {
     constructor(LanguageDecoder: LanguageDecoder) {
@@ -8,6 +9,7 @@ export default class Tier extends BaseCommand {
             { type: String, name: 'SteamID', optional: true }
         ]);
 
+        this.Logger = new Logger(this.constructor.name);
         this.Description = this.InterpolateString('TierDescription');
     }
 
@@ -20,9 +22,9 @@ export default class Tier extends BaseCommand {
             SteamID64: SteamID64
         });
 
-        const Message = this.InterpolateString('TierResponse', [
-            CurrentUser.GetTier().Name
-        ]);
+        const Tier = CurrentUser.GetTier();
+        const Message = this.InterpolateString('TierResponse', [Tier.Name]);
+        this.Logger.log(Tier, Levels.WARN);
 
         SteamClient.chatMessage(SteamID64, Message);
     };
