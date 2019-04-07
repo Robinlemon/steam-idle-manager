@@ -52,7 +52,7 @@ export default class RedeemAll extends BaseCommand {
         if (Difference <= 0) {
             SteamClient.chatMessage(
                 SteamID64,
-                this.InterpolateString('RedeemNotEligible')
+                this.InterpolateString('RedeemResponseNotEligible')
             );
             return;
         }
@@ -109,7 +109,9 @@ export default class RedeemAll extends BaseCommand {
                 {
                     DoesOwe: true,
                     $push: {
-                        Owe: AppOwe
+                        Owe: {
+                            $each: AppOwe
+                        }
                     }
                 }
             );

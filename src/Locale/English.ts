@@ -38,6 +38,9 @@ const Data: INamespaceMap = {
     ClearUsersDescription: 'Wipes the database of all users',
     ClearUsersResponse: 'Purged $1 users',
 
+    ClearKeysDescription: 'Wipes the database of all keys',
+    ClearKeysResponse: 'Purged all keys',
+
     CompareDescription:
         'Responds with a list of game keys I have that you are eligible to use',
     CompareResponse: 'You are eligible for the following games:\n',
@@ -48,7 +51,7 @@ const Data: INamespaceMap = {
     ContactResponse: 'You can contact me here: https://google.com/',
 
     GroupDescription: 'Links you to the group',
-    GroupResponse: 'You can join the group here: ',
+    GroupResponse: 'https://steamcommunity.com/groups/$1',
 
     OweDescription: 'Responds with a list of cards you owe',
     OweResponse: 'You owe:\n',
@@ -60,7 +63,7 @@ const Data: INamespaceMap = {
 
     RedeemDescription: 'Responds with a game key',
     RedeemResponse: 'You have successfully redeemed a copy:\n$1',
-    RedeemNoStock: 'We do not have any stock of this game.',
+    RedeemResponseNoStock: 'We do not have any stock of this game.',
     RedeemResponseNoMatch: "We don't have any games you can redeem.",
     RedeemResponseNotEligible: 'You are not eligible to redeem any more games.',
 

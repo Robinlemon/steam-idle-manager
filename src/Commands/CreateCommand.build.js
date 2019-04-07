@@ -4,18 +4,21 @@ const [, , DirName] = process.argv;
 const Base = `\
 import BaseCommand, { ITriggerArgs } from '../BaseCommand';
 import { NotImplemented } from '../../Errors';
+import LanguageDecoder from '../../LanguageDecoder';
 import Logger, { Levels } from '../../Logger';
 
 export default class ${DirName} extends BaseCommand {
-    constructor() {
-        super('${DirName.toLowerCase()}', false, []);
+    constructor(LanguageDecoder: LanguageDecoder) {
+        super('${DirName}', LanguageDecoder, true);
+
         this.Logger = new Logger(this.constructor.name);
+        this.Description = this.InterpolateString('${DirName}Description');
     }
 
     public Trigger = async ({
         SteamClient,
         SteamID64,
-        Arguments,
+        Arguments
     }: ITriggerArgs): Promise<void> => {
         throw new NotImplemented();
     };

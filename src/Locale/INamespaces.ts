@@ -33,6 +33,9 @@ export default interface INamespaceMap {
     ClearUsersDescription: string;
     ClearUsersResponse: string;
 
+    ClearKeysDescription: string;
+    ClearKeysResponse: string;
+
     CompareDescription: string;
     CompareResponse: string;
     CompareResponseIter: string;
@@ -54,7 +57,7 @@ export default interface INamespaceMap {
 
     RedeemDescription: string;
     RedeemResponse: string;
-    RedeemNoStock: string;
+    RedeemResponseNoStock: string;
     RedeemResponseNoMatch: string;
     RedeemResponseNotEligible: string;
 

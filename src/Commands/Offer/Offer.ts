@@ -1,13 +1,14 @@
 import BaseCommand, { ITriggerArgs } from '../BaseCommand';
-import Logger, { Levels } from '../../Logger';
+import { NotImplemented } from '../../Errors';
 import LanguageDecoder from '../../LanguageDecoder';
+import Logger, { Levels } from '../../Logger';
 
-export default class Group extends BaseCommand {
+export default class Offer extends BaseCommand {
     constructor(LanguageDecoder: LanguageDecoder) {
-        super('group', LanguageDecoder);
+        super('Offer', LanguageDecoder, true);
 
         this.Logger = new Logger(this.constructor.name);
-        this.Description = this.InterpolateString('GroupDescription');
+        this.Description = this.InterpolateString('OfferDescription');
     }
 
     public Trigger = async ({
@@ -15,10 +16,6 @@ export default class Group extends BaseCommand {
         SteamID64,
         Arguments
     }: ITriggerArgs): Promise<void> => {
-        const Message = this.InterpolateString('GroupResponse', [
-            'IdleFreaksVIP'
-        ]);
-
-        SteamClient.chatMessage(SteamID64, Message);
+        throw new NotImplemented();
     };
 }

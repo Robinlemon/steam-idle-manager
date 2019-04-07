@@ -55,7 +55,7 @@ export default class AddKey extends BaseCommand {
                 InterpMessage,
                 Document.Name,
                 Document.Name,
-                Document.Keys.length
+                Document.TotalKeys
             ]);
 
             SteamClient.chatMessage(SteamID64, Message);

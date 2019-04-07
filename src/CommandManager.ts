@@ -18,7 +18,8 @@ import {
     Group,
     Contact,
     PrintRaw,
-    ClearUsers
+    ClearUsers,
+    ClearKeys
 } from './Commands/';
 import FuzzySort from 'fuzzysort';
 import Logger, { Levels } from './Logger';
@@ -85,7 +86,8 @@ export default class CommandWrapper {
             Group,
             Contact,
             PrintRaw,
-            ClearUsers
+            ClearUsers,
+            ClearKeys
         ];
 
         this.Logger.log(`Command Manager Initialised`, Levels.VERBOSE);

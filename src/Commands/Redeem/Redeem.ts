@@ -54,7 +54,7 @@ export default class Redeem extends BaseCommand {
         if (Difference <= 0) {
             SteamClient.chatMessage(
                 SteamID64,
-                this.InterpolateString('RedeemNotEligible')
+                this.InterpolateString('RedeemResponseNotEligible')
             );
             return;
         }
@@ -70,7 +70,7 @@ export default class Redeem extends BaseCommand {
         if (AppInfo.TotalKeys === 0) {
             SteamClient.chatMessage(
                 SteamID64,
-                this.InterpolateString('RedeemNoStock')
+                this.InterpolateString('RedeemResponseNoStock')
             );
             return;
         }
