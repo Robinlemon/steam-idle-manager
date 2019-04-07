@@ -1,12 +1,12 @@
 import SteamBot from './SteamBot';
 import Logger, { Levels } from './Logger';
 import CommandManager from './CommandManager';
-import { EFriendRelationship } from './SteamEnums';
+import { EFriendRelationship, ETradeOfferState } from './SteamEnums';
 import User from './Models/User';
 import App from './Models/App';
 import Steam from 'steam';
 import SteamResources from './SteamResources';
-import SteamAPIManager from './SteamAPIManager';
+import SteamAPIManager, { TradeOffer, CEconItem } from './SteamAPIManager';
 import LanguageDecoder from './LanguageDecoder';
 import MongooseConnection from './MongooseConnection';
 
@@ -28,7 +28,11 @@ export default class GroupIdleModerator extends SteamBot {
 
         this.Logger = new Logger(this.constructor.name);
         this.ResourceManager = new SteamResources();
-        this.SteamAPIManager = new SteamAPIManager(this.APIKey, this.Community);
+        this.SteamAPIManager = new SteamAPIManager(
+            this.APIKey,
+            this.Community,
+            this.TradeManager
+        );
         this.LanguageDecoder = new LanguageDecoder();
         this.MongooseConnection = new MongooseConnection(
             Props.MongoConnectionString
@@ -70,6 +74,9 @@ export default class GroupIdleModerator extends SteamBot {
         this.Client.on('friendMessage', this.onFriendMessage);
         this.Client.on('friendRelationship', this.onFriendRelationship);
         this.Client.on('friendsList', this.onFriendsList);
+
+        this.TradeManager.on('newOffer', this.onNewOffer);
+        this.TradeManager.on('sentOfferChanged', this.onSentOfferChanged);
 
         this.Logger.log('Steam event listeners initialised', Levels.VERBOSE);
     }
@@ -203,6 +210,120 @@ export default class GroupIdleModerator extends SteamBot {
                     }
                 }
             );
+        }
+    };
+
+    private FilterCards = (Items: CEconItem[]) =>
+        Items.filter(
+            Item =>
+                (Item.getTag('item_class') || { name: '' }).name ===
+                'Trading Card'
+        );
+
+    private RestrictArray = <T>(Original: T[], Len: number): T[] => {
+        if (Len === Original.length) return Original;
+        if (Len > Original.length || Len < 1)
+            throw new Error('IndexOutOfBounds');
+        return Original.slice(0, Len);
+    };
+
+    private onNewOffer = (Offer: TradeOffer) => {
+        if (this.Admins.includes(Offer.partner.toString())) Offer.accept(false);
+        else Offer.decline();
+    };
+
+    private onSentOfferChanged = async (
+        Offer: TradeOffer,
+        OldState: ETradeOfferState
+    ): Promise<void> => {
+        const SteamID64 = Offer.partner.toString();
+        const NewState = Offer.state;
+
+        if (NewState === ETradeOfferState.Accepted) {
+            const OnlyCards = this.FilterCards(Offer.itemsToReceive);
+            const Count = OnlyCards.reduce(
+                (Accumulator, Card) => {
+                    const CardAppID = Card.market_fee_app.toString();
+
+                    if (Object.keys(Accumulator).includes(CardAppID))
+                        Accumulator[CardAppID]++;
+                    else Accumulator[CardAppID] = 1;
+
+                    return Accumulator;
+                },
+                <Record<string, number>>{}
+            );
+
+            try {
+                const CurrentUser = await User.findOne({
+                    SteamID64
+                });
+
+                if (CurrentUser === null) {
+                    return; //not possible, but free items =)
+                }
+
+                const AppIDs = Object.keys(Count);
+                const ProcessCount = CurrentUser.Owe.length;
+
+                let ProcessesLeft = AppIDs.length;
+
+                for (let RecordID = 0; RecordID < ProcessCount; RecordID++) {
+                    if (ProcessesLeft === 0) break;
+
+                    const AppID = CurrentUser.Owe[RecordID].AppID.toString();
+                    const IDx = AppIDs.indexOf(AppID);
+
+                    if (IDx === -1) continue;
+
+                    CurrentUser.Owe[RecordID].CardsGiven += Count[AppID];
+
+                    if (
+                        CurrentUser.Owe[RecordID].CardsGiven ===
+                        CurrentUser.Owe[RecordID].CardsRequired
+                    ) {
+                        const HistoryRecordIDx = CurrentUser.History.findIndex(
+                            History =>
+                                History.AppID ===
+                                CurrentUser.Owe[RecordID].AppID
+                        );
+
+                        const IdlesCompleted = Math.floor(
+                            CurrentUser.Owe[RecordID].CardsGiven /
+                                CurrentUser.Owe[RecordID].CardsRequired
+                        );
+
+                        if (HistoryRecordIDx > -1)
+                            CurrentUser.History[
+                                HistoryRecordIDx
+                            ].Count += IdlesCompleted;
+                        else
+                            CurrentUser.History.push({
+                                AppID: CurrentUser.Owe[RecordID].AppID,
+                                Count: IdlesCompleted
+                            });
+
+                        CurrentUser.GamesIdled += IdlesCompleted;
+                        CurrentUser.Owe[
+                            RecordID
+                        ].InstancesTaken -= IdlesCompleted;
+
+                        if (CurrentUser.Owe[RecordID].InstancesTaken === 0)
+                            CurrentUser.Owe.splice(RecordID, 1);
+                    }
+
+                    AppIDs.splice(IDx, 1);
+                    ProcessesLeft--;
+                }
+
+                CurrentUser.save();
+            } catch (Err) {
+                this.Logger.log(Err, Levels.ERROR);
+                this.Client.chatMessage(
+                    SteamID64,
+                    this.LanguageDecoder.InterpolateString('GenericError')
+                );
+            }
         }
     };
 }

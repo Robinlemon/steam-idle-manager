@@ -58,6 +58,13 @@ const Data: INamespaceMap = {
     OweResponseIter: '$1 ($2): $3',
     OweResponseZero: "You don't owe anything!",
 
+    OfferDescription: 'Sends you an offer for cards you owe',
+    OfferResponse: 'Sent you an offer with security token: $1',
+    OfferResponseNoCardsDetected: "You don't have any cards you owe",
+    OfferResponseNoCardsRequired: "You don't owe any cards!",
+    OfferResponseOfferFail: "Couldn't send you an offer.",
+    OfferResponseInventoryFail: "Couldn't get your inventory.",
+
     PrintRawDescription: 'Generate a JSON dump of a user',
     PrintRawResponse: 'InstanceType<User> -> $1',
 

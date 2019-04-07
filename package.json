@@ -14,6 +14,7 @@
     "dependencies": {
         "@types/async-retry": "^1.2.1",
         "@types/dotenv-safe": "^5.0.3",
+        "@types/nanoid": "^1.2.1",
         "@types/steam": "0.0.27",
         "async-retry": "^1.2.3",
         "axios": "^0.18.0",
@@ -22,6 +23,7 @@
         "dotenv-safe": "^6.1.0",
         "fuzzysort": "^1.1.4",
         "mongoose": "^5.4.19",
+        "nanoid": "^2.0.1",
         "reflect-metadata": "^0.1.13",
         "steam": "^1.4.1",
         "steam-totp": "^2.1.0",

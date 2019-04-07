@@ -52,6 +52,13 @@ export default interface INamespaceMap {
     OweResponseIter: string;
     OweResponseZero: string;
 
+    OfferDescription: string;
+    OfferResponse: string;
+    OfferResponseNoCardsDetected: string;
+    OfferResponseNoCardsRequired: string;
+    OfferResponseOfferFail: string;
+    OfferResponseInventoryFail: string;
+
     PrintRawDescription: string;
     PrintRawResponse: string;
 

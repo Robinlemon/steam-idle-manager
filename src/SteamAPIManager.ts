@@ -1,19 +1,163 @@
 import Retry from 'async-retry';
 import Axios, { AxiosRequestConfig } from 'axios';
 import Logger, { Levels } from './Logger';
+import { ETradeOfferState, EConfirmationMethod } from './SteamEnums';
+
+export interface CEconItemTag {
+    internal_name: string;
+    name: string;
+    category: string;
+    color: string;
+    category_name: string;
+}
+
+export interface CEconItemDescription {
+    type?: string;
+    value: string;
+}
+
+export interface CEconItem {
+    id: number;
+    assetid: number;
+    contextid: number;
+    appid: number;
+    classid: number;
+    instanceid: number;
+    amount: number;
+    pos: number;
+    name: string;
+    market_hash_name: string;
+    name_color: string;
+    background_color: string;
+    market_fee_app: number;
+    type: string;
+    tradable: boolean;
+    marketable: boolean;
+    commodity: boolean;
+    market_tradable_restriction: number;
+    market_marketable_restriction: number;
+    descriptions: CEconItemDescription[];
+    fraudwarnings: string[];
+    is_currency: boolean;
+    tags: CEconItemTag[];
+    app_data?: any;
+
+    getImageURL(): string;
+    getLargeImageURL(): string;
+    getTag(category: string): CEconItemTag;
+}
+
+export interface TradeOffer {
+    manager: any;
+    id: string;
+    partner: string;
+    message: string;
+    state: ETradeOfferState;
+    itemsToGive: CEconItem[];
+    itemsToReceive: CEconItem[];
+    isOurOffer: boolean;
+    created: Date;
+    updated: Date;
+    expires: Date;
+    tradeID: string;
+    fromRealTimeTrade: boolean;
+    confirmationMethod: EConfirmationMethod;
+    escrowEnds?: Date;
+    rawJson: string;
+
+    addMyItem(item: CEconItem): void;
+    addMyItems(items: CEconItem[]): void;
+
+    removeMyItem(item: CEconItem): void;
+    removeMyItems(items: CEconItem[]): void;
+
+    addTheirItem(item: CEconItem): void;
+    addTheirItems(items: CEconItem[]): void;
+
+    removeTheirItem(item: CEconItem): void;
+    removeTheirItems(items: CEconItem[]): void;
+
+    setMessage(message: string): void;
+
+    send(callback?: (Err: Error, Status: 'pending' | 'sent') => void): void;
+    cancel(callback?: (Err: Error) => void): void;
+
+    decline(callback?: (Err: Error) => void): void;
+    accept(
+        skipStateUpdate: boolean,
+        callback?: (
+            Err: Error,
+            Status: 'pending' | 'accepted' | 'escrow'
+        ) => void
+    ): void;
+}
 
 export default class SteamAPIManager {
     private APIKey: string;
     private SteamCommunityInstance: any;
+    private SteamTradeManagerInstance: any;
     private Logger: Logger;
 
     private APIRef = 'https://api.steampowered.com/';
 
-    constructor(APIKey: string, SteamCommunityInstance: any) {
+    constructor(
+        APIKey: string,
+        SteamCommunityInstance: any,
+        SteamTradeManagerInstance: any
+    ) {
         this.APIKey = APIKey;
         this.SteamCommunityInstance = SteamCommunityInstance;
+        this.SteamTradeManagerInstance = SteamTradeManagerInstance;
         this.Logger = new Logger(this.constructor.name);
     }
+
+    public GetInventory = (
+        SteamID64: string,
+        AppID: number,
+        ContextID: number,
+        Tradable = true
+    ): Promise<CEconItem[]> => {
+        return Retry(
+            () =>
+                new Promise((Resolve, Reject) => {
+                    this.SteamTradeManagerInstance.getUserInventoryContents(
+                        SteamID64,
+                        AppID,
+                        ContextID,
+                        Tradable,
+                        (Err: Error, Inventory: CEconItem[]) => {
+                            if (Err) Reject(Err);
+                            else Resolve(Inventory);
+                        }
+                    );
+                }),
+            {
+                retries: 100,
+                onRetry: (Err: Error) =>
+                    this.Logger.log(Err.stack, Levels.ERROR)
+            }
+        );
+    };
+
+    public SendOffer = (
+        SteamID64: string,
+        Items: CEconItem[],
+        Message: string = ''
+    ): Promise<TradeOffer> =>
+        new Promise((Resolve, Reject) => {
+            const Offer: TradeOffer = this.SteamTradeManagerInstance.createOffer(
+                SteamID64
+            );
+
+            Offer.addTheirItems(Items);
+            Offer.setMessage(Message);
+
+            Offer.send((Err, Status) => {
+                if (Err) Reject(Err);
+                else if (Status === 'sent') Resolve(Offer);
+                else Reject(Status);
+            });
+        });
 
     public GetGamesForSteamID64 = (SteamID64: string): Promise<number[]> => {
         const Endpoint = '/IPlayerService/GetOwnedGames/v1/';

@@ -19,7 +19,8 @@ import {
     Contact,
     PrintRaw,
     ClearUsers,
-    ClearKeys
+    ClearKeys,
+    Offer
 } from './Commands/';
 import FuzzySort from 'fuzzysort';
 import Logger, { Levels } from './Logger';
@@ -87,7 +88,8 @@ export default class CommandWrapper {
             Contact,
             PrintRaw,
             ClearUsers,
-            ClearKeys
+            ClearKeys,
+            Offer
         ];
 
         this.Logger.log(`Command Manager Initialised`, Levels.VERBOSE);
@@ -96,7 +98,7 @@ export default class CommandWrapper {
     public RegisterClasses() {
         this.Logger.log(`Registering Classes`, Levels.VERBOSE);
         this.CommandBundle = this.CommandClasses.map(
-            (Ref: any) => new Ref(this.LanguageDecoder)
+            Ref => new Ref(this.LanguageDecoder)
         );
         this.PostRegister();
     }

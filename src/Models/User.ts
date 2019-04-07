@@ -9,7 +9,7 @@ interface IHistory {
 interface IOwe {
     AppID: number;
     InstancesTaken: number;
-    TotalCardsRequired: number;
+    CardsRequired: number;
     CardsGiven: number;
 }
 
