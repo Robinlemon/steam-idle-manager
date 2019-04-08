@@ -100,23 +100,23 @@ export default class Redeem extends BaseCommand {
                     SteamID64
                 },
                 {
-                    DoesOwe: true,
                     $push: {
                         Owe: {
-                            AppID: App.AppID,
-                            InstancesTaken: 1,
-                            CardsRequired: Math.ceil(App.Count / 2),
-                            CardsGiven: 0
+                            AppID: AppInfo.AppID,
+                            CardsGiven: 0,
+                            CardsRequired: Math.ceil(AppInfo.Count / 2),
+                            InstancesTaken: 1
                         }
-                    }
+                    },
+                    DoesOwe: true
                 }
             );
 
             const Message = this.InterpolateString('RedeemResponse', [
                 this.InterpolateString('RedeemAllResponseIter', [
-                    App.AppID,
-                    App.Name,
-                    App.Keys[0]
+                    AppInfo.AppID,
+                    AppInfo.Name,
+                    AppInfo.Keys[0]
                 ])
             ]);
 
