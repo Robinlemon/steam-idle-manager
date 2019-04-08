@@ -53,11 +53,11 @@ export default class Owe extends BaseCommand {
 
         const Message = [
             this.InterpolateString('OweResponse'),
-            ...UserRecord.Owe.map(({ AppID, TotalCardsRequired, CardsGiven }) =>
+            ...UserRecord.Owe.map(({ AppID, CardsRequired, CardsGiven }) =>
                 this.InterpolateString('OweResponseIter', [
                     KeyToRecordMap[AppID],
                     AppID,
-                    TotalCardsRequired - CardsGiven
+                    CardsRequired - CardsGiven
                 ])
             )
         ].join('\n');
