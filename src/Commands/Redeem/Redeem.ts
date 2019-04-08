@@ -105,7 +105,7 @@ export default class Redeem extends BaseCommand {
                         Owe: {
                             AppID: App.AppID,
                             InstancesTaken: 1,
-                            TotalCardsRequired: Math.ceil(App.Count / 2),
+                            CardsRequired: Math.ceil(App.Count / 2),
                             CardsGiven: 0
                         }
                     }

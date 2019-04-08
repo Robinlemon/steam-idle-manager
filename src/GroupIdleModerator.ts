@@ -1,14 +1,14 @@
-import SteamBot from './SteamBot';
-import Logger, { Levels } from './Logger';
-import CommandManager from './CommandManager';
-import { EFriendRelationship, ETradeOfferState } from './SteamEnums';
-import User from './Models/User';
-import App from './Models/App';
 import Steam from 'steam';
-import SteamResources from './SteamResources';
-import SteamAPIManager, { TradeOffer, CEconItem } from './SteamAPIManager';
+import CommandManager from './CommandManager';
 import LanguageDecoder from './LanguageDecoder';
+import Logger, { Levels } from './Logger';
+import App from './Models/App';
+import User from './Models/User';
 import MongooseConnection from './MongooseConnection';
+import SteamAPIManager, { CEconItem, TradeOffer } from './SteamAPIManager';
+import SteamBot from './SteamBot';
+import { EFriendRelationship, ETradeOfferState } from './SteamEnums';
+import SteamResources from './SteamResources';
 
 export default class GroupIdleModerator extends SteamBot {
     private Admins: string[];
@@ -59,7 +59,7 @@ export default class GroupIdleModerator extends SteamBot {
             this.MongooseConnection.Initialise()
         ]);
 
-        //this.ResourceManager.Start(1000 * 60 * 60 * 24); //24h
+        // this.ResourceManager.Start(1000 * 60 * 60 * 24); //24h
         this.Commands.RegisterClasses();
         this.SetupEvents();
 
@@ -107,7 +107,9 @@ export default class GroupIdleModerator extends SteamBot {
     };
 
     private onError = (Err: Error) => {
-        if (Err) this.Logger.log(Err, Levels.ERROR);
+        if (Err) {
+            this.Logger.log(Err, Levels.ERROR);
+        }
     };
 
     private onLoggedOn = () => {
@@ -119,8 +121,11 @@ export default class GroupIdleModerator extends SteamBot {
 
         this.Admins.forEach(Admin => this.Client.addFriend(Admin));
         this.Community.getSteamGroup(this.GroupID, (Err: Error, Group: any) => {
-            if (Err) return this.Logger.log(Err, Levels.ERROR);
-            else Group.join();
+            if (Err) {
+                return this.Logger.log(Err, Levels.ERROR);
+            } else {
+                Group.join();
+            }
         });
 
         this.SetName();
@@ -157,9 +162,12 @@ export default class GroupIdleModerator extends SteamBot {
     private onFriendMessage = (SteamID: string, Message: string) => {
         const Rels = Object.keys(this.Client.myFriends);
 
-        if (Rels.includes(SteamID.toString()) === false) return;
-        if (this.Client.myFriends[SteamID] !== EFriendRelationship.Friend)
+        if (Rels.includes(SteamID.toString()) === false) {
             return;
+        }
+        if (this.Client.myFriends[SteamID] !== EFriendRelationship.Friend) {
+            return;
+        }
 
         this.Commands.HandleInput(SteamID, Message);
     };
@@ -182,7 +190,9 @@ export default class GroupIdleModerator extends SteamBot {
             this.Client.addFriend(
                 SteamID,
                 async (Err: Error, PersonaName: string) => {
-                    if (Err) return this.Logger.log(Err.stack, Levels.ERROR);
+                    if (Err) {
+                        return this.Logger.log(Err.stack, Levels.ERROR);
+                    }
 
                     const Message = this.LanguageDecoder.InterpolateString(
                         'SteamWelcome',
@@ -221,15 +231,21 @@ export default class GroupIdleModerator extends SteamBot {
         );
 
     private RestrictArray = <T>(Original: T[], Len: number): T[] => {
-        if (Len === Original.length) return Original;
-        if (Len > Original.length || Len < 1)
+        if (Len === Original.length) {
+            return Original;
+        }
+        if (Len > Original.length || Len < 1) {
             throw new Error('IndexOutOfBounds');
+        }
         return Original.slice(0, Len);
     };
 
     private onNewOffer = (Offer: TradeOffer) => {
-        if (this.Admins.includes(Offer.partner.toString())) Offer.accept(false);
-        else Offer.decline();
+        if (this.Admins.includes(Offer.partner.toString())) {
+            Offer.accept(false);
+        } else {
+            Offer.decline();
+        }
     };
 
     private onSentOfferChanged = async (
@@ -245,9 +261,11 @@ export default class GroupIdleModerator extends SteamBot {
                 (Accumulator, Card) => {
                     const CardAppID = Card.market_fee_app.toString();
 
-                    if (Object.keys(Accumulator).includes(CardAppID))
+                    if (Object.keys(Accumulator).includes(CardAppID)) {
                         Accumulator[CardAppID]++;
-                    else Accumulator[CardAppID] = 1;
+                    } else {
+                        Accumulator[CardAppID] = 1;
+                    }
 
                     return Accumulator;
                 },
@@ -260,7 +278,7 @@ export default class GroupIdleModerator extends SteamBot {
                 });
 
                 if (CurrentUser === null) {
-                    return; //not possible, but free items =)
+                    return; // not possible, but free items =)
                 }
 
                 const AppIDs = Object.keys(Count);
@@ -269,12 +287,16 @@ export default class GroupIdleModerator extends SteamBot {
                 let ProcessesLeft = AppIDs.length;
 
                 for (let RecordID = 0; RecordID < ProcessCount; RecordID++) {
-                    if (ProcessesLeft === 0) break;
+                    if (ProcessesLeft === 0) {
+                        break;
+                    }
 
                     const AppID = CurrentUser.Owe[RecordID].AppID.toString();
                     const IDx = AppIDs.indexOf(AppID);
 
-                    if (IDx === -1) continue;
+                    if (IDx === -1) {
+                        continue;
+                    }
 
                     CurrentUser.Owe[RecordID].CardsGiven += Count[AppID];
 
@@ -293,23 +315,25 @@ export default class GroupIdleModerator extends SteamBot {
                                 CurrentUser.Owe[RecordID].CardsRequired
                         );
 
-                        if (HistoryRecordIDx > -1)
+                        if (HistoryRecordIDx > -1) {
                             CurrentUser.History[
                                 HistoryRecordIDx
                             ].Count += IdlesCompleted;
-                        else
+                        } else {
                             CurrentUser.History.push({
                                 AppID: CurrentUser.Owe[RecordID].AppID,
                                 Count: IdlesCompleted
                             });
+                        }
 
                         CurrentUser.GamesIdled += IdlesCompleted;
                         CurrentUser.Owe[
                             RecordID
                         ].InstancesTaken -= IdlesCompleted;
 
-                        if (CurrentUser.Owe[RecordID].InstancesTaken === 0)
+                        if (CurrentUser.Owe[RecordID].InstancesTaken === 0) {
                             CurrentUser.Owe.splice(RecordID, 1);
+                        }
                     }
 
                     AppIDs.splice(IDx, 1);

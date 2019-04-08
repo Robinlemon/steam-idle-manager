@@ -1,8 +1,8 @@
-import BaseCommand, { ITriggerArgs } from '../BaseCommand';
-import Logger, { Levels } from '../../Logger';
-import User from '../../Models/User';
-import AppModel from '../../Models/App';
 import LanguageDecoder from '../../LanguageDecoder';
+import Logger, { Levels } from '../../Logger';
+import AppModel from '../../Models/App';
+import User from '../../Models/User';
+import BaseCommand, { ITriggerArgs } from '../BaseCommand';
 
 export default class Owe extends BaseCommand {
     constructor(LanguageDecoder: LanguageDecoder) {
@@ -30,11 +30,12 @@ export default class Owe extends BaseCommand {
             );
         }
 
-        if (UserRecord.Owe.length === 0)
+        if (UserRecord.Owe.length === 0) {
             return SteamClient.chatMessage(
                 SteamID64,
                 this.InterpolateString('OweResponseZero')
             );
+        }
 
         const AppIDsToGetGameInfoFor = UserRecord.Owe.map(
             OweObj => OweObj.AppID
