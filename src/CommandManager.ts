@@ -218,7 +218,9 @@ export default class CommandWrapper {
             CommandBlock => +CommandBlock.IsDebug <= +ShowDebug
         );
 
-        const CommandStrings = DebugInclusive.map(
+        const CommandStrings = DebugInclusive.sort((a, b) =>
+            a.Identifier.localeCompare(b.Identifier)
+        ).map(
             ({ CommandArgs, Description, Identifier }) =>
                 `!${Identifier} ${
                     Identifier === 'help'
@@ -227,7 +229,7 @@ export default class CommandWrapper {
                             : ''
                         : CommandArgs
                 }-> ${Description}`
-        ).sort();
+        );
 
         const Readable = CommandStrings.join('\n');
         this.SteamClient.chatMessage(SteamID64, Readable);
