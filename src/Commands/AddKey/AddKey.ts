@@ -5,7 +5,7 @@ import BaseCommand, { ITriggerArgs } from '../BaseCommand';
 
 export default class AddKey extends BaseCommand {
     constructor(Decoder: LanguageDecoder) {
-        super('addkey', Decoder, true, [
+        super('AddKey', Decoder, true, [
             { type: Number, name: 'AppID' },
             [
                 {

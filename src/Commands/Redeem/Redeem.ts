@@ -6,12 +6,9 @@ import BaseCommand, { ITriggerArgs } from '../BaseCommand';
 
 export default class Redeem extends BaseCommand {
     constructor(Decoder: LanguageDecoder) {
-        super('redeem', Decoder, false, [
+        super('Redeem', Decoder, false, [
             { type: String, name: 'AppID|Game Name' }
         ]);
-
-        this.Logger = new Logger(this.constructor.name);
-        this.Description = this.InterpolateString('RedeemDescription');
     }
 
     public Trigger = async ({
