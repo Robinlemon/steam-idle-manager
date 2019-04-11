@@ -17,7 +17,9 @@ import {
     PrintRaw,
     Redeem,
     RedeemAll,
+    RemakeUser,
     RemoveTag,
+    SteamID,
     Stock,
     Tier,
     Unban
@@ -86,7 +88,9 @@ export default class CommandWrapper {
             PrintRaw,
             ClearUsers,
             ClearKeys,
-            Offer
+            Offer,
+            RemakeUser,
+            SteamID
         ];
 
         this.Logger.log(`Command Manager Initialised`, Levels.VERBOSE);
@@ -100,7 +104,7 @@ export default class CommandWrapper {
         this.PostRegister();
     }
 
-    public async HandleInput(SteamID: string, Message: string) {
+    public async HandleInput(SteamID64: string, Message: string) {
         const Split: string[] = Message.split(/[ ,]+/);
         const Delimiter: string = this.CommandDelimiter;
         const IsCommand: boolean = Message.charAt(0) === Delimiter;
@@ -112,21 +116,21 @@ export default class CommandWrapper {
             : [];
 
         const CurrentUser = await User.findOne({
-            SteamID64: SteamID
+            SteamID64
         });
 
         if (CurrentUser === null) {
             this.SteamClient.chatMessage(
-                SteamID,
+                SteamID64,
                 `Internal Error, try adding me again!`
             );
-            this.SteamClient.removeFriend(SteamID);
+            this.SteamClient.removeFriend(SteamID64);
             return;
         }
 
         if (CurrentUser.Banned) {
             return this.SteamClient.chatMessage(
-                SteamID,
+                SteamID64,
                 this.Decoder.InterpolateString('BanMetaResponse')
             );
         }
@@ -134,9 +138,9 @@ export default class CommandWrapper {
         await CurrentUser.UpdateInteraction();
 
         if (IsCommand) {
-            this.RouteCommand(Command.toLowerCase(), SteamID, Arguments);
+            this.RouteCommand(Command.toLowerCase(), SteamID64, Arguments);
         } else {
-            this.SuggestCommand(Command.toLowerCase(), SteamID);
+            this.SuggestCommand(Command.toLowerCase(), SteamID64);
         }
     }
 
