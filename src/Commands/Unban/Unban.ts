@@ -1,14 +1,12 @@
-import BaseCommand, { ITriggerArgs } from '../BaseCommand';
-import User from '../../Models/User';
 import LanguageDecoder from '../../LanguageDecoder';
+import User from '../../Models/User';
+import BaseCommand, { ITriggerArgs } from '../BaseCommand';
 
 export default class Unban extends BaseCommand {
     constructor(LanguageDecoder: LanguageDecoder) {
-        super('unban', LanguageDecoder, true, [
+        super('Unban', LanguageDecoder, true, [
             { type: String, name: 'SteamID' }
         ]);
-
-        this.Description = this.InterpolateString('UnbanDescription');
     }
 
     public Trigger = async ({

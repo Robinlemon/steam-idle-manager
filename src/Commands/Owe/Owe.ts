@@ -6,10 +6,7 @@ import BaseCommand, { ITriggerArgs } from '../BaseCommand';
 
 export default class Owe extends BaseCommand {
     constructor(Decoder: LanguageDecoder) {
-        super('owe', Decoder);
-
-        this.Logger = new Logger(this.constructor.name);
-        this.Description = this.InterpolateString('OweDescription');
+        super('Owe', Decoder);
     }
 
     public Trigger = async ({

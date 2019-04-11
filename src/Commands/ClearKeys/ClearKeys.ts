@@ -1,20 +1,16 @@
-import BaseCommand, { ITriggerArgs } from '../BaseCommand';
-import App from '../../Models/App';
 import LanguageDecoder from '../../LanguageDecoder';
 import Logger, { Levels } from '../../Logger';
+import App from '../../Models/App';
+import BaseCommand, { ITriggerArgs } from '../BaseCommand';
 
 export default class ClearKeys extends BaseCommand {
-    constructor(LanguageDecoder: LanguageDecoder) {
-        super('clearkeys', LanguageDecoder, true);
-
-        this.Logger = new Logger(this.constructor.name);
-        this.Description = this.InterpolateString('ClearKeysDescription');
+    constructor(Decoder: LanguageDecoder) {
+        super('ClearKeys', Decoder, true);
     }
 
     public Trigger = async ({
         SteamClient,
-        SteamID64,
-        Arguments
+        SteamID64
     }: ITriggerArgs): Promise<void> => {
         try {
             const Data = await App.updateMany(

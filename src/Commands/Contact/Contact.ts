@@ -1,12 +1,9 @@
-import BaseCommand, { ITriggerArgs } from '../BaseCommand';
-import Logger, { Levels } from '../../Logger';
 import LanguageDecoder from '../../LanguageDecoder';
+import BaseCommand, { ITriggerArgs } from '../BaseCommand';
 
 export default class Contact extends BaseCommand {
-    constructor(LanguageDecoder: LanguageDecoder) {
-        super('contact', LanguageDecoder);
-
-        this.Description = this.InterpolateString('ContactDescription');
+    constructor(Decoder: LanguageDecoder) {
+        super('Contact', Decoder);
     }
 
     public Trigger = async ({

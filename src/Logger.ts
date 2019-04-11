@@ -3,10 +3,10 @@
  *    provides a clean logging solution.
  *  > Built with Chalk and Winston.
  */
-import Winston, { createLogger, format, transports, config } from 'winston';
 import Chalk from 'chalk';
 import { TransformableInfo } from 'logform';
 import { inspect } from 'util';
+import Winston, { config, createLogger, format, transports } from 'winston';
 
 export enum Levels {
     ERROR = 'error',
@@ -40,13 +40,31 @@ export default class Logger {
             transports: [
                 new transports.Console({
                     format: format.printf(this.FormatMessage)
-                }) //,
+                }) // ,
                 // new transports.File({
                 //     filename: `${this.Name ? this.Name : Date.now()}.log`
                 // })
             ]
         });
     }
+
+    public log = (Message: any, Level?: Levels) => {
+        if (Message instanceof Error) {
+            Message = new Error(Message.message).stack;
+        } else if (Message instanceof Object || Message instanceof Array) {
+            Message = inspect(Message, {
+                depth: 10,
+                colors: true,
+                compact: true
+            });
+        }
+
+        this.Logger.log({
+            message: Message,
+            level: Level ? Level : this.DefaultLevel,
+            ...(this.Name !== null && { label: this.Name })
+        });
+    };
 
     private FormatMessage = (Info: TransformableInfo): string => {
         const NPMColors: any = config.npm.colors;
@@ -62,22 +80,5 @@ export default class Logger {
         ];
 
         return Message.join(' ').trim();
-    };
-
-    public log = (Message: any, Level?: Levels) => {
-        if (Message instanceof Error)
-            Message = new Error(Message.message).stack;
-        else if (Message instanceof Object || Message instanceof Array)
-            Message = inspect(Message, {
-                depth: 10,
-                colors: true,
-                compact: true
-            });
-
-        this.Logger.log({
-            message: Message,
-            level: Level ? Level : this.DefaultLevel,
-            ...(this.Name !== null && { label: this.Name })
-        });
     };
 }

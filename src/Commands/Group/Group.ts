@@ -1,19 +1,14 @@
-import BaseCommand, { ITriggerArgs } from '../BaseCommand';
-import Logger, { Levels } from '../../Logger';
 import LanguageDecoder from '../../LanguageDecoder';
+import BaseCommand, { ITriggerArgs } from '../BaseCommand';
 
 export default class Group extends BaseCommand {
     constructor(LanguageDecoder: LanguageDecoder) {
-        super('group', LanguageDecoder);
-
-        this.Logger = new Logger(this.constructor.name);
-        this.Description = this.InterpolateString('GroupDescription');
+        super('Group', LanguageDecoder);
     }
 
     public Trigger = async ({
         SteamClient,
-        SteamID64,
-        Arguments
+        SteamID64
     }: ITriggerArgs): Promise<void> => {
         const Message = this.InterpolateString('GroupResponse', [
             'IdleFreaksVIP'

@@ -4,7 +4,7 @@ export interface ITier {
     GamesAllowed: number;
 }
 
-export const TierList = <ITier[]>[
+export const TierList = [
     {
         Name: 'Idler',
         GamesIdledRequirement: 0,
@@ -45,11 +45,12 @@ export const TierList = <ITier[]>[
         GamesIdledRequirement: 150,
         GamesAllowed: 1
     }
-];
+] as ITier[];
 
 export default (GamesIdled: number): ITier =>
     TierList.reduce((CurrentRank: ITier, CurrentTier: ITier) => {
-        if (GamesIdled >= CurrentTier.GamesIdledRequirement)
+        if (GamesIdled >= CurrentTier.GamesIdledRequirement) {
             CurrentRank = CurrentTier;
+        }
         return CurrentRank;
     });

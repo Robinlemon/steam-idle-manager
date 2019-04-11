@@ -1,5 +1,5 @@
-import AddKey from './index';
 import LanguageDecoder from '../../LanguageDecoder';
+import AddKey from './index';
 
 let LanguageDecoderInstance: LanguageDecoder;
 let Instance: AddKey;

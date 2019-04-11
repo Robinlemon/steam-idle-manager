@@ -1,9 +1,9 @@
 import Retry from 'async-retry';
 import Axios, { AxiosRequestConfig } from 'axios';
 import Logger, { Levels } from './Logger';
-import { ETradeOfferState, EConfirmationMethod } from './SteamEnums';
+import { EConfirmationMethod, ETradeOfferState } from './SteamEnums';
 
-export interface CEconItemTag {
+export interface ICEconItemTag {
     internal_name: string;
     name: string;
     category: string;
@@ -11,12 +11,12 @@ export interface CEconItemTag {
     category_name: string;
 }
 
-export interface CEconItemDescription {
+export interface ICEconItemDescription {
     type?: string;
     value: string;
 }
 
-export interface CEconItem {
+export interface ICEconItem {
     id: number;
     assetid: number;
     contextid: number;
@@ -36,25 +36,25 @@ export interface CEconItem {
     commodity: boolean;
     market_tradable_restriction: number;
     market_marketable_restriction: number;
-    descriptions: CEconItemDescription[];
+    descriptions: ICEconItemDescription[];
     fraudwarnings: string[];
     is_currency: boolean;
-    tags: CEconItemTag[];
+    tags: ICEconItemTag[];
     app_data?: any;
 
     getImageURL(): string;
     getLargeImageURL(): string;
-    getTag(category: string): CEconItemTag;
+    getTag(category: string): ICEconItemTag;
 }
 
-export interface TradeOffer {
+export interface ITradeOffer {
     manager: any;
     id: string;
     partner: string;
     message: string;
     state: ETradeOfferState;
-    itemsToGive: CEconItem[];
-    itemsToReceive: CEconItem[];
+    itemsToGive: ICEconItem[];
+    itemsToReceive: ICEconItem[];
     isOurOffer: boolean;
     created: Date;
     updated: Date;
@@ -65,17 +65,17 @@ export interface TradeOffer {
     escrowEnds?: Date;
     rawJson: string;
 
-    addMyItem(item: CEconItem): void;
-    addMyItems(items: CEconItem[]): void;
+    addMyItem(item: ICEconItem): void;
+    addMyItems(items: ICEconItem[]): void;
 
-    removeMyItem(item: CEconItem): void;
-    removeMyItems(items: CEconItem[]): void;
+    removeMyItem(item: ICEconItem): void;
+    removeMyItems(items: ICEconItem[]): void;
 
-    addTheirItem(item: CEconItem): void;
-    addTheirItems(items: CEconItem[]): void;
+    addTheirItem(item: ICEconItem): void;
+    addTheirItems(items: ICEconItem[]): void;
 
-    removeTheirItem(item: CEconItem): void;
-    removeTheirItems(items: CEconItem[]): void;
+    removeTheirItem(item: ICEconItem): void;
+    removeTheirItems(items: ICEconItem[]): void;
 
     setMessage(message: string): void;
 
@@ -116,7 +116,7 @@ export default class SteamAPIManager {
         AppID: number,
         ContextID: number,
         Tradable = true
-    ): Promise<CEconItem[]> => {
+    ): Promise<ICEconItem[]> => {
         return Retry(
             () =>
                 new Promise((Resolve, Reject) => {
@@ -125,9 +125,12 @@ export default class SteamAPIManager {
                         AppID,
                         ContextID,
                         Tradable,
-                        (Err: Error, Inventory: CEconItem[]) => {
-                            if (Err) Reject(Err);
-                            else Resolve(Inventory);
+                        (Err: Error, Inventory: ICEconItem[]) => {
+                            if (Err) {
+                                Reject(Err);
+                            } else {
+                                Resolve(Inventory);
+                            }
                         }
                     );
                 }),
@@ -141,11 +144,11 @@ export default class SteamAPIManager {
 
     public SendOffer = (
         SteamID64: string,
-        Items: CEconItem[],
+        Items: ICEconItem[],
         Message: string = ''
-    ): Promise<TradeOffer> =>
+    ): Promise<ITradeOffer> =>
         new Promise((Resolve, Reject) => {
-            const Offer: TradeOffer = this.SteamTradeManagerInstance.createOffer(
+            const Offer: ITradeOffer = this.SteamTradeManagerInstance.createOffer(
                 SteamID64
             );
 
@@ -153,9 +156,13 @@ export default class SteamAPIManager {
             Offer.setMessage(Message);
 
             Offer.send((Err, Status) => {
-                if (Err) Reject(Err);
-                else if (Status === 'sent') Resolve(Offer);
-                else Reject(Status);
+                if (Err) {
+                    Reject(Err);
+                } else if (Status === 'sent') {
+                    Resolve(Offer);
+                } else {
+                    Reject(Status);
+                }
             });
         });
 

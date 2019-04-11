@@ -1,7 +1,7 @@
 import Logger, { Levels } from '../Logger';
 const SteamUser = require('steam-user');
-import SteamAPIManager from '../SteamAPIManager';
 import LanguageDecoder, { ENamespaces } from '../LanguageDecoder';
+import SteamAPIManager from '../SteamAPIManager';
 
 export interface ICommandProps {
     Identifier: string;
@@ -15,13 +15,13 @@ export interface ITriggerArgs {
     Arguments?: string[];
 }
 
-export type ArgumentType = {
+export interface IArgumentType {
     type: NumberConstructor | StringConstructor | 'expression';
     name: string;
     optional?: boolean;
     linuxStyle?: boolean;
-};
-export type ExtendedArgumentType = ArgumentType | [ArgumentType];
+}
+export type ExtendedArgumentType = IArgumentType | [IArgumentType];
 
 export default abstract class Command {
     public Identifier: string;
@@ -31,33 +31,38 @@ export default abstract class Command {
     public IsDebug: boolean;
     public Logger: Logger;
 
-    private LanguageDecoder: LanguageDecoder;
+    private Decoder: LanguageDecoder;
 
     constructor(
         Identifier: string,
-        LanguageDecoder: LanguageDecoder,
+        Decoder: LanguageDecoder,
         IsAdmin: boolean = false,
         ArgumentMap: ExtendedArgumentType[] = [],
         IsDebug: boolean = false
     ) {
         this.Identifier = Identifier;
-        this.LanguageDecoder = LanguageDecoder;
+        this.Decoder = Decoder;
         this.IsAdmin = IsAdmin;
         this.ArgumentMap = ArgumentMap;
         this.IsDebug = IsDebug;
+
+        this.Logger = new Logger(this.Identifier);
+        this.Description = this.InterpolateString(
+            `${this.Identifier}Description`
+        );
     }
 
-    public abstract Trigger = (Args: ITriggerArgs): void => {};
+    public abstract Trigger(Args: ITriggerArgs): void;
 
     public InterpolateString = (Namespace: string, Args?: any[]) => {
-        return this.LanguageDecoder.InterpolateString(Namespace, Args);
+        return this.Decoder.InterpolateString(Namespace, Args);
     };
 
     public Validate = (Arguments: string[]): boolean => {
         let HitInfiniteArgs = false;
         let InfiniteArgsType;
 
-        for (let IDx in this.ArgumentMap) {
+        for (const IDx in this.ArgumentMap) {
             const RequiredType: any = HitInfiniteArgs
                 ? InfiniteArgsType
                 : this.ArgumentMap[IDx];
@@ -82,8 +87,9 @@ export default abstract class Command {
                         isNaN(Parsed) ||
                         !isFinite(Parsed) ||
                         !Number.isSafeInteger(Parsed)
-                    )
+                    ) {
                         return false;
+                    }
 
                     break;
             }

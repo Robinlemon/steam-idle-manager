@@ -1,14 +1,11 @@
-import BaseCommand, { ITriggerArgs } from '../BaseCommand';
-import App from '../../Models/App';
-import Logger, { Levels } from '../../Logger';
 import LanguageDecoder from '../../LanguageDecoder';
+import Logger, { Levels } from '../../Logger';
+import App from '../../Models/App';
+import BaseCommand, { ITriggerArgs } from '../BaseCommand';
 
 export default class Apps extends BaseCommand {
-    constructor(LanguageDecoder: LanguageDecoder) {
-        super('apps', LanguageDecoder, true);
-
-        this.Logger = new Logger(this.constructor.name);
-        this.Description = this.InterpolateString('AppsDescription');
+    constructor(Decoder: LanguageDecoder) {
+        super('Apps', Decoder, true);
     }
 
     public Trigger = async ({

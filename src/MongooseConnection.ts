@@ -1,6 +1,6 @@
-import Logger, { Levels } from './Logger';
-import Mongoose from 'mongoose';
 import { MongoError } from 'mongodb';
+import Mongoose from 'mongoose';
+import Logger, { Levels } from './Logger';
 
 export default class MongooseConnection {
     private ConnectionString: string;
@@ -11,19 +11,6 @@ export default class MongooseConnection {
         this.ConnectionString = ConnectionString;
         this.Logger = new Logger(this.constructor.name);
     }
-
-    private Connect = async (): Promise<void> => {
-        try {
-            await Mongoose.connect(this.ConnectionString, {
-                useNewUrlParser: true,
-                autoReconnect: true
-            });
-
-            this.Logger.log('Connected to MongoDB', Levels.INFO);
-        } catch (Err) {
-            this.Logger.log(Err.stack, Levels.ERROR);
-        }
-    };
 
     public Initialise = async () => {
         await this.Connect();
@@ -41,5 +28,18 @@ export default class MongooseConnection {
             this.Logger.log(Err.stack, Levels.ERROR);
             this.Connect();
         });
+    };
+
+    private Connect = async (): Promise<void> => {
+        try {
+            await Mongoose.connect(this.ConnectionString, {
+                useNewUrlParser: true,
+                autoReconnect: true
+            });
+
+            this.Logger.log('Connected to MongoDB', Levels.INFO);
+        } catch (Err) {
+            this.Logger.log(Err.stack, Levels.ERROR);
+        }
     };
 }

@@ -1,28 +1,17 @@
-import BaseCommand, { ITriggerArgs } from '../BaseCommand';
-import Logger, { Levels } from '../../Logger';
 import LanguageDecoder from '../../LanguageDecoder';
+import { Levels } from '../../Logger';
 import App from '../../Models/App';
 import User from '../../Models/User';
+import BaseCommand, { ITriggerArgs } from '../BaseCommand';
 
 export default class RedeemAll extends BaseCommand {
-    constructor(LanguageDecoder: LanguageDecoder) {
-        super('redeemall', LanguageDecoder, false);
-
-        this.Logger = new Logger(this.constructor.name);
-        this.Description = this.InterpolateString('RedeemAllDescription');
+    constructor(Decoder: LanguageDecoder) {
+        super('RedeemAll', Decoder);
     }
-
-    private RestrictArray = <T>(Original: T[], Len: number): T[] => {
-        if (Len === Original.length) return Original;
-        if (Len > Original.length || Len < 1)
-            throw new Error('IndexOutOfBounds');
-        return Original.slice(0, Len);
-    };
 
     public Trigger = async ({
         SteamClient,
-        SteamID64,
-        Arguments
+        SteamID64
     }: ITriggerArgs): Promise<void> => {
         const MyAppInfo = await App.find({
             TotalKeys: {
@@ -95,10 +84,10 @@ export default class RedeemAll extends BaseCommand {
              * @todo
              * Update records for existing games
              */
-            const AppOwe = Restricted.map(App => ({
-                AppID: App.AppID,
+            const AppOwe = Restricted.map(CurrentApp => ({
+                AppID: CurrentApp.AppID,
                 InstancesTaken: 1,
-                CardsRequired: Math.ceil(App.Count / 2),
+                CardsRequired: Math.ceil(CurrentApp.Count / 2),
                 CardsGiven: 0
             }));
 
@@ -118,11 +107,11 @@ export default class RedeemAll extends BaseCommand {
 
             const Message = [
                 this.InterpolateString('RedeemAllResponse', [WeCanGive]),
-                ...Restricted.map(App =>
+                ...Restricted.map(CurrentApp =>
                     this.InterpolateString('RedeemAllResponseIter', [
-                        App.AppID,
-                        App.Name,
-                        App.Keys[0]
+                        CurrentApp.AppID,
+                        CurrentApp.Name,
+                        CurrentApp.Keys[0]
                     ])
                 )
             ].join('\n');
@@ -136,5 +125,15 @@ export default class RedeemAll extends BaseCommand {
                 this.InterpolateString('GenericError')
             );
         }
+    };
+
+    private RestrictArray = <T>(Original: T[], Len: number): T[] => {
+        if (Len === Original.length) {
+            return Original;
+        }
+        if (Len > Original.length || Len < 1) {
+            throw new Error('IndexOutOfBounds');
+        }
+        return Original.slice(0, Len);
     };
 }

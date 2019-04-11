@@ -1,14 +1,11 @@
-import BaseCommand, { ITriggerArgs } from '../BaseCommand';
-import User from '../../Models/User';
 import LanguageDecoder from '../../LanguageDecoder';
-import Logger, { Levels } from '../../Logger';
+import Logger from '../../Logger';
+import User from '../../Models/User';
+import BaseCommand, { ITriggerArgs } from '../BaseCommand';
 
 export default class Tier extends BaseCommand {
-    constructor(LanguageDecoder: LanguageDecoder) {
-        super('tier', LanguageDecoder, false);
-
-        this.Logger = new Logger(this.constructor.name);
-        this.Description = this.InterpolateString('TierDescription');
+    constructor(Decoder: LanguageDecoder) {
+        super('Tier', Decoder, false);
     }
 
     public Trigger = async ({
@@ -17,14 +14,14 @@ export default class Tier extends BaseCommand {
         Arguments
     }: ITriggerArgs): Promise<void> => {
         const CurrentUser = await User.findOne({
-            SteamID64: SteamID64
+            SteamID64
         });
 
-        const Tier = CurrentUser.GetTier();
+        const CurrentTier = CurrentUser.GetTier();
         const Tags = CurrentUser.Tags.join(' ');
 
         const Message = this.InterpolateString('TierResponse', [
-            Tier.Name,
+            CurrentTier.Name,
             Tags
         ]);
 

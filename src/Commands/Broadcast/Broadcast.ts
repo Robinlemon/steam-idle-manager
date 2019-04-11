@@ -1,21 +1,15 @@
-import BaseCommand, { ITriggerArgs } from '../BaseCommand';
-import { EFriendRelationship } from '../../SteamEnums';
 import LanguageDecoder from '../../LanguageDecoder';
-import Logger from '../../Logger';
+import { EFriendRelationship } from '../../SteamEnums';
+import BaseCommand, { ITriggerArgs } from '../BaseCommand';
 
 type Friend = [string, EFriendRelationship];
-type FriendsList = {
+interface IFriendsList {
     [steamid: string]: EFriendRelationship;
-};
+}
 
 export default class BroadcastMessage extends BaseCommand {
-    constructor(LanguageDecoder: LanguageDecoder) {
-        super('broadcast', LanguageDecoder, true, [
-            { type: String, name: 'Message' }
-        ]);
-
-        this.Logger = new Logger(this.constructor.name);
-        this.Description = this.InterpolateString('BroadcastDescription');
+    constructor(Decoder: LanguageDecoder) {
+        super('Broadcast', Decoder, true, [{ type: String, name: 'Message' }]);
     }
 
     public Trigger = ({
@@ -25,12 +19,13 @@ export default class BroadcastMessage extends BaseCommand {
     }: ITriggerArgs): void => {
         const [MessageToSend] = Arguments;
 
-        const Friends: FriendsList = SteamClient.myFriends;
+        const Friends: IFriendsList = SteamClient.myFriends;
         const AsPairs: Friend[] = Object.entries(Friends);
         const ActualFriends: string[] = AsPairs.reduce(
             (Data: string[], [FriendSteamID64, Relationship]: Friend) => {
-                if (Relationship === EFriendRelationship.Friend)
+                if (Relationship === EFriendRelationship.Friend) {
                     Data.push(FriendSteamID64);
+                }
                 return Data;
             },
             []

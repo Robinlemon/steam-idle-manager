@@ -1,20 +1,15 @@
-import BaseCommand, { ITriggerArgs } from '../BaseCommand';
-import Logger, { Levels } from '../../Logger';
-import App from '../../Models/App';
 import LanguageDecoder from '../../LanguageDecoder';
+import App from '../../Models/App';
+import BaseCommand, { ITriggerArgs } from '../BaseCommand';
 
 export default class Compare extends BaseCommand {
-    constructor(LanguageDecoder: LanguageDecoder) {
-        super('compare', LanguageDecoder);
-
-        this.Logger = new Logger(this.constructor.name);
-        this.Description = this.InterpolateString('CompareDescription');
+    constructor(Decoder: LanguageDecoder) {
+        super('Compare', Decoder);
     }
 
     public Trigger = async ({
         SteamClient,
         SteamID64,
-        Arguments,
         SteamAPIManager
     }: ITriggerArgs): Promise<void> => {
         const MyAppIDsPromise = App.find({

@@ -18,19 +18,19 @@ export default class SteamBot {
     public Username: string;
     public Password: string;
     public APIKey: string;
-    private IdentitySecret: string;
-    private SharedSecret: string;
-    private InternalLogger: Logger;
     public LoggedOn: boolean;
 
-    private SessionID: any;
-    private Cookies: any;
+    public Initialised: number;
 
     protected Client: any;
     protected Community: any;
     protected TradeManager: any;
+    private IdentitySecret: string;
+    private SharedSecret: string;
+    private InternalLogger: Logger;
 
-    public Initialised: number;
+    private SessionID: any;
+    private Cookies: any;
 
     private ConfirmationCheckerDelay: number = 10 * 1000;
     private LoginInterval: number = 0;
@@ -62,6 +62,13 @@ export default class SteamBot {
         this.SetupDefaultEvents();
     }
 
+    public Login = () =>
+        this.Client.logOn({
+            accountName: this.Username,
+            password: this.Password,
+            twoFactorCode: this.GetAuthCode()
+        });
+
     private GetAuthCode = () => SteamTotp.generateAuthCode(this.SharedSecret);
 
     private SetupDefaultEvents() {
@@ -70,8 +77,9 @@ export default class SteamBot {
                 this.InternalLogger.log(Err.stack, Levels.DEBUG);
 
                 if (Err.message === 'RateLimitExceeded') {
-                    if (this.LoginInterval < 24 * 60 * 60 * 1000)
+                    if (this.LoginInterval < 24 * 60 * 60 * 1000) {
                         this.LoginInterval += this.LoginIntervalCumulativeCost;
+                    }
                     return setTimeout(this.Login, this.LoginInterval);
                 }
             }
@@ -85,7 +93,9 @@ export default class SteamBot {
         this.Community.on('sessionExpired', (Err: Error) => {
             if (typeof Err !== 'undefined') {
                 this.InternalLogger.log(Err.stack, Levels.DEBUG);
-                if (this.LoggedOn) this.Client.webLogOn();
+                if (this.LoggedOn) {
+                    this.Client.webLogOn();
+                }
             }
         });
 
@@ -98,8 +108,9 @@ export default class SteamBot {
             this.Cookies = Cookies;
 
             this.TradeManager.setCookies(this.Cookies, (Err: Error) => {
-                if (typeof Err !== 'undefined')
+                if (typeof Err !== 'undefined') {
                     this.InternalLogger.log(Err.stack, Levels.DEBUG);
+                }
 
                 this.Community.startConfirmationChecker(
                     this.ConfirmationCheckerDelay,
@@ -108,11 +119,4 @@ export default class SteamBot {
             });
         });
     }
-
-    public Login = () =>
-        this.Client.logOn({
-            accountName: this.Username,
-            password: this.Password,
-            twoFactorCode: this.GetAuthCode()
-        });
 }

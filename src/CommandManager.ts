@@ -22,7 +22,7 @@ import {
     Tier,
     Unban
 } from './Commands/';
-import BaseCommand, { ArgumentType } from './Commands/BaseCommand';
+import BaseCommand, { IArgumentType } from './Commands/BaseCommand';
 import LanguageDecoder from './LanguageDecoder';
 import Logger, { Levels } from './Logger';
 import User from './Models/User';
@@ -167,7 +167,9 @@ export default class CommandWrapper {
                 type: ParamType,
                 optional: IsOptional = false,
                 linuxStyle: LinuxStyle = false
-            } = IsCurried ? (Arg as [ArgumentType])[0] : (Arg as ArgumentType);
+            } = IsCurried
+                ? (Arg as [IArgumentType])[0]
+                : (Arg as IArgumentType);
 
             if (LinuxStyle) {
                 return [
@@ -237,7 +239,8 @@ export default class CommandWrapper {
         }
 
         const CommandFound = this.CommandBundle.find(
-            (Command: BaseCommand) => Command.Identifier === Identifier
+            (Command: BaseCommand) =>
+                Command.Identifier.toLowerCase() === Identifier.toLowerCase()
         );
 
         if (typeof CommandFound !== 'undefined') {

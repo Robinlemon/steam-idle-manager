@@ -2,31 +2,31 @@ import { prop, Typegoose } from 'typegoose';
 
 export class App extends Typegoose {
     @prop({ required: true })
-    AppID: number;
+    public AppID: number;
 
     @prop({ required: true })
-    Name: string;
+    public Name: string;
 
     @prop({ required: true, default: [] })
-    Keys: string[];
+    public Keys: string[];
 
     @prop({ required: true, default: 0 })
-    TotalKeys: number;
+    public TotalKeys: number;
 
     @prop({})
-    Count?: number;
+    public Count?: number;
 
     @prop({})
-    Normal?: number;
+    public Normal?: number;
 
     @prop({})
-    Foil?: number;
+    public Foil?: number;
 
     @prop({})
-    NormalStock?: number;
+    public NormalStock?: number;
 
     @prop({})
-    FoilStock?: number;
+    public FoilStock?: number;
 }
 
 export default new App().getModelForClass(App);

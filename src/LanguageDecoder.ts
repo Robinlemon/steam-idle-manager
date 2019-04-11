@@ -1,5 +1,5 @@
-import Logger, { Levels } from './Logger';
 import INamespaceMap from './Locale/INamespaces';
+import Logger, { Levels } from './Logger';
 
 export type ENamespaces = keyof INamespaceMap;
 
@@ -25,12 +25,33 @@ export default class LanguageDecoder {
 
     public GetInternalPromise = () => this.InternalPromise;
 
+    public InterpolateString = (
+        Namespace: string,
+        Args: any[] = []
+    ): string => {
+        const StandardMessage = this.GetString(Namespace as ENamespaces);
+
+        if (StandardMessage.match(this.InterpolationRegex) === null) {
+            return StandardMessage;
+        } else {
+            return StandardMessage.replace(this.InterpolationRegex, Match => {
+                const IDx = +Match.substr(1);
+
+                if (Args.length >= IDx) {
+                    return Args[IDx - 1];
+                } else {
+                    return null;
+                }
+            });
+        }
+    };
+
     private GetString(Namespace: ENamespaces) {
         this.Logger.log(`Retrieving ${Namespace}`, Levels.SILLY);
 
-        if (Object.keys(this.LanguageData).includes(Namespace))
+        if (Object.keys(this.LanguageData).includes(Namespace)) {
             return this.LanguageData[Namespace];
-        else {
+        } else {
             this.Logger.log(
                 `Namespace \`${Namespace}\` doesn't exist`,
                 Levels.WARN
@@ -40,28 +61,9 @@ export default class LanguageDecoder {
         }
     }
 
-    public InterpolateString = (
-        Namespace: string,
-        Args: any[] = []
-    ): string => {
-        const StandardMessage = this.GetString(Namespace as ENamespaces);
-
-        if (StandardMessage.match(this.InterpolationRegex) === null)
-            return StandardMessage;
-        else
-            return StandardMessage.replace(this.InterpolationRegex, Match => {
-                const IDx = +Match.substr(1);
-
-                if (Args.length >= IDx) return Args[IDx - 1];
-                else return null;
-            });
-    };
-
     private async LoadLanguage(LanguageName: string): Promise<void> {
         try {
-            this.LanguageData = (await import(`./Locale/${LanguageName}.ts`))[
-                'default'
-            ];
+            this.LanguageData = (await import(`./Locale/${LanguageName}.ts`)).default;
 
             this.ResolveInternalPromise();
         } catch {

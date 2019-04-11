@@ -1,20 +1,16 @@
-import BaseCommand, { ITriggerArgs } from '../BaseCommand';
-import User from '../../Models/User';
 import LanguageDecoder from '../../LanguageDecoder';
-import Logger, { Levels } from '../../Logger';
+import { Levels } from '../../Logger';
+import User from '../../Models/User';
+import BaseCommand, { ITriggerArgs } from '../BaseCommand';
 
 export default class ClearUsers extends BaseCommand {
-    constructor(LanguageDecoder: LanguageDecoder) {
-        super('clearusers', LanguageDecoder, true);
-
-        this.Logger = new Logger(this.constructor.name);
-        this.Description = this.InterpolateString('ClearUsersDescription');
+    constructor(Decoder: LanguageDecoder) {
+        super('ClearUsers', Decoder, true);
     }
 
     public Trigger = async ({
         SteamClient,
-        SteamID64,
-        Arguments
+        SteamID64
     }: ITriggerArgs): Promise<void> => {
         try {
             const Data = await User.deleteMany({});

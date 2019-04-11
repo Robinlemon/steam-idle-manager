@@ -1,22 +1,18 @@
 import NanoID from 'nanoid';
 import LanguageDecoder from '../../LanguageDecoder';
-import Logger, { Levels } from '../../Logger';
+import { Levels } from '../../Logger';
 import User from '../../Models/User';
-import { CEconItem } from '../../SteamAPIManager';
+import { ICEconItem } from '../../SteamAPIManager';
 import BaseCommand, { ITriggerArgs } from '../BaseCommand';
 
 export default class Offer extends BaseCommand {
     constructor(Decoder: LanguageDecoder) {
-        super('offer', Decoder, true);
-
-        this.Logger = new Logger(this.constructor.name);
-        this.Description = this.InterpolateString('OfferDescription');
+        super('Offer', Decoder, true);
     }
 
     public Trigger = async ({
         SteamClient,
         SteamID64,
-        Arguments,
         SteamAPIManager
     }: ITriggerArgs): Promise<void> => {
         try {
@@ -66,8 +62,8 @@ export default class Offer extends BaseCommand {
                 return;
             }
 
-            const Matched: Record<string, CEconItem[]> = TheirCards.reduce(
-                (Accumulator: Record<string, CEconItem[]>, CardObj) => {
+            const Matched: Record<string, ICEconItem[]> = TheirCards.reduce(
+                (Accumulator: Record<string, ICEconItem[]>, CardObj) => {
                     const CardAppID = CardObj.market_fee_app.toString();
 
                     if (AppIDsToMatch.includes(CardAppID)) {
@@ -102,7 +98,7 @@ export default class Offer extends BaseCommand {
                         ...this.RestrictArray(Cards, WeTake)
                     ];
                 },
-                [] as CEconItem[]
+                [] as ICEconItem[]
             );
 
             try {
@@ -141,7 +137,7 @@ export default class Offer extends BaseCommand {
         }
     };
 
-    private FilterCards = (Items: CEconItem[]) =>
+    private FilterCards = (Items: ICEconItem[]) =>
         Items.filter(
             Item =>
                 (Item.getTag('item_class') || { name: '' }).name ===

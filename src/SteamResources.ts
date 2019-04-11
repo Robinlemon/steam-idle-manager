@@ -1,8 +1,7 @@
 import Retry from 'async-retry';
 import Axios from 'axios';
-import App from './Models/App';
-import { MongoError } from 'mongodb';
 import Logger, { Levels } from './Logger';
+import App from './Models/App';
 
 export interface IAppData {
     applist: {

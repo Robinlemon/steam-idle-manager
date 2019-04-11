@@ -1,27 +1,22 @@
-import BaseCommand, { ITriggerArgs } from '../BaseCommand';
-import Logger, { Levels } from '../../Logger';
-import User from '../../Models/User';
 import LanguageDecoder from '../../LanguageDecoder';
+import User from '../../Models/User';
+import BaseCommand, { ITriggerArgs } from '../BaseCommand';
 
 export default class AllOwe extends BaseCommand {
-    constructor(LanguageDecoder: LanguageDecoder) {
-        super('allowe', LanguageDecoder, true);
-
-        this.Logger = new Logger(this.constructor.name);
-        this.Description = this.InterpolateString('AllOweDescription');
+    constructor(Decoder: LanguageDecoder) {
+        super('AllOwe', Decoder, true);
     }
 
     public Trigger = async ({
         SteamClient,
-        SteamID64,
-        Arguments
+        SteamID64
     }: ITriggerArgs): Promise<void> => {
         const Records = await User.find({
             DoesOwe: true
         });
 
-        const Message = Records.map(({ SteamID64 }) =>
-            this.InterpolateString('AllOweResponse', [SteamID64])
+        const Message = Records.map(CurrentUser =>
+            this.InterpolateString('AllOweResponse', [CurrentUser.SteamID64])
         ).join('\n');
 
         SteamClient.chatMessage(SteamID64, Message);

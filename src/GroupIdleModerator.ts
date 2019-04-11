@@ -5,7 +5,7 @@ import Logger, { Levels } from './Logger';
 import App from './Models/App';
 import User from './Models/User';
 import MongooseConnection from './MongooseConnection';
-import SteamAPIManager, { CEconItem, TradeOffer } from './SteamAPIManager';
+import SteamAPIManager, { ICEconItem, ITradeOffer } from './SteamAPIManager';
 import SteamBot from './SteamBot';
 import { EFriendRelationship, ETradeOfferState } from './SteamEnums';
 import SteamResources from './SteamResources';
@@ -223,7 +223,7 @@ export default class GroupIdleModerator extends SteamBot {
         }
     };
 
-    private FilterCards = (Items: CEconItem[]) =>
+    private FilterCards = (Items: ICEconItem[]) =>
         Items.filter(
             Item =>
                 (Item.getTag('item_class') || { name: '' }).name ===
@@ -240,7 +240,7 @@ export default class GroupIdleModerator extends SteamBot {
         return Original.slice(0, Len);
     };
 
-    private onNewOffer = (Offer: TradeOffer) => {
+    private onNewOffer = (Offer: ITradeOffer) => {
         if (this.Admins.includes(Offer.partner.toString())) {
             Offer.accept(false);
         } else {
@@ -249,7 +249,7 @@ export default class GroupIdleModerator extends SteamBot {
     };
 
     private onSentOfferChanged = async (
-        Offer: TradeOffer,
+        Offer: ITradeOffer,
         OldState: ETradeOfferState
     ): Promise<void> => {
         const SteamID64 = Offer.partner.toString();
@@ -269,7 +269,7 @@ export default class GroupIdleModerator extends SteamBot {
 
                     return Accumulator;
                 },
-                <Record<string, number>>{}
+                {} as Record<string, number>
             );
 
             try {

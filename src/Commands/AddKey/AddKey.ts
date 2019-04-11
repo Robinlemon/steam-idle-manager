@@ -1,11 +1,11 @@
-import BaseCommand, { ITriggerArgs } from '../BaseCommand';
 import LanguageDecoder from '../../LanguageDecoder';
 import Logger, { Levels } from '../../Logger';
 import App from '../../Models/App';
+import BaseCommand, { ITriggerArgs } from '../BaseCommand';
 
 export default class AddKey extends BaseCommand {
-    constructor(LanguageDecoder: LanguageDecoder) {
-        super('addkey', LanguageDecoder, true, [
+    constructor(Decoder: LanguageDecoder) {
+        super('addkey', Decoder, true, [
             { type: Number, name: 'AppID' },
             [
                 {
@@ -29,7 +29,7 @@ export default class AddKey extends BaseCommand {
         try {
             const Document = await App.findOneAndUpdate(
                 {
-                    AppID: AppID
+                    AppID
                 },
                 {
                     $inc: {

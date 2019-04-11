@@ -1,16 +1,11 @@
-import BaseCommand, { ITriggerArgs } from '../BaseCommand';
-import User from '../../Models/User';
-import Logger, { Levels } from '../../Logger';
 import LanguageDecoder from '../../LanguageDecoder';
+import { Levels } from '../../Logger';
+import User from '../../Models/User';
+import BaseCommand, { ITriggerArgs } from '../BaseCommand';
 
 export default class Ban extends BaseCommand {
-    constructor(LanguageDecoder: LanguageDecoder) {
-        super('ban', LanguageDecoder, true, [
-            { type: String, name: 'SteamID' }
-        ]);
-
-        this.Logger = new Logger(this.constructor.name);
-        this.Description = this.InterpolateString('BanDescription');
+    constructor(Decoder: LanguageDecoder) {
+        super('Ban', Decoder, true, [{ type: String, name: 'SteamID' }]);
     }
 
     public Trigger = async ({

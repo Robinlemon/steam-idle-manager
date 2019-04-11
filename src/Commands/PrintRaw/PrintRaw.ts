@@ -1,20 +1,16 @@
-import BaseCommand, { ITriggerArgs } from '../BaseCommand';
-import Logger, { Levels } from '../../Logger';
-import User from '../../Models/User';
 import LanguageDecoder from '../../LanguageDecoder';
+import User from '../../Models/User';
+import BaseCommand, { ITriggerArgs } from '../BaseCommand';
 
 export default class PrintRaw extends BaseCommand {
-    constructor(LanguageDecoder: LanguageDecoder) {
+    constructor(Decoder: LanguageDecoder) {
         super(
-            'printraw',
-            LanguageDecoder,
+            'PrintRaw',
+            Decoder,
             true,
             [{ type: String, name: 'SteamID' }],
             true
         );
-
-        this.Logger = new Logger(this.constructor.name);
-        this.Description = this.InterpolateString('PrintRawDescription');
     }
 
     public Trigger = async ({
@@ -28,11 +24,12 @@ export default class PrintRaw extends BaseCommand {
             SteamID64: SteamIDOfUser
         });
 
-        if (Record === null)
+        if (Record === null) {
             return SteamClient.chatMessage(
                 SteamID64,
                 this.InterpolateString('UserModelNotFound')
             );
+        }
 
         const Message = this.InterpolateString('PrintRawResponse', [
             JSON.stringify(Record, null, 0)
