@@ -1,5 +1,5 @@
 import LanguageDecoder from '../../LanguageDecoder';
-import Logger, { Levels } from '../../Logger';
+import { Levels } from '../../Logger';
 import App from '../../Models/App';
 import BaseCommand, { ITriggerArgs } from '../BaseCommand';
 

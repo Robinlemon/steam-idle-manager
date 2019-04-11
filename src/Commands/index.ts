@@ -19,3 +19,5 @@ export { default as PrintRaw } from './PrintRaw';
 export { default as ClearUsers } from './ClearUsers';
 export { default as ClearKeys } from './ClearKeys';
 export { default as Offer } from './Offer';
+export { default as RemakeUser } from './RemakeUser';
+export { default as SteamID } from './SteamID';

@@ -68,6 +68,9 @@ export default interface INamespaceMap {
     RedeemResponseNoMatch: string;
     RedeemResponseNotEligible: string;
 
+    RemakeUserDescription: string;
+    RemakeUserResponse: string;
+
     RedeemAllDescription: string;
     RedeemAllResponse: string;
     RedeemAllResponseIter: string;
@@ -77,6 +80,9 @@ export default interface INamespaceMap {
 
     StockDescription: string;
     StockResponse: string;
+
+    SteamIDDescription: string;
+    SteamIDResponse: string;
 
     TierDescription: string;
     TierTagDecorator: string;

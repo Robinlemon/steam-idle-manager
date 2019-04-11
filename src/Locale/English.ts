@@ -58,6 +58,9 @@ const Data: INamespaceMap = {
     OweResponseIter: '$1 ($2): $3',
     OweResponseZero: "You don't owe anything!",
 
+    RemakeUserDescription: 'Recreates a user model on the backend',
+    RemakeUserResponse: 'Successfuly recreated model for $1',
+
     OfferDescription: 'Sends you an offer for cards you owe',
     OfferResponse: 'Sent you an offer with security token: $1',
     OfferResponseNoCardsDetected: "You don't have any cards you owe",
@@ -84,6 +87,9 @@ const Data: INamespaceMap = {
 
     StockDescription: 'Retrieves a list of all games we have keys for',
     StockResponse: '($1) $2: $3',
+
+    SteamIDDescription: 'Retrieves your SteamID64',
+    SteamIDResponse: 'Your SteamID: $1',
 
     TierDescription: 'Responds with your current tier',
     TierTagDecorator: '[$1]',
