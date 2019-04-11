@@ -1,12 +1,12 @@
-import BaseCommand, { ITriggerArgs } from '../BaseCommand';
-import Logger, { Levels } from '../../Logger';
 import LanguageDecoder from '../../LanguageDecoder';
+import Logger, { Levels } from '../../Logger';
 import App from '../../Models/App';
 import User from '../../Models/User';
+import BaseCommand, { ITriggerArgs } from '../BaseCommand';
 
 export default class Redeem extends BaseCommand {
-    constructor(LanguageDecoder: LanguageDecoder) {
-        super('redeem', LanguageDecoder, false, [
+    constructor(Decoder: LanguageDecoder) {
+        super('redeem', Decoder, false, [
             { type: String, name: 'AppID|Game Name' }
         ]);
 

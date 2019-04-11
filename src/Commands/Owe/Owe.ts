@@ -5,8 +5,8 @@ import User from '../../Models/User';
 import BaseCommand, { ITriggerArgs } from '../BaseCommand';
 
 export default class Owe extends BaseCommand {
-    constructor(LanguageDecoder: LanguageDecoder) {
-        super('owe', LanguageDecoder);
+    constructor(Decoder: LanguageDecoder) {
+        super('owe', Decoder);
 
         this.Logger = new Logger(this.constructor.name);
         this.Description = this.InterpolateString('OweDescription');

@@ -6,8 +6,8 @@ import { CEconItem } from '../../SteamAPIManager';
 import BaseCommand, { ITriggerArgs } from '../BaseCommand';
 
 export default class Offer extends BaseCommand {
-    constructor(LanguageDecoder: LanguageDecoder) {
-        super('offer', LanguageDecoder, true);
+    constructor(Decoder: LanguageDecoder) {
+        super('offer', Decoder, true);
 
         this.Logger = new Logger(this.constructor.name);
         this.Description = this.InterpolateString('OfferDescription');
@@ -107,7 +107,7 @@ export default class Offer extends BaseCommand {
 
             try {
                 const SecureToken = NanoID(32);
-                const Offer = await SteamAPIManager.SendOffer(
+                const OfferObj = await SteamAPIManager.SendOffer(
                     SteamID64,
                     Restricted,
                     SecureToken
@@ -115,7 +115,7 @@ export default class Offer extends BaseCommand {
 
                 this.Logger.log(
                     `Sent offer ${
-                        Offer.id
+                        OfferObj.id
                     } to ${SteamID64} with token ${SecureToken}`
                 );
 
