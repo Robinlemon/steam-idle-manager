@@ -227,7 +227,7 @@ export default class CommandWrapper {
                             : ''
                         : CommandArgs
                 }-> ${Description}`
-        );
+        ).sort();
 
         const Readable = CommandStrings.join('\n');
         this.SteamClient.chatMessage(SteamID64, Readable);
