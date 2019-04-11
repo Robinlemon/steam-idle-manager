@@ -92,8 +92,8 @@ const Data: INamespaceMap = {
     SteamIDResponse: 'Your SteamID: $1',
 
     TierDescription: 'Responds with your current tier',
-    TierTagDecorator: '[$1]',
-    TierResponse: 'You are tier: $1\nTags: $2',
+    TierResponse: 'Tier: $1',
+    TierResponseTag: 'Tags: $2',
 
     UnbanDescription: 'Unban a particular user.',
     UnbanResponse: '$1 is now unbanned',

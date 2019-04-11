@@ -85,8 +85,8 @@ export default interface INamespaceMap {
     SteamIDResponse: string;
 
     TierDescription: string;
-    TierTagDecorator: string;
     TierResponse: string;
+    TierResponseTag: string;
 
     UnbanDescription: string;
     UnbanResponse: string;
