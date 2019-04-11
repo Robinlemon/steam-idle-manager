@@ -198,7 +198,7 @@ export default class CommandWrapper {
         return {
             Identifier: Command.Identifier,
             Description: Command.Description,
-            CommandArgs: Arguments,
+            CommandArgs: Arguments.length > 0 ? Arguments + ' ' : '',
             IsDebug: Command.IsDebug,
             IsAdmin: Command.IsAdmin
         } as IHelpBuilderBlock;

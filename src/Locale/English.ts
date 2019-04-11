@@ -55,7 +55,7 @@ const Data: INamespaceMap = {
 
     OweDescription: 'Responds with a list of cards you owe',
     OweResponse: 'You owe:\n',
-    OweResponseIter: '$1 ($2): $3',
+    OweResponseIter: '$1 ($2): $3 Cards',
     OweResponseZero: "You don't owe anything!",
 
     RemakeUserDescription: 'Recreates a user model on the backend',
