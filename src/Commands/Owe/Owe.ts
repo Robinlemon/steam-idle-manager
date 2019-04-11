@@ -11,8 +11,7 @@ export default class Owe extends BaseCommand {
 
     public Trigger = async ({
         SteamClient,
-        SteamID64,
-        Arguments
+        SteamID64
     }: ITriggerArgs): Promise<void> => {
         const UserRecord = await User.findOne({
             SteamID64

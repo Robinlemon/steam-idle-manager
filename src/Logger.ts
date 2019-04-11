@@ -30,12 +30,17 @@ export default class Logger {
         this.Name = Name;
         this.DefaultLevel = DefaultType;
 
+        const LogTypeMap: any = {
+            production: Levels.INFO,
+            test: Levels.DEBUG
+        };
+
+        const Environment: string = process.env.NODE_ENV;
+        const ExistsInMap = Object.keys(LogTypeMap).includes(Environment);
+        const LogLevel = ExistsInMap ? LogTypeMap[Environment] : Levels.SILLY;
+
         this.Logger = createLogger({
-            level: LoggingLevel
-                ? LoggingLevel
-                : process.env.NODE_ENV === 'production'
-                ? 'info'
-                : 'silly',
+            level: LoggingLevel ? LoggingLevel : LogLevel,
             format: format.json(),
             transports: [
                 new transports.Console({

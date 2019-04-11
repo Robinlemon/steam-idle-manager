@@ -10,8 +10,7 @@ export default class Apps extends BaseCommand {
 
     public Trigger = async ({
         SteamClient,
-        SteamID64,
-        Arguments
+        SteamID64
     }: ITriggerArgs): Promise<void> => {
         try {
             const Documents = await App.count({});
