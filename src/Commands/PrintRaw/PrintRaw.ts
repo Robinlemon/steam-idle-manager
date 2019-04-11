@@ -8,7 +8,7 @@ export default class PrintRaw extends BaseCommand {
             'PrintRaw',
             Decoder,
             true,
-            [{ type: String, name: 'SteamID' }],
+            [{ type: String, name: 'SteamID', optional: true }],
             true
         );
     }
@@ -18,7 +18,7 @@ export default class PrintRaw extends BaseCommand {
         SteamID64,
         Arguments
     }: ITriggerArgs): Promise<void> => {
-        const [SteamIDOfUser] = Arguments;
+        const [SteamIDOfUser] = Arguments.length < 1 ? [SteamID64] : Arguments;
 
         const Record = await User.findOne({
             SteamID64: SteamIDOfUser

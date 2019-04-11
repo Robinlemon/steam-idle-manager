@@ -1,6 +1,7 @@
+import { InstanceType } from 'typegoose';
 import LanguageDecoder from '../../LanguageDecoder';
 import Logger, { Levels } from '../../Logger';
-import AppModel from '../../Models/App';
+import App, { App as AppClass } from '../../Models/App';
 import User from '../../Models/User';
 import BaseCommand, { ITriggerArgs } from '../BaseCommand';
 
@@ -37,26 +38,32 @@ export default class Owe extends BaseCommand {
             OweObj => OweObj.AppID
         );
 
-        const Records = await AppModel.find({
+        const Records = await App.find({
             AppID: {
                 $in: AppIDsToGetGameInfoFor
             }
         });
 
-        const KeyToRecordMap = Records.reduce((Data: any, CurrentRecord) => {
-            Data[CurrentRecord.AppID] = CurrentRecord;
-            return Data;
-        }, {});
+        const KeyToRecordMap = Records.reduce(
+            (Data, CurrentRecord) => {
+                Data[CurrentRecord.AppID.toString()] = CurrentRecord;
+                return Data;
+            },
+            {} as { [appid: string]: InstanceType<AppClass> }
+        );
+
+        const Iterations = UserRecord.Owe.map(CurrentOwe =>
+            this.InterpolateString('OweResponseIter', [
+                KeyToRecordMap[CurrentOwe.AppID.toString()].Name,
+                CurrentOwe.AppID,
+                CurrentOwe.InstancesTaken * CurrentOwe.CardsRequired -
+                    CurrentOwe.CardsGiven
+            ])
+        );
 
         const Message = [
             this.InterpolateString('OweResponse'),
-            ...UserRecord.Owe.map(({ AppID, CardsRequired, CardsGiven }) =>
-                this.InterpolateString('OweResponseIter', [
-                    KeyToRecordMap[AppID],
-                    AppID,
-                    CardsRequired - CardsGiven
-                ])
-            )
+            ...Iterations
         ].join('\n');
 
         SteamClient.chatMessage(SteamID64, Message);
