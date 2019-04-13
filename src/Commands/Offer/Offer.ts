@@ -1,13 +1,13 @@
 import NanoID from 'nanoid';
-import LanguageDecoder from '../../LanguageDecoder';
+import CommandManager from '../../CommandManager';
 import { Levels } from '../../Logger';
 import User from '../../Models/User';
 import { ICEconItem } from '../../SteamAPIManager';
 import BaseCommand, { ITriggerArgs } from '../BaseCommand';
 
 export default class Offer extends BaseCommand {
-    constructor(Decoder: LanguageDecoder) {
-        super('Offer', Decoder, true);
+    constructor(Manager: CommandManager) {
+        super('Offer', Manager, true);
     }
 
     public Trigger = async ({

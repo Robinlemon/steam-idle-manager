@@ -1,10 +1,10 @@
-import LanguageDecoder from '../../LanguageDecoder';
+import CommandManager from '../../CommandManager';
 import User from '../../Models/User';
 import BaseCommand, { ITriggerArgs } from '../BaseCommand';
 
 export default class AllOwe extends BaseCommand {
-    constructor(Decoder: LanguageDecoder) {
-        super('AllOwe', Decoder, true);
+    constructor(Manager: CommandManager) {
+        super('AllOwe', Manager, true);
     }
 
     public Trigger = async ({

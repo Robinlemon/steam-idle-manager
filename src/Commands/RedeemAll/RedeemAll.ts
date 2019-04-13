@@ -1,12 +1,12 @@
-import LanguageDecoder from '../../LanguageDecoder';
+import CommandManager from '../../CommandManager';
 import { Levels } from '../../Logger';
 import App from '../../Models/App';
 import User from '../../Models/User';
 import BaseCommand, { ITriggerArgs } from '../BaseCommand';
 
 export default class RedeemAll extends BaseCommand {
-    constructor(Decoder: LanguageDecoder) {
-        super('RedeemAll', Decoder);
+    constructor(Manager: CommandManager) {
+        super('RedeemAll', Manager);
     }
 
     public Trigger = async ({

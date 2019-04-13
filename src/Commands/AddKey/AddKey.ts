@@ -1,11 +1,11 @@
-import LanguageDecoder from '../../LanguageDecoder';
-import Logger, { Levels } from '../../Logger';
+import CommandManager from '../../CommandManager';
+import { Levels } from '../../Logger';
 import App from '../../Models/App';
 import BaseCommand, { ITriggerArgs } from '../BaseCommand';
 
 export default class AddKey extends BaseCommand {
-    constructor(Decoder: LanguageDecoder) {
-        super('AddKey', Decoder, true, [
+    constructor(Manager: CommandManager) {
+        super('AddKey', Manager, true, [
             { type: Number, name: 'AppID' },
             [
                 {
@@ -14,9 +14,6 @@ export default class AddKey extends BaseCommand {
                 }
             ]
         ]);
-
-        this.Logger = new Logger(this.constructor.name);
-        this.Description = this.InterpolateString('AddKeyDescription');
     }
 
     public Trigger = async ({

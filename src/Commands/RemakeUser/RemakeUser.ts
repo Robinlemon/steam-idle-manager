@@ -1,13 +1,14 @@
+import CommandManager from '../../CommandManager';
 import LanguageDecoder from '../../LanguageDecoder';
 import { Levels } from '../../Logger';
 import User from '../../Models/User';
 import BaseCommand, { ITriggerArgs } from '../BaseCommand';
 
 export default class RemakeUser extends BaseCommand {
-    constructor(Decoder: LanguageDecoder) {
+    constructor(Manager: CommandManager) {
         super(
             'RemakeUser',
-            Decoder,
+            Manager,
             true,
             [{ type: String, name: 'SteamID', optional: true }],
             true

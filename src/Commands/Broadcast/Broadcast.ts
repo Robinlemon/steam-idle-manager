@@ -1,4 +1,4 @@
-import LanguageDecoder from '../../LanguageDecoder';
+import CommandManager from '../../CommandManager';
 import { EFriendRelationship } from '../../SteamEnums';
 import BaseCommand, { ITriggerArgs } from '../BaseCommand';
 
@@ -8,8 +8,8 @@ interface IFriendsList {
 }
 
 export default class BroadcastMessage extends BaseCommand {
-    constructor(Decoder: LanguageDecoder) {
-        super('Broadcast', Decoder, true, [{ type: String, name: 'Message' }]);
+    constructor(Manager: CommandManager) {
+        super('Broadcast', Manager, true, [{ type: String, name: 'Message' }]);
     }
 
     public Trigger = ({

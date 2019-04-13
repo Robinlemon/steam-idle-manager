@@ -8,7 +8,7 @@ import { NotImplemented } from '../../Errors';
 import { Levels } from '../../Logger';
 
 export default class ${DirName} extends BaseCommand {
-    constructor(Decoder: LanguageDecoder) {
+    constructor(Manager: CommandManager) {
         super('${DirName}', Decoder, true);
     }
 

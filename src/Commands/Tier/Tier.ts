@@ -1,10 +1,10 @@
-import LanguageDecoder from '../../LanguageDecoder';
+import CommandManager from '../../CommandManager';
 import User from '../../Models/User';
 import BaseCommand, { ITriggerArgs } from '../BaseCommand';
 
 export default class Tier extends BaseCommand {
-    constructor(Decoder: LanguageDecoder) {
-        super('Tier', Decoder, false);
+    constructor(Manager: CommandManager) {
+        super('Tier', Manager, false);
     }
 
     public Trigger = async ({

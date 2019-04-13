@@ -1,11 +1,11 @@
-import LanguageDecoder from '../../LanguageDecoder';
+import CommandManager from '../../CommandManager';
 import { Levels } from '../../Logger';
 import User from '../../Models/User';
 import BaseCommand, { ITriggerArgs } from '../BaseCommand';
 
 export default class Ban extends BaseCommand {
-    constructor(Decoder: LanguageDecoder) {
-        super('Ban', Decoder, true, [{ type: String, name: 'SteamID' }]);
+    constructor(Manager: CommandManager) {
+        super('Ban', Manager, true, [{ type: String, name: 'SteamID' }]);
     }
 
     public Trigger = async ({

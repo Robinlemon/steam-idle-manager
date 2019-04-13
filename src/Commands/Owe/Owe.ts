@@ -1,13 +1,13 @@
 import { InstanceType } from 'typegoose';
-import LanguageDecoder from '../../LanguageDecoder';
-import Logger, { Levels } from '../../Logger';
+import CommandManager from '../../CommandManager';
+import { Levels } from '../../Logger';
 import App, { App as AppClass } from '../../Models/App';
 import User from '../../Models/User';
 import BaseCommand, { ITriggerArgs } from '../BaseCommand';
 
 export default class Owe extends BaseCommand {
-    constructor(Decoder: LanguageDecoder) {
-        super('Owe', Decoder);
+    constructor(Manager: CommandManager) {
+        super('Owe', Manager);
     }
 
     public Trigger = async ({

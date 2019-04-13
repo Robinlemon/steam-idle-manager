@@ -1,10 +1,10 @@
-import LanguageDecoder from '../../LanguageDecoder';
+import CommandManager from '../../CommandManager';
 import App from '../../Models/App';
 import BaseCommand, { ITriggerArgs } from '../BaseCommand';
 
 export default class Compare extends BaseCommand {
-    constructor(Decoder: LanguageDecoder) {
-        super('Compare', Decoder);
+    constructor(Manager: CommandManager) {
+        super('Compare', Manager);
     }
 
     public Trigger = async ({

@@ -29,7 +29,6 @@ import LanguageDecoder from './LanguageDecoder';
 import Logger, { Levels } from './Logger';
 import User from './Models/User';
 import SteamAPIManager from './SteamAPIManager';
-const SteamUser = require('steam-user');
 
 type ClassDefinition<T> = new (...args: any[]) => T;
 
@@ -96,12 +95,21 @@ export default class CommandWrapper {
         this.Logger.log(`Command Manager Initialised`, Levels.VERBOSE);
     }
 
+    public GetDecoder(): LanguageDecoder {
+        return this.Decoder;
+    }
+
     public RegisterClasses() {
         this.Logger.log(`Registering Classes`, Levels.VERBOSE);
-        this.CommandBundle = this.CommandClasses.map(
-            Ref => new Ref(this.Decoder)
-        );
+        this.CommandBundle = this.CommandClasses.map(Ref => new Ref(this));
         this.PostRegister();
+    }
+
+    public GetCommandByIdentifier(Identifier: string) {
+        return this.CommandBundle.find(
+            Command =>
+                Command.Identifier.toLowerCase() === Identifier.toLowerCase()
+        );
     }
 
     public async HandleInput(SteamID64: string, Message: string) {
@@ -220,19 +228,20 @@ export default class CommandWrapper {
 
         const CommandStrings = DebugInclusive.sort((a, b) =>
             a.Identifier.localeCompare(b.Identifier)
-        ).map(
-            ({ CommandArgs, Description, Identifier }) =>
-                `!${Identifier} ${
-                    Identifier === 'help'
-                        ? IsAnAdmin
-                            ? CommandArgs + ' '
-                            : ''
-                        : CommandArgs
-                }-> ${Description}`
-        );
+        )
+            .map(
+                ({ CommandArgs, Description, Identifier }) =>
+                    `!${Identifier} ${
+                        Identifier === 'help'
+                            ? IsAnAdmin
+                                ? CommandArgs + ' '
+                                : ''
+                            : CommandArgs
+                    }-> ${Description}`
+            )
+            .join('\n');
 
-        const Readable = CommandStrings.join('\n');
-        this.SteamClient.chatMessage(SteamID64, Readable);
+        this.SteamClient.chatMessage(SteamID64, CommandStrings);
     }
 
     private RouteCommand(
@@ -244,10 +253,7 @@ export default class CommandWrapper {
             return this.HelpCommand(SteamID64, Arguments);
         }
 
-        const CommandFound = this.CommandBundle.find(
-            (Command: BaseCommand) =>
-                Command.Identifier.toLowerCase() === Identifier.toLowerCase()
-        );
+        const CommandFound = this.GetCommandByIdentifier(Identifier);
 
         if (typeof CommandFound !== 'undefined') {
             this.Logger.log(

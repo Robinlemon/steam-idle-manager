@@ -9,6 +9,7 @@
         "no-var-requires": false,
         "object-literal-sort-keys": false,
         "forin": false,
-        "no-bitwise": false
+        "no-bitwise": false,
+        "no-unused-variable": true
     }
 }

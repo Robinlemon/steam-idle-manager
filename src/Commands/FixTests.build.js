@@ -1,17 +1,17 @@
 const fsPromise = require('fs').promises;
 
 const Test = DirName => `\
+import { ${DirName} } from '..';
+import CommandManager from '../../CommandManager';
 import LanguageDecoder from '../../LanguageDecoder';
-import ${DirName} from './index';
 
-let LanguageDecoderInstance: LanguageDecoder;
+let Manager: CommandManager;
 let Instance: ${DirName};
 
-beforeAll(async () => {
-    LanguageDecoderInstance = new LanguageDecoder();
-    await LanguageDecoderInstance.GetInternalPromise();
-
-    Instance = new ${DirName}(LanguageDecoderInstance);
+beforeAll(() => {
+    Manager = new CommandManager(null, [], '!', null, new LanguageDecoder());
+    Manager.RegisterClasses();
+    Instance = Manager.GetCommandByIdentifier('${DirName}') as ${DirName};
 });
 
 describe('${DirName} Command', () => {

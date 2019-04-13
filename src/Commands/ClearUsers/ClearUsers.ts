@@ -1,11 +1,11 @@
-import LanguageDecoder from '../../LanguageDecoder';
+import CommandManager from '../../CommandManager';
 import { Levels } from '../../Logger';
 import User from '../../Models/User';
 import BaseCommand, { ITriggerArgs } from '../BaseCommand';
 
 export default class ClearUsers extends BaseCommand {
-    constructor(Decoder: LanguageDecoder) {
-        super('ClearUsers', Decoder, true);
+    constructor(Manager: CommandManager) {
+        super('ClearUsers', Manager, true);
     }
 
     public Trigger = async ({

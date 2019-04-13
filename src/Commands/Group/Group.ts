@@ -1,9 +1,9 @@
-import LanguageDecoder from '../../LanguageDecoder';
+import CommandManager from '../../CommandManager';
 import BaseCommand, { ITriggerArgs } from '../BaseCommand';
 
 export default class Group extends BaseCommand {
-    constructor(LanguageDecoder: LanguageDecoder) {
-        super('Group', LanguageDecoder);
+    constructor(Manager: CommandManager) {
+        super('Group', Manager);
     }
 
     public Trigger = async ({

@@ -1,12 +1,13 @@
+import CommandManager from '../../CommandManager';
 import LanguageDecoder from '../../LanguageDecoder';
 import User from '../../Models/User';
 import BaseCommand, { ITriggerArgs } from '../BaseCommand';
 
 export default class PrintRaw extends BaseCommand {
-    constructor(Decoder: LanguageDecoder) {
+    constructor(Manager: CommandManager) {
         super(
             'PrintRaw',
-            Decoder,
+            Manager,
             true,
             [{ type: String, name: 'SteamID', optional: true }],
             true

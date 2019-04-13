@@ -1,10 +1,10 @@
-import LanguageDecoder from '../../LanguageDecoder';
+import CommandManager from '../../CommandManager';
 import User from '../../Models/User';
 import BaseCommand, { ITriggerArgs } from '../BaseCommand';
 
 export default class AllIdled extends BaseCommand {
-    constructor(Decoder: LanguageDecoder) {
-        super('AllIdled', Decoder, true);
+    constructor(Manager: CommandManager) {
+        super('AllIdled', Manager, true);
     }
 
     public Trigger = async ({

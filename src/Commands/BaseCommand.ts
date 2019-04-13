@@ -1,6 +1,5 @@
-import Logger, { Levels } from '../Logger';
-const SteamUser = require('steam-user');
-import LanguageDecoder, { ENamespaces } from '../LanguageDecoder';
+import CommandManager from '../CommandManager';
+import Logger from '../Logger';
 import SteamAPIManager from '../SteamAPIManager';
 
 export interface ICommandProps {
@@ -31,17 +30,17 @@ export default abstract class Command {
     public IsDebug: boolean;
     public Logger: Logger;
 
-    private Decoder: LanguageDecoder;
+    private Manager: CommandManager;
 
     constructor(
         Identifier: string,
-        Decoder: LanguageDecoder,
+        Manager: CommandManager,
         IsAdmin: boolean = false,
         ArgumentMap: ExtendedArgumentType[] = [],
         IsDebug: boolean = false
     ) {
         this.Identifier = Identifier;
-        this.Decoder = Decoder;
+        this.Manager = Manager;
         this.IsAdmin = IsAdmin;
         this.ArgumentMap = ArgumentMap;
         this.IsDebug = IsDebug;
@@ -54,9 +53,8 @@ export default abstract class Command {
 
     public abstract Trigger(Args: ITriggerArgs): void;
 
-    public InterpolateString = (Namespace: string, Args?: any[]) => {
-        return this.Decoder.InterpolateString(Namespace, Args);
-    };
+    public InterpolateString = (Namespace: string, Args?: any[]) =>
+        this.Manager.GetDecoder().InterpolateString(Namespace, Args);
 
     public Validate = (Arguments: string[]): boolean => {
         let HitInfiniteArgs = false;

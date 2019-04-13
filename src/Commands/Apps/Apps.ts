@@ -1,11 +1,11 @@
-import LanguageDecoder from '../../LanguageDecoder';
+import CommandManager from '../../CommandManager';
 import { Levels } from '../../Logger';
 import App from '../../Models/App';
 import BaseCommand, { ITriggerArgs } from '../BaseCommand';
 
 export default class Apps extends BaseCommand {
-    constructor(Decoder: LanguageDecoder) {
-        super('Apps', Decoder, true);
+    constructor(Manager: CommandManager) {
+        super('Apps', Manager, true);
     }
 
     public Trigger = async ({

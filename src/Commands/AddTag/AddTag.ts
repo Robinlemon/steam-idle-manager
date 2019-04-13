@@ -1,11 +1,11 @@
-import LanguageDecoder from '../../LanguageDecoder';
+import CommandManager from '../../CommandManager';
 import { Levels } from '../../Logger';
 import User from '../../Models/User';
 import BaseCommand, { ITriggerArgs } from '../BaseCommand';
 
 export default class AddTag extends BaseCommand {
-    constructor(Decoder: LanguageDecoder) {
-        super('AddTag', Decoder, true, [
+    constructor(Manager: CommandManager) {
+        super('AddTag', Manager, true, [
             { type: String, name: 'SteamID' },
             [{ type: String, name: 'Tags' }]
         ]);

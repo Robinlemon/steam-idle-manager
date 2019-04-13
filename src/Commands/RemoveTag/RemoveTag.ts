@@ -1,11 +1,11 @@
-import LanguageDecoder from '../../LanguageDecoder';
+import CommandManager from '../../CommandManager';
 import { Levels } from '../../Logger';
 import User from '../../Models/User';
 import BaseCommand, { ITriggerArgs } from '../BaseCommand';
 
 export default class RemoveTag extends BaseCommand {
-    constructor(Decoder: LanguageDecoder) {
-        super('RemoveTag', Decoder, true, [
+    constructor(Manager: CommandManager) {
+        super('RemoveTag', Manager, true, [
             { type: String, name: 'SteamID' },
             [{ type: String, name: 'Tags' }]
         ]);

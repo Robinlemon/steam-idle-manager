@@ -1,9 +1,9 @@
-import LanguageDecoder from '../../LanguageDecoder';
+import CommandManager from '../../CommandManager';
 import BaseCommand, { ITriggerArgs } from '../BaseCommand';
 
 export default class SteamID extends BaseCommand {
-    constructor(Decoder: LanguageDecoder) {
-        super('SteamID', Decoder, true, [], true);
+    constructor(Manager: CommandManager) {
+        super('SteamID', Manager, true, [], true);
     }
 
     public Trigger = async ({
