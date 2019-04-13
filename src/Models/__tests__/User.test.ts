@@ -10,8 +10,9 @@ describe('User model', () => {
     });
 
     test('It should update the last interaction', () => {
+        const Now = Date.now();
         Instance.UpdateInteraction();
-        expect(Instance.LastActive).toBeGreaterThan(Date.now() - 30 * 1000);
+        expect(Instance.LastActive).toBeGreaterThan(Now);
     });
 });
 
