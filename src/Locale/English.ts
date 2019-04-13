@@ -53,6 +53,12 @@ const Data: INamespaceMap = {
     GroupDescription: 'Links you to the group',
     GroupResponse: 'https://steamcommunity.com/groups/$1',
 
+    GiveDescription: 'An alias for !Redeem',
+    RDescription: 'An alias for !Redeem',
+
+    GiveAllDescription: 'An alias for !RedeemAll',
+    RAllDescription: 'An alias for !RedeemAll',
+
     OweDescription: 'Responds with a list of cards you owe',
     OweResponse: 'You owe:\n',
     OweResponseIter: '$1 ($2): $3 Cards',

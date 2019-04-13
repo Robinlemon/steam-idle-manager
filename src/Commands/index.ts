@@ -21,3 +21,7 @@ export { default as ClearKeys } from './ClearKeys';
 export { default as Offer } from './Offer';
 export { default as RemakeUser } from './RemakeUser';
 export { default as SteamID } from './SteamID';
+export { default as Give } from './Give';
+export { default as R } from './R';
+export { default as RAll } from './RAll';
+export { default as GiveAll } from './GiveAll';

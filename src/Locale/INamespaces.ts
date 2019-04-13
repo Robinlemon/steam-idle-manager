@@ -47,6 +47,12 @@ export default interface INamespaceMap {
     GroupDescription: string;
     GroupResponse: string;
 
+    GiveDescription: string;
+    RDescription: string;
+
+    GiveAllDescription: string;
+    RAllDescription: string;
+
     OweDescription: string;
     OweResponse: string;
     OweResponseIter: string;

@@ -11,10 +11,14 @@ import {
     ClearUsers,
     Compare,
     Contact,
+    Give,
+    GiveAll,
     Group,
     Offer,
     Owe,
     PrintRaw,
+    R,
+    RAll,
     Redeem,
     RedeemAll,
     RemakeUser,
@@ -89,7 +93,11 @@ export default class CommandWrapper {
             ClearKeys,
             Offer,
             RemakeUser,
-            SteamID
+            SteamID,
+            Give,
+            R,
+            RAll,
+            GiveAll
         ];
 
         this.Logger.log(`Command Manager Initialised`, Levels.VERBOSE);

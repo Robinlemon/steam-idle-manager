@@ -47,24 +47,23 @@ export default class LanguageDecoder {
     };
 
     private GetString(Namespace: ENamespaces) {
-        this.Logger.log(`Retrieving ${Namespace}`, Levels.SILLY);
+        const Str = this.LanguageData[Namespace];
 
-        if (Object.keys(this.LanguageData).includes(Namespace)) {
-            return this.LanguageData[Namespace];
-        } else {
+        if (Str === null) {
             this.Logger.log(
-                `Namespace \`${Namespace}\` doesn't exist`,
+                `Namespace ${Namespace} doesn't exist`,
                 Levels.WARN
             );
 
             return this.FailSafeString;
+        } else {
+            return Str;
         }
     }
 
     private async LoadLanguage(LanguageName: string): Promise<void> {
         try {
             this.LanguageData = (await import(`./Locale/${LanguageName}.ts`)).default;
-
             this.ResolveInternalPromise();
         } catch {
             this.Logger.log(

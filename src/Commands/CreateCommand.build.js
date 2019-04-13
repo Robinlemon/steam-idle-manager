@@ -2,14 +2,13 @@ const fsPromise = require('fs').promises;
 const [, , DirName] = process.argv;
 
 const Base = `\
-import BaseCommand, { ITriggerArgs } from '../BaseCommand';
-import LanguageDecoder from '../../LanguageDecoder';
-import { NotImplemented } from '../../Errors';
+import CommandManager from '../../CommandManager';
 import { Levels } from '../../Logger';
+import BaseCommand, { ITriggerArgs } from '../BaseCommand';
 
 export default class ${DirName} extends BaseCommand {
     constructor(Manager: CommandManager) {
-        super('${DirName}', Decoder, true);
+        super('${DirName}', Manager, false);
     }
 
     public Trigger = async ({
@@ -22,17 +21,17 @@ export default class ${DirName} extends BaseCommand {
 `;
 
 const Test = `\
+import { ${DirName} } from '..';
+import CommandManager from '../../CommandManager';
 import LanguageDecoder from '../../LanguageDecoder';
-import ${DirName} from './index';
 
-let LanguageDecoderInstance: LanguageDecoder;
+let Manager: CommandManager;
 let Instance: ${DirName};
 
-beforeAll(async () => {
-    LanguageDecoderInstance = new LanguageDecoder();
-    await LanguageDecoderInstance.GetInternalPromise();
-
-    Instance = new ${DirName}(LanguageDecoderInstance);
+beforeAll(() => {
+    Manager = new CommandManager(null, [], '!', null, new LanguageDecoder());
+    Manager.RegisterClasses();
+    Instance = Manager.GetCommandByIdentifier('${DirName}') as ${DirName};
 });
 
 describe('${DirName} Command', () => {
@@ -50,8 +49,8 @@ export default ${DirName};\
 (async () => {
     await fsPromise.mkdir(`${__dirname}/${DirName}`);
 
-    const DataMap = [Base, Test, Index];
-    const FileMap = [`${DirName}.ts`, `${DirName}.test.ts`, `index.ts`].map(
+    const DataMap = [Base, /*Test,*/ Index];
+    const FileMap = [`${DirName}.ts`, /*`${DirName}.test.ts`,*/ `index.ts`].map(
         (Name, IDx) =>
             fsPromise.writeFile(`${__dirname}/${DirName}/${Name}`, DataMap[IDx])
     );

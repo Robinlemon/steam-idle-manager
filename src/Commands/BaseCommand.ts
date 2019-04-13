@@ -53,6 +53,9 @@ export default abstract class Command {
 
     public abstract Trigger(Args: ITriggerArgs): void;
 
+    public ReflectCommandByIdentifier = (Identifier: string) =>
+        this.Manager.GetCommandByIdentifier(Identifier);
+
     public InterpolateString = (Namespace: string, Args?: any[]) =>
         this.Manager.GetDecoder().InterpolateString(Namespace, Args);
 
